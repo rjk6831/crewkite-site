@@ -3,6 +3,108 @@
   const root = d.documentElement;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Kite entrance. Decorative only: nothing on the page waits for it. Wide screens: it starts in the
+  // left margin level with the Google line of the headline and rises up that margin with two and a
+  // half slow sways, a string trailing below, then shrinks to header size and clicks into place.
+  // Narrow screens: a short rise from just below the header. Any scroll, click or key ends it.
+  const kiteIntro = () => {
+    if (!root.classList.contains('kite-intro') || still) return;
+    const box = d.querySelector('.top .kite-x');
+    if (!box || !box.animate) return;
+    const kite = box.querySelector('.kite-y');
+    const glow = box.querySelector('.kite-glow');
+    const string = box.querySelector('.kite-string');
+    const wide = innerWidth >= 768;
+    const anims = [];
+    const run = (el, frames, opts) => { if (el) anims.push(el.animate(frames, { fill: 'backwards', ...opts })); };
+    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+    const start = () => {
+      const home = box.getBoundingClientRect();
+      const anchor = d.querySelector('.n-g');
+      const dy = wide
+        ? (anchor ? anchor.getBoundingClientRect().top + anchor.getBoundingClientRect().height / 2 : innerHeight * 0.45) - (home.top + home.height / 2)
+        : 56;
+      const D = wide ? 3200 : 1200;
+      const shrink = wide ? 600 : 400;
+      const snap = 180;
+      const land = D - snap;
+      const big = wide ? 2 : 1.5;
+      const frames = [];
+      const N = wide ? 90 : 30;
+      for (let i = 0; i <= N; i++) {
+        const t = (i / N) * land;
+        const p = t / land;
+        const rise = easeOut(p);
+        const fade = 1 - p;
+        const x = wide ? 10 * fade * Math.sin(p * Math.PI * 5) : 0;
+        const rot = wide ? 8 * fade * Math.cos(p * Math.PI * 5) : 0;
+        const k = Math.min(1, Math.max(0, (t - (land - shrink)) / shrink));
+        const sc = big + (1.08 - big) * (k * k * (3 - 2 * k));
+        frames.push({
+          offset: t / D,
+          opacity: Math.min(1, t / 160),
+          transform: `translate(${x.toFixed(2)}px, ${(dy * (1 - rise)).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`,
+        });
+      }
+      frames[frames.length - 1].easing = 'cubic-bezier(0.3, 0, 0.2, 1)';
+      frames.push({ offset: 1, opacity: 1, transform: 'none' });
+      box.style.animation = 'none';
+      box.style.opacity = '1';
+      run(box, frames, { duration: D, easing: 'linear' });
+
+      // The string trails below while it flies and is gone before the landing.
+      if (wide) {
+        run(string, [
+          { opacity: 0, transform: 'rotate(10deg) scaleY(0.6)' },
+          { opacity: 0.9, transform: 'rotate(-6deg) scaleY(1)', offset: 0.15 },
+          { opacity: 0.8, transform: 'rotate(8deg) scaleY(1)', offset: 0.45 },
+          { opacity: 0, transform: 'rotate(0deg) scaleY(0.8)', offset: 0.74 },
+          { opacity: 0, transform: 'none' },
+        ], { duration: D, easing: 'ease-in-out' });
+      }
+
+      // The facets fly a little loose and lock in, in family order, as it lands.
+      ['k-o', 'k-a', 'k-g', 'k-l'].forEach((cls, i) => {
+        const f = kite.querySelector(`.${cls}`);
+        if (!f) return;
+        f.style.transformBox = 'fill-box';
+        f.style.transformOrigin = 'center';
+        run(f, [{ opacity: 0.55, transform: 'scale(0.8)' }, { opacity: 1, transform: 'none' }], {
+          duration: 160,
+          delay: land - 240 + i * 60,
+          easing: 'cubic-bezier(0.2, 0, 0, 1)',
+        });
+      });
+
+      // A brief soft glow on the click.
+      run(glow, [
+        { opacity: 0, transform: 'scale(0.6)' },
+        { opacity: 0.9, transform: 'scale(1)', offset: 0.25 },
+        { opacity: 0, transform: 'scale(1.25)' },
+      ], { duration: 520, delay: land, easing: 'ease-out' });
+
+      const stop = () => {
+        anims.forEach((a) => { try { a.finish(); } catch (e) {} });
+        removeEventListener('scroll', stop);
+        removeEventListener('pointerdown', stop, true);
+        removeEventListener('keydown', stop, true);
+      };
+      addEventListener('scroll', stop, { passive: true, once: true });
+      addEventListener('pointerdown', stop, { capture: true, once: true });
+      addEventListener('keydown', stop, { capture: true, once: true });
+      Promise.all(anims.map((a) => a.finished)).then(stop, () => {});
+    };
+
+    // About 300 ms after first paint, measured from the browser's paint timing when it has one.
+    requestAnimationFrame(() => {
+      const fp = performance.getEntriesByType?.('paint').find((e) => e.name === 'first-paint');
+      const t0 = fp ? fp.startTime : performance.now();
+      setTimeout(start, Math.max(0, t0 + 300 - performance.now()));
+    });
+  };
+  kiteIntro();
+
   // Theme toggle. The inline head script applies a saved choice before first paint.
   const sysDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
   d.querySelector('.theme')?.addEventListener('click', () => {

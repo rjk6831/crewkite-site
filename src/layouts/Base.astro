@@ -49,7 +49,7 @@ const jsonld = {
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://crewkite.dev/og.png" />
   <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
-  <script is:inline>(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.dataset.theme=t;}catch(e){}})();</script>
+  <script is:inline>(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.dataset.theme=t;}catch(e){}try{if(!sessionStorage.getItem('kite')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('kite-intro');sessionStorage.setItem('kite','1');}}catch(e){}})();</script>
   <slot name="head" />
 </head>
 <body>
@@ -57,7 +57,7 @@ const jsonld = {
   <header class="top" id="top">
     <div class="wrap top-row">
       <a class="brand" href="/" aria-label="CrewKite home">
-        <Kite size={22} />
+        <span class="kite-x"><span class="kite-glow" aria-hidden="true"></span><span class="kite-y"><Kite size={22} /></span><span class="kite-string" aria-hidden="true"></span></span>
         <span>CrewKite</span>
       </a>
       <nav aria-label="Main">
@@ -138,6 +138,43 @@ const jsonld = {
     justify-content: space-between;
     height: 64px;
   }
+  /* Kite entrance, once per visit. The head script sets .kite-intro before first paint; site.js flies
+     the mark with transform and opacity only, inside its reserved 22 px box, 300 ms after first
+     paint. The string and the glow are absolutely positioned, so they take no layout space. If the
+     script never runs, the mark fades in where it belongs. */
+  .kite-x,
+  .kite-y {
+    display: inline-block;
+    line-height: 0;
+  }
+  .kite-x { position: relative; }
+  .kite-glow,
+  .kite-string {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .kite-glow {
+    inset: -12px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0, transparent 68%);
+  }
+  .kite-string {
+    left: 42%;
+    top: 88%;
+    width: 1px;
+    height: 18px;
+    background: linear-gradient(var(--text-dim), transparent);
+    transform-origin: 50% 0;
+  }
+  .kite-intro .top .kite-x {
+    opacity: 0;
+    animation: kite-fallback 300ms ease-out 2000ms forwards;
+  }
+  @keyframes kite-fallback {
+    to { opacity: 1; }
+  }
+
   .brand {
     display: inline-flex;
     align-items: center;
