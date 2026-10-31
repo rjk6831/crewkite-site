@@ -252,6 +252,20 @@ const faqs = [
     </div>
   </section>
 
+  <!-- Why I built it -->
+  <section id="why-built" class="built" aria-labelledby="built-h">
+    <div class="wrap">
+      <div class="built-col reveal">
+        <h2 id="built-h" class="built-h">Why I built it</h2>
+        <p>I build products for underserved niche markets, and I start each one by talking with the people who have the problem. Along the way I kept running into problems in my own workflow that no tool solved.</p>
+        <p>I work across several AI subscriptions and a local model, because each one is strongest at something different: backend work, frontend and design, or catching defects in review. Using them together on one repository meant separate apps and terminals, watching every usage meter, and writing handoffs by hand. Each new agent reread the whole context, and the style of the work drifted with every switch.</p>
+        <p>CrewKite is the controller I wanted: every provider in one thread, held to how I want my work done. Its review methods draw on open-source projects like multi, ADHD and Ponytail, <a href="https://github.com/rjk6831/crewkite/blob/main/docs/credits.md">credited in the docs</a>, so you get those ideas without having to find them first.</p>
+        <p>CrewKite is free and open source. Other people's open-source work has helped me a great deal, and this is my turn to give back. I am measuring efficiency with a benchmark now, and I will not claim gains until the numbers are in. Until then, what I want most is your feedback. My best product decisions have come from real people telling me what they need. Try it, and tell me where it falls short.</p>
+        <p class="built-sig">Raymond J. Kraft</p>
+      </div>
+    </div>
+  </section>
+
   <!-- Safety -->
   <section id="safety" aria-labelledby="safe-h">
     <div class="wrap">
@@ -845,6 +859,29 @@ const faqs = [
   .mf h3 { margin-top: 10px; font-size: 18px; line-height: 1.25; }
   .mf p { margin-top: 10px; color: var(--text-muted); font-size: 14.5px; }
   #adds .chips { justify-content: center; margin-top: 28px; }
+
+  /* Why I built it */
+  /* About 65 characters per line in Inter at 16 px; ch is the width of a zero, wider than the average letter. */
+  .built-col {
+    max-width: 49ch;
+    text-align: left;
+  }
+  .built-h {
+    font-size: clamp(26px, 3vw, 32px);
+    margin-bottom: 20px;
+  }
+  .built-col p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .built-col p + p { margin-top: 16px; }
+  .built-col a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--accent); }
+  .built-col .built-sig {
+    margin-top: 24px;
+    font-weight: 300;
+    color: var(--text-muted);
+  }
 
   /* Safety */
   .safe {
