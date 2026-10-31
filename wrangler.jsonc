@@ -1,0 +1,19 @@
+{
+  "name": "crewkite-site",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "crewkite.dev", "custom_domain": true },
+    { "pattern": "www.crewkite.dev", "custom_domain": true },
+    { "pattern": "crewkite.app", "custom_domain": true },
+    { "pattern": "www.crewkite.app", "custom_domain": true }
+  ],
+  "observability": { "enabled": true }
+}

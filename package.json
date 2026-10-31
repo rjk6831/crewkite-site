@@ -1,0 +1,19 @@
+{
+  "name": "crewkite-site",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/postbuild.mjs",
+    "preview": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "check": "node scripts/copy-check.mjs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "astro": "^7.4.4",
+    "wrangler": "^4.156.0"
+  }
+}
