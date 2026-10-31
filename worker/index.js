@@ -74,6 +74,8 @@ export default {
     const type = res.headers.get('content-type') || '';
     const out = type.includes('text/html') ? await rewrite(res, request, ctx, env) : new Response(res.body, res);
     for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
+    // The workers.dev preview stays out of search results; only crewkite.dev gets indexed.
+    if (host.endsWith('.workers.dev')) out.headers.set('X-Robots-Tag', 'noindex');
     if (/\.(woff2|webp|png|svg)$/.test(path)) out.headers.set('Cache-Control', 'public, max-age=2592000');
     else if (path.endsWith('.js')) out.headers.set('Cache-Control', 'public, max-age=3600');
     return out;

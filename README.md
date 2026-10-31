@@ -35,7 +35,18 @@ npx wrangler dev
 npm run deploy
 ```
 
-The Worker claims crewkite.dev, www.crewkite.dev, crewkite.app and www.crewkite.app as custom domains. Both zones must be in the same Cloudflare account.
+Until the first full release is published on GitHub, the site runs on its workers.dev URL only. On release day, add the four hostnames to `wrangler.jsonc` and deploy again:
+
+```jsonc
+"routes": [
+  { "pattern": "crewkite.dev", "custom_domain": true },
+  { "pattern": "www.crewkite.dev", "custom_domain": true },
+  { "pattern": "crewkite.app", "custom_domain": true },
+  { "pattern": "www.crewkite.app", "custom_domain": true }
+]
+```
+
+Both zones must be in the same Cloudflare account, with no existing DNS records on those four names.
 
 ## License
 
