@@ -13,4 +13,4 @@ export const ASSETS = {
 };
 export const url = (name) => `${DL}/${name}`;
 export const ONE_LINER =
-  'CrewKite is an open-source desktop workspace where Codex, Claude Code, Antigravity and your local models work one thread together, on the subscriptions you already have.';
+  'CrewKite is a local workspace for the coding agents you already pay for. It runs the OpenAI, Anthropic and Google clients you have signed in, and a local model, as threads on your own computer. A thread can move from one provider to another and keep its messages and its edited files.';

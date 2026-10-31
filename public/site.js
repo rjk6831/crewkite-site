@@ -39,7 +39,7 @@
   });
   d.querySelectorAll('[data-copy-email]').forEach((b) => {
     b.hidden = false;
-    b.addEventListener('click', () => copy(b, ['ray', 'rootsnolimits.com'].join('@')));
+    b.addEventListener('click', () => copy(b, 'ray@rootsnolimits.com'));
   });
 
   d.querySelectorAll('[data-copy-sha]').forEach((b) => {
@@ -48,6 +48,14 @@
     b.hidden = false;
     b.addEventListener('click', () => copy(b, code.textContent.trim()));
   });
+
+  // A link to a FAQ answer opens it.
+  const openTarget = () => {
+    const t = location.hash && d.getElementById(location.hash.slice(1));
+    if (t && t.tagName === 'DETAILS') t.open = true;
+  };
+  addEventListener('hashchange', openTarget);
+  openTarget();
 
   // Reveal once. With reduced motion everything is shown at once.
   const reveals = d.querySelectorAll('.reveal');
@@ -100,11 +108,13 @@
   const rp = d.querySelector('[data-replay]');
   if (rp && !still) {
     const items = [...rp.querySelectorAll('[data-at]')];
+    const subs = [...rp.querySelectorAll('[data-sub]')];
+    const subCount = rp.querySelector('[data-sub-count]');
     const cap = rp.querySelector('[data-caption]');
-    const gauge = rp.querySelector('[data-gauge="openai"]');
-    const gText = gauge?.querySelector('[data-gauge-text]');
+    const cur = rp.querySelector('[data-cur]');
     const toggle = rp.querySelector('[data-replay-toggle]');
     const thread = rp.querySelector('.thread');
+    const inner = rp.querySelector('.thread-inner');
     let run = 0;
     let paused = false;
     let visible = true;
@@ -116,7 +126,18 @@
       cap.textContent = t;
       cap.classList.remove('swap');
     };
-    const inner = rp.querySelector('.thread-inner');
+    // One gauge value can appear in the rail and in the narrow-screen strip.
+    const setG = (key, v) => {
+      rp.querySelectorAll(`[data-g="${key}"]`).forEach((el) => el.style.setProperty('--v', v));
+      rp.querySelectorAll(`[data-gt="${key}"]`).forEach((el) => { el.textContent = v; });
+    };
+    const live = (fam) => {
+      rp.querySelectorAll('[data-row]').forEach((el) => el.classList.toggle('on', el.dataset.row === fam));
+      if (cur && fam) {
+        cur.textContent = fam.toUpperCase();
+        cur.className = `fam fam-${fam}`;
+      }
+    };
     const follow = (el) => {
       if (!thread || !inner || !el) return;
       const bottom = el.offsetTop + el.offsetHeight + 24;
@@ -128,16 +149,19 @@
       const last = els[els.length - 1];
       follow(last?.classList.contains('acc-done') ? last.closest('.it') : last);
     };
-    const setGauge = (v) => {
-      if (!gauge) return;
-      gauge.style.setProperty('--v', v);
-      if (gText) gText.textContent = v;
+    const wait = async (ms, id) => {
+      const end = Date.now() + ms;
+      while (Date.now() < end || paused || !visible) {
+        if (id !== run) return false;
+        await sleep(80);
+      }
+      return id === run;
     };
-    const drain = async (from, to, ms, id) => {
-      const steps = 24;
+    const count = async (key, from, to, ms, id) => {
+      const steps = Math.max(1, Math.abs(from - to));
       for (let k = 0; k <= steps; k++) {
         if (id !== run) return;
-        setGauge(Math.round(from + ((to - from) * k) / steps));
+        setG(key, Math.round(from + ((to - from) * k) / steps));
         await sleep(ms / steps);
       }
     };
@@ -148,38 +172,48 @@
       await sleep(260);
       b.classList.remove('pressed');
     };
-    const wait = async (ms, id) => {
-      const end = Date.now() + ms;
-      while (Date.now() < end || paused || !visible) {
-        if (id !== run) return false;
-        await sleep(80);
-      }
-      return id === run;
-    };
     const typeIn = (n, id) => {
       const el = items.find((i) => +i.dataset.at === n)?.querySelector('[data-type]');
       return el ? type(el, 26, () => id === run) : Promise.resolve();
+    };
+    const spawn = async (id) => {
+      for (const [i, sub] of subs.entries()) {
+        if (id !== run) return;
+        if (subCount) subCount.textContent = i + 1;
+        sub.classList.add('on', 'running');
+        await sleep(520);
+      }
+      for (const sub of subs) {
+        if (id !== run) return;
+        sub.classList.remove('running');
+        await sleep(340);
+      }
     };
 
     const play = async () => {
       const id = ++run;
       items.forEach((i) => i.classList.remove('on'));
+      subs.forEach((s) => s.classList.remove('on', 'running'));
+      if (subCount) subCount.textContent = '0';
       if (inner) inner.style.transform = 'translateY(0)';
       rp.querySelectorAll('[data-type]').forEach((el) => prep(el).forEach((w) => w.classList.add('off')));
-      setGauge(38);
+      setG('o5', 9); setG('ow', 82); setG('a5', 33); setG('g5', 88); setG('gw', 66);
+      live(null);
+      if (cur) { cur.textContent = 'O'; cur.className = 'fam fam-o'; }
       const steps = [
-        async () => { await setCap('You ask once.'); show(0); return 1400; },
-        async () => { await setCap('OpenAI plans the change.'); rp.classList.add('running'); show(1); await typeIn(1, id); return 600; },
-        async () => { await setCap('OpenAI reaches its five-hour limit.'); await drain(38, 0, 1400, id); return 500; },
-        async () => { await setCap('The same thread continues on Anthropic.'); show(3); return 1400; },
-        async () => { show(4); return 900; },
-        async () => { await setCap('Anthropic keeps the messages and the edited files.'); show(5); await typeIn(5, id); return 500; },
-        async () => { show(6); return 1500; },
-        async () => { await setCap('Commands wait for your permission.'); show(7); return 1500; },
-        async () => { await press(8, id); return 700; },
-        async () => { await setCap('A local model reviews the work.'); show(9); await typeIn(9, id); return 900; },
-        async () => { await setCap('Accept makes a new local branch.'); show(10); return 1300; },
-        async () => { await press(11, id); show(11); rp.classList.remove('running'); return 4200; },
+        async () => { await setCap('You ask once.'); show(0); return 1300; },
+        async () => { await setCap('OpenAI plans the change.'); rp.classList.add('running'); live('o'); show(1); await typeIn(1, id); return 500; },
+        async () => { await setCap('OpenAI reaches its five-hour limit.'); await Promise.all([count('o5', 9, 0, 1300, id), count('ow', 82, 80, 1300, id)]); return 400; },
+        async () => { await setCap('The thread moves to Anthropic with its messages and files.'); live('a'); show(3); return 1500; },
+        async () => { await setCap('Anthropic starts subagents. Each one shows under its step.'); show(4); count('a5', 33, 32, 900, id); await spawn(id); return 600; },
+        async () => { await setCap('Anthropic edits a scratch copy of the repository.'); show(5); await typeIn(5, id); return 300; },
+        async () => { show(6); count('a5', 32, 30, 900, id); return 1500; },
+        async () => { await setCap('Commands wait for your approval.'); show(7); return 1400; },
+        async () => { await press(8, id); return 600; },
+        async () => { await setCap('Google answers a side question.'); live('g'); show(9); count('g5', 88, 85, 1400, id); count('gw', 66, 65, 1400, id); await typeIn(9, id); return 700; },
+        async () => { await setCap('A local model reviews the work.'); live('l'); show(10); await typeIn(10, id); return 800; },
+        async () => { await setCap('Accept makes a new local branch.'); live(null); show(11); return 1300; },
+        async () => { await press(12, id); show(12); rp.classList.remove('running'); return 4200; },
       ];
       for (const s of steps) {
         if (!(await wait(0, id))) return;

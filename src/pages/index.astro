@@ -20,7 +20,7 @@ const families = [
   {
     key: 'g', name: 'Google', client: 'Antigravity, through the Agent Client Protocol',
     plan: 'As of 31 October 2026, Google gives accounts without a paid plan a quota that refreshes weekly. Google AI Pro refreshes every five hours until a weekly limit, and Google AI Ultra has the highest quota. Limits follow available capacity.',
-    terms: true,
+    note: true,
   },
   {
     key: 'l', name: 'Local', client: 'LM Studio, on this computer',
@@ -46,6 +46,7 @@ const faqs = [
     a: `<p>CrewKite runs each vendor's own client on purpose, so your sign-in, your plan and the vendor's terms stay yours. What it adds is one thread that passes work between providers, plan slices that run side by side, one controller that holds every permission, a scratch copy for each thread and a branch you review before anything touches your code.</p>`,
   },
   {
+    id: 'google-terms',
     q: 'Will my provider ban my account?',
     a: `<p>OpenAI, Anthropic and Local run through their own clients on their supported paths. Google is different. Google's third-party access FAQ says that third-party access through its coding client login violates its terms. Google does not name CrewKite, and CrewKite has no exception from Google. Using the Google route is your own choice and your own risk, and the app keeps it off until you tick a box that says so. <a href="${BLOB}/docs/providers.md#google-and-your-account">Read the full text</a>.</p>`,
   },
@@ -67,7 +68,7 @@ const faqs = [
   },
 ];
 ---
-<Base title="CrewKite: your coding agents, one thread" path="/">
+<Base title="CrewKite: one desktop workspace for OpenAI, Anthropic, Google and a local model" path="/">
   <!-- Hero -->
   <section class="hero" aria-labelledby="hero-h">
     <div class="hero-bg" aria-hidden="true"></div>
@@ -77,8 +78,14 @@ const faqs = [
         <span>Version <span data-release="version">{VERSION_FALLBACK}</span></span>
         <Icon name="arrow" size={14} />
       </a>
-      <h1 id="hero-h" class="reveal">Your coding agents,<br /><span class="grad">one thread.</span></h1>
+      <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span>, <span class="n-g">Google</span> and <span class="n-l">a local model</span>.</h1>
       <p class="hero-sub reveal">{ONE_LINER}</p>
+      <ul class="fchips reveal" aria-label="Provider families">
+        <li class="fchip fchip-o"><span class="fam fam-o">O</span>OpenAI</li>
+        <li class="fchip fchip-a"><span class="fam fam-a">A</span>Anthropic</li>
+        <li class="fchip fchip-g"><span class="fam fam-g">G</span>Google</li>
+        <li class="fchip fchip-l"><span class="fam fam-l">L</span>Local<span class="inf" aria-label="no limits">∞</span></li>
+      </ul>
       <div class="hero-cta reveal">
         <Download variant="hero" />
         <a class="btn btn-ghost" href={REPO}>
@@ -88,7 +95,8 @@ const faqs = [
       <p class="hero-meta reveal">
         <span class="mono">v<span data-release="version">{VERSION_FALLBACK}</span></span>
         <span data-release="date-line" hidden></span>
-        <span>macOS 14+ on Apple silicon</span>
+        <span>macOS on Apple silicon</span>
+        <span>Linux preview</span>
         <a href="/download#verify">SHA-256 checksums</a>
       </p>
       <div class="hero-shot">
@@ -114,10 +122,9 @@ const faqs = [
             </div>
             <p class="fcard-client">{f.client}</p>
             <p class="fcard-plan">{f.plan}</p>
-            {f.terms && (
-              <p class="fcard-terms">
-                Google's terms say third-party access through its coding client login violates them. Using this route is your own choice and risk.{' '}
-                <a href={`${BLOB}/docs/providers.md#google-and-your-account`}>Read the full text</a>
+            {f.note && (
+              <p class="fcard-note">
+                Google needs a terms acknowledgement in the app before it connects. <a href="#google-terms">Read why</a>
               </p>
             )}
           </article>
@@ -131,37 +138,44 @@ const faqs = [
   <section id="adds" aria-labelledby="adds-h">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">What it adds</span>
-        <h2 id="adds-h" class="h2">What none of the clients does alone</h2>
-        <p class="lede">CrewKite runs each vendor's own client on purpose, so your sign-in, your plan and the vendor's terms stay yours. These are the parts it adds on top.</p>
+        <span class="eyebrow">Why CrewKite</span>
+        <h2 id="adds-h" class="h2">What CrewKite adds to the clients you have</h2>
+        <p class="lede">CrewKite runs each provider's own signed-in client, so your sign-in, your plan and the provider's terms stay yours. This is what it adds.</p>
       </div>
 
       <div class="feat reveal">
         <div class="feat-copy">
           <span class="feat-n mono">01</span>
-          <h3>Hand a thread to another provider</h3>
-          <p>When a provider hits its limit, or you pick another one, the next turn continues there with the messages, the changed files and the patches that fit. Automatic handoff picks the provider with the most allowance left or the one that resets soonest.</p>
+          <h3>Keep working when a limit hits</h3>
+          <p>A thread moves to another provider mid task with its messages and edited files. Switch by hand, or pick a handoff rule: most allowance left, the soonest reset, even spend or Local first.</p>
         </div>
         <div class="feat-vis vis-hand" aria-hidden="true">
-          <div class="hand-gauges">
-            <div class="hg" style="--c:var(--openai);--v0:42;--v1:0"><span class="fam fam-o">O</span><div class="hg-bar"><i></i></div><span class="hg-v mono"></span></div>
-            <div class="hg" style="--c:var(--anthropic);--v0:74;--v1:68"><span class="fam fam-a">A</span><div class="hg-bar"><i></i></div><span class="hg-v mono"></span></div>
-            <div class="hg" style="--c:var(--google);--v0:55;--v1:55"><span class="fam fam-g">G</span><div class="hg-bar"><i></i></div><span class="hg-v mono"></span></div>
-            <div class="hg" style="--c:var(--local);--v0:100;--v1:100"><span class="fam fam-l">L</span><div class="hg-bar"><i></i></div><span class="hg-v mono"></span></div>
-          </div>
+          <div class="ht ht-o"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI<span class="ht-lim">5 h limit reached</span></div><b></b><b></b></div>
           <div class="hand-line"><span>Continued on Anthropic from OpenAI. Reason: five-hour limit reached.</span></div>
-          <div class="hand-turns">
-            <div class="ht ht-o"><span class="fam fam-o">O</span><b></b><b></b></div>
-            <div class="ht ht-a"><span class="fam fam-a">A</span><b></b><b></b><b></b></div>
-          </div>
+          <div class="ht ht-a"><div class="ht-h"><span class="fam fam-a">A</span>Anthropic<span class="ht-carry"><span class="mono">12 messages</span><span class="mono">3 files</span></span></div><b></b><b></b><b></b></div>
+          <div class="hand-mode"><span>Handoff mode</span><b>Most allowance left</b></div>
         </div>
       </div>
 
       <div class="feat feat-rev reveal">
         <div class="feat-copy">
           <span class="feat-n mono">02</span>
-          <h3>Split a large request into slices</h3>
-          <p>In the Full crew preset an orchestrator proposes a plan of up to 8 slices. The controller checks it, assigns each slice by allowance and difficulty, and runs independent slices side by side, each in its own copy. Subagents a provider starts show live in the thread.</p>
+          <h3>See every allowance in one place</h3>
+          <p>The rail shows the five-hour and weekly windows each provider reports, when each one resets and how long ago CrewKite read it. Local shows no limit.</p>
+        </div>
+        <div class="feat-vis vis-allow" aria-hidden="true">
+          <div class="al" style="--c:var(--openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 1 h 40 min</span></div><div class="al-r"><i style="--v:0"><em></em></i><span>5 h 0%</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>week 80%</span></div></div>
+          <div class="al" style="--c:var(--anthropic-fill)"><div class="al-h"><span class="fam fam-a">A</span>Anthropic<span>resets in 2 h</span></div><div class="al-r"><i style="--v:30"><em></em></i><span>30% left</span></div></div>
+          <div class="al" style="--c:var(--google-fill)"><div class="al-h"><span class="fam fam-g">G</span>Google<span>resets in 3 d</span></div><div class="al-r"><i style="--v:85"><em></em></i><span>5 h 85%</span></div><div class="al-r"><i style="--v:65"><em></em></i><span>week 65%</span></div></div>
+          <div class="al" style="--c:var(--local-fill)"><div class="al-h"><span class="fam fam-l">L</span>Local<span>on this computer</span></div><div class="al-r al-inf"><i style="--v:100"><em></em></i><b>∞</b><i style="--v:100"><em></em></i><span>No limits</span></div></div>
+        </div>
+      </div>
+
+      <div class="feat reveal">
+        <div class="feat-copy">
+          <span class="feat-n mono">03</span>
+          <h3>Split large work across providers</h3>
+          <p>An orchestrator proposes a plan of up to 8 slices. The controller assigns each slice by allowance and difficulty, and a reviewer, a fixer and a challenger check the result.</p>
         </div>
         <div class="feat-vis vis-plan" aria-hidden="true">
           <div class="plan-h"><Kite size={14} /><span>Plan</span><span class="mono plan-c">4 slices</span></div>
@@ -173,27 +187,11 @@ const faqs = [
         </div>
       </div>
 
-      <div class="feat reveal">
-        <div class="feat-copy">
-          <span class="feat-n mono">03</span>
-          <h3>Keep every permission in one controller</h3>
-          <p>Prompts and model output cannot grant permissions, raise limits or accept results. An edit or a command waits in the thread with its exact target, and you choose Allow once, Allow for this thread or Deny. The default is to ask every time.</p>
-        </div>
-        <div class="feat-vis vis-perm" aria-hidden="true">
-          <div class="pc">
-            <div class="pc-q"><Icon name="shield" size={16} />Edit src/tax.mjs in the scratch copy?</div>
-            <div class="pc-cmd mono">+ return Math.round(amountMinor * rate)</div>
-            <div class="pc-a"><span class="pb pb-1">Allow once</span><span class="pb">Allow for this thread</span><span class="pb pb-deny">Deny</span></div>
-          </div>
-          <div class="pc-lock"><Icon name="lock" size={14} />Policy: Ask each time</div>
-        </div>
-      </div>
-
       <div class="feat feat-rev reveal">
         <div class="feat-copy">
           <span class="feat-n mono">04</span>
-          <h3>Review the work before it touches your code</h3>
-          <p>Each thread works in a scratch copy of your repository. Changes shows every file against the base commit. Accept or discard single hunks, comment on lines, then accept to a new local branch. Push and the pull request wait for your click.</p>
+          <h3>Review before anything lands</h3>
+          <p>Each thread works in its own copy of the repository. Read the diff, accept or discard each hunk, then Accept makes a new local branch. Your checkout stays as it was.</p>
         </div>
         <div class="feat-vis vis-changes" aria-hidden="true">
           <div class="ch-h"><span>Changes</span><span class="mono">3 files</span></div>
@@ -207,28 +205,54 @@ const faqs = [
       <div class="feat reveal">
         <div class="feat-copy">
           <span class="feat-n mono">05</span>
-          <h3>Find anything across threads</h3>
-          <p>Project notes reach every model in the project. History search covers every thread, and the command palette reaches every action from the keyboard.</p>
-          <ul class="chips">
-            <li>Usage analytics with CSV</li>
-            <li>Share page</li>
-            <li>Markdown export</li>
-            <li>Diagnostics export</li>
-            <li>No file count cap</li>
-          </ul>
+          <h3>Approve what runs</h3>
+          <p>Commands, edits and tool calls ask first unless your policy allows them. Prompts and model output cannot grant permissions. Subagents a provider starts show under the step that started them.</p>
         </div>
-        <div class="feat-vis vis-pal" aria-hidden="true">
-          <div class="pal">
-            <div class="pal-in"><span class="pal-q">rounding</span><span class="mono pal-k">⌘K</span></div>
-            <div class="pal-g">Threads</div>
-            <div class="pal-r pal-on"><span class="fam fam-a">A</span>Fix rounding in tax totals<span class="pal-m">2 h ago</span></div>
-            <div class="pal-r"><span class="fam fam-o">O</span>Clamp discount at subtotal<span class="pal-m">yesterday</span></div>
-            <div class="pal-g">Actions</div>
-            <div class="pal-r"><Icon name="arrow" size={14} />Continue on another provider</div>
-            <div class="pal-r"><Icon name="branch" size={14} />Open Changes</div>
+        <div class="feat-vis vis-perm" aria-hidden="true">
+          <div class="pc">
+            <div class="pc-q"><Icon name="shield" size={16} />Run the tests in the scratch copy?</div>
+            <div class="pc-cmd mono">node --test</div>
+            <div class="pc-a"><span class="pb pb-1">Allow once</span><span class="pb">Allow for this thread</span><span class="pb pb-deny">Deny</span></div>
+          </div>
+          <div class="sp">
+            <div class="sp-h"><Icon name="branch" size={14} /><span>Task: find every caller</span><span class="sp-b mono">3 subagents</span></div>
+            <div class="sp-r" style="--i:0"><Icon name="check" size={13} />Subagent 1 <code>src/cart.mjs</code></div>
+            <div class="sp-r" style="--i:1"><Icon name="check" size={13} />Subagent 2 <code>src/checkout.mjs</code></div>
+            <div class="sp-r" style="--i:2"><Icon name="check" size={13} />Subagent 3 <code>test/</code></div>
           </div>
         </div>
       </div>
+
+      <div class="more-feats">
+        <article class="mf reveal">
+          <span class="mf-n mono">06</span>
+          <h3>Use the plans you already pay for</h3>
+          <p>CrewKite runs each provider's own signed-in client, sets no API key and adds no plan of its own. Model and effort lists come live from each client, so a new model shows up the day the provider serves it.</p>
+        </article>
+        <article class="mf reveal" style="--d:70ms">
+          <span class="mf-n mono">07</span>
+          <h3>Run a local model beside the cloud ones</h3>
+          <p>An LM Studio model takes the easy slices that fit its context, at no cost beyond your hardware.</p>
+        </article>
+        <article class="mf reveal" style="--d:140ms">
+          <span class="mf-n mono">08</span>
+          <h3>Work on large repositories</h3>
+          <p>A thread's copy has no file count cap and checks free disk space before it starts.</p>
+        </article>
+        <article class="mf reveal" style="--d:210ms">
+          <span class="mf-n mono">09</span>
+          <h3>Keep your work on your computer</h3>
+          <p>CrewKite has no account, sends no telemetry and hosts nothing. It is Apache 2.0.</p>
+        </article>
+      </div>
+      <ul class="chips reveal" aria-label="Also in this version">
+        <li>History search</li>
+        <li>Project notes</li>
+        <li>Usage analytics with CSV</li>
+        <li>Share page</li>
+        <li>Markdown export</li>
+        <li>Diagnostics export</li>
+      </ul>
     </div>
   </section>
 
@@ -300,7 +324,7 @@ const faqs = [
       </div>
       <div class="faq">
         {faqs.map((f) => (
-          <details class="reveal">
+          <details class="reveal" id={f.id}>
             <summary><span>{f.q}</span><Icon name="plus" size={18} /></summary>
             <div class="faq-a" set:html={f.a} />
           </details>
@@ -321,7 +345,7 @@ const faqs = [
       <div class="final-box reveal">
         <Kite size={56} class="final-kite" />
         <h2 id="final-h" class="h2">Download CrewKite <span data-release="version">{VERSION_FALLBACK}</span></h2>
-        <p class="lede">macOS 14 or later on Apple silicon. Linux x64 and arm64 preview. Windows is not supported yet.</p>
+        <p class="lede">macOS on Apple silicon. Linux x64 and arm64 preview. Windows is not supported yet.</p>
         <div class="hero-cta">
           <Download variant="final" />
           <a class="btn btn-ghost" href={REPO}><Icon name="code" />View on GitHub</a>
@@ -381,22 +405,64 @@ const faqs = [
   }
   h1 {
     margin-top: 28px;
-    font-size: clamp(36px, 7vw, 76px);
-    line-height: 1.02;
-    letter-spacing: -0.04em;
+    max-width: 20ch;
+    font-size: clamp(34px, 5.6vw, 66px);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
     font-weight: 650;
   }
-  .grad {
-    background: linear-gradient(100deg, var(--openai) 5%, var(--accent) 35%, var(--local) 60%, var(--anthropic) 95%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: sheen 9s var(--ease) infinite alternate;
+  .n-o { color: var(--openai); }
+  .n-a { color: var(--anthropic); }
+  .n-g { color: var(--google); }
+  .n-l { color: var(--local); }
+  .fchips {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    width: 100%;
+    max-width: 640px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
   }
-  @keyframes sheen {
-    to { background-position: 100% 0; }
+  .fchip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    height: 46px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-weight: 550;
+    font-size: 15px;
+    overflow: hidden;
+    transition: border-color 200ms, transform 200ms var(--ease);
   }
+  .fchip::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+    background: var(--c);
+    transform: scaleX(0.3);
+    opacity: 0.8;
+    transition: transform 300ms var(--ease);
+  }
+  .fchip:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); transform: translateY(-1px); }
+  .fchip:hover::after { transform: scaleX(1); }
+  .fchip .fam { width: 22px; height: 22px; font-size: 11px; border-radius: 6px; }
+  .fchip-o { --c: var(--openai-fill); }
+  .fchip-a { --c: var(--anthropic-fill); }
+  .fchip-g { --c: var(--google-fill); }
+  .fchip-l { --c: var(--local-fill); }
+  .inf { color: var(--local); font-size: 17px; line-height: 1; }
+  .js .in .fchip::after { animation: chip 1s var(--ease) both; animation-delay: calc(var(--k, 0) * 120ms + 300ms); }
+  .fchip-a { --k: 1; }
+  .fchip-g { --k: 2; }
+  .fchip-l { --k: 3; }
+  @keyframes chip { from { transform: scaleX(0); } }
   .hero-sub {
     margin-top: 22px;
     max-width: 64ch;
@@ -404,7 +470,7 @@ const faqs = [
     color: var(--text-muted);
   }
   .hero-cta {
-    margin-top: 32px;
+    margin-top: 28px;
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -488,16 +554,16 @@ const faqs = [
   .fcard h3 { font-size: 20px; }
   .fcard-client { font-weight: 500; font-size: 15px; }
   .fcard-plan { font-size: 14px; color: var(--text-muted); }
-  .fcard-terms {
+  .fcard-note {
     margin-top: auto;
     font-size: 13px;
-    color: var(--amber);
+    color: var(--text-muted);
     padding: 10px 12px;
     border-radius: 8px;
-    border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent);
-    background: color-mix(in srgb, var(--amber) 7%, transparent);
+    border: 1px solid var(--border-strong);
+    background: var(--surface-raised);
   }
-  .fcard-terms a { color: inherit; font-weight: 600; }
+  .fcard-note a { color: var(--text); font-weight: 600; text-underline-offset: 3px; }
   .fams-note {
     margin-top: 24px;
     font-size: 15px;
@@ -551,19 +617,25 @@ const faqs = [
   }
 
   /* 01 handoff */
-  .hand-gauges { display: grid; gap: 10px; }
-  .hg { display: grid; grid-template-columns: 20px 1fr 44px; align-items: center; gap: 12px; }
-  .hg-bar { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; }
-  .hg-bar i {
-    display: block;
-    height: 100%;
-    width: calc(var(--v1) * 1%);
-    background: var(--c);
-    border-radius: 4px;
+  .ht {
+    display: grid;
+    gap: 7px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
   }
-  .hg-v::after { content: counter(v) '%'; counter-reset: v var(--v1); color: var(--text-muted); font-size: 12px; }
-  .js .vis-hand .hg-bar i { width: calc(var(--v0) * 1%); transition: width 1600ms var(--ease) 400ms; }
-  .js .in .vis-hand .hg-bar i { width: calc(var(--v1) * 1%); }
+  .ht-h { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); margin-bottom: 2px; }
+  .ht-h .fam { width: 16px; height: 16px; font-size: 9px; }
+  .ht b { height: 7px; border-radius: 4px; background: var(--border-strong); }
+  .ht b:nth-of-type(1) { width: 85%; }
+  .ht b:nth-of-type(2) { width: 62%; }
+  .ht b:nth-of-type(3) { width: 74%; }
+  .ht-lim { margin-left: auto; font-size: 11.5px; color: var(--red); }
+  .ht-carry { margin-left: auto; display: flex; gap: 6px; }
+  .ht-carry span { font-size: 11px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-muted); }
+  .ht-o { opacity: 0.6; }
+  .ht-a { border-color: color-mix(in srgb, var(--anthropic) 45%, var(--border)); }
   .hand-line {
     display: flex;
     align-items: center;
@@ -580,26 +652,34 @@ const faqs = [
     min-width: 12px;
     background: linear-gradient(90deg, var(--openai), var(--anthropic));
   }
-  .js .vis-hand .hand-line { opacity: 0; transition: opacity 500ms 1900ms; }
-  .js .in .vis-hand .hand-line { opacity: 1; }
-  .hand-turns { display: grid; gap: 8px; }
-  .ht {
-    display: grid;
-    grid-template-columns: 20px 1fr;
-    gap: 6px 10px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface);
+  .hand-mode { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; color: var(--text-dim); }
+  .hand-mode b { font-weight: 500; color: var(--text); }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .vis-hand .hand-line, .js .vis-hand .ht-a, .js .vis-hand .ht-carry span { opacity: 0; transform: translateY(6px); transition: all 500ms var(--ease); }
+    .js .in .vis-hand .hand-line { opacity: 1; transform: none; transition-delay: 500ms; }
+    .js .in .vis-hand .ht-a { opacity: 1; transform: none; transition-delay: 900ms; }
+    .js .in .vis-hand .ht-carry span { opacity: 1; transform: none; transition-delay: 1300ms; }
+    .js .in .vis-hand .ht-carry span + span { transition-delay: 1500ms; }
   }
-  .ht b { grid-column: 2; height: 7px; border-radius: 4px; background: var(--border-strong); }
-  .ht b:nth-of-type(1) { grid-row: 1; align-self: center; width: 85%; }
-  .ht b:nth-of-type(2) { width: 62%; }
-  .ht b:nth-of-type(3) { width: 74%; }
-  .ht-o { opacity: 0.55; }
-  .ht-a { border-color: color-mix(in srgb, var(--anthropic) 45%, var(--border)); }
-  .js .vis-hand .ht-a { opacity: 0; transform: translateY(8px); transition: all 500ms var(--ease) 2200ms; }
-  .js .in .vis-hand .ht-a { opacity: 1; transform: none; }
+
+  /* 02 allowances */
+  .vis-allow { gap: 14px; }
+  .al { display: grid; gap: 6px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
+  .al-h { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .al-h .fam { width: 16px; height: 16px; font-size: 9px; }
+  .al-h span:last-child { margin-left: auto; font-size: 11.5px; color: var(--text-dim); }
+  .al-r { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .al-r > span { min-width: 76px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+  .al-r i { flex: 1; height: 5px; border-radius: 3px; background: var(--border); overflow: hidden; }
+  .al-r em { display: block; height: 100%; width: calc(var(--v) * 1%); background: var(--c); border-radius: 3px; }
+  .al-inf b { color: var(--local); font-weight: 400; font-size: 15px; line-height: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .vis-allow .al-r em { transform: scaleX(0); transform-origin: left; transition: transform 1100ms var(--ease); }
+    .js .in .vis-allow .al-r em { transform: none; }
+    .js .in .vis-allow .al:nth-child(2) em { transition-delay: 120ms; }
+    .js .in .vis-allow .al:nth-child(3) em { transition-delay: 240ms; }
+    .js .in .vis-allow .al:nth-child(4) em { transition-delay: 360ms; }
+  }
 
   /* 02 plan */
   .plan-h { display: flex; align-items: center; gap: 8px; font-weight: 600; }
@@ -730,46 +810,38 @@ const faqs = [
   }
   .js .in .vis-changes .ch-btn { animation: press 2.8s var(--ease) 1.8s infinite; }
 
-  /* 05 palette */
-  .vis-pal { align-items: center; }
-  .pal {
-    width: 100%;
-    max-width: 440px;
-    border-radius: 12px;
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-    box-shadow: 0 24px 60px -24px #0009;
-    overflow: hidden;
-  }
-  .pal-in {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 15px;
-  }
-  .pal-q { flex: 1; }
+  /* 05 approvals and subagents */
+  .vis-perm { align-items: stretch; }
+  .sp { border-radius: 12px; border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+  .sp-h { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .sp-h :global(svg) { color: var(--text-dim); }
+  .sp-b { margin-left: auto; font-size: 11px; padding: 3px 8px; border-radius: 999px; background: color-mix(in srgb, var(--anthropic) 14%, transparent); color: var(--anthropic); }
+  .sp-r { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12.5px; }
+  .sp-r + .sp-r { border-top: 1px solid var(--border); }
+  .sp-r :global(svg) { color: var(--green); }
+  .sp-r code { color: var(--text-muted); font-size: 12px; }
   @media (prefers-reduced-motion: no-preference) {
-    .js .vis-pal .pal-q { display: inline-block; flex: none; width: 0; overflow: hidden; white-space: nowrap; border-right: 2px solid var(--accent); }
-    .js .in .vis-pal .pal-q { animation: typing 1.2s steps(8) 400ms forwards; }
+    .js .vis-perm .sp-r { opacity: 0; transition: opacity 400ms var(--ease); transition-delay: calc(600ms + var(--i) * 350ms); }
+    .js .in .vis-perm .sp-r { opacity: 1; }
   }
-  .js .vis-pal .pal-k { margin-left: auto; }
-  @keyframes typing { to { width: 8.2ch; } }
-  .pal-k { font-size: 11px; color: var(--text-dim); padding: 3px 6px; border: 1px solid var(--border); border-radius: 5px; }
-  .pal-g { padding: 10px 16px 4px; font: 500 10.5px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
-  .pal-r {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 16px;
-    font-size: 13.5px;
-    color: var(--text-muted);
+
+  .more-feats {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
   }
-  .pal-r :global(svg) { color: var(--text-dim); }
-  .pal-on { background: var(--surface-hover); color: var(--text); box-shadow: inset 2px 0 0 var(--accent); }
-  .pal-m { margin-left: auto; font-size: 12px; color: var(--text-dim); }
-  .pal-r:last-child { padding-bottom: 14px; }
+  .mf {
+    padding: 24px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition-delay: var(--d, 0ms);
+  }
+  .mf-n { color: var(--accent); font-size: 13px; }
+  .mf h3 { margin-top: 10px; font-size: 18px; line-height: 1.25; }
+  .mf p { margin-top: 10px; color: var(--text-muted); font-size: 14.5px; }
+  #adds .chips { justify-content: center; margin-top: 28px; }
 
   /* Safety */
   .safe {
@@ -890,13 +962,14 @@ const faqs = [
   }
 
   @media (max-width: 1000px) {
-    .fams { grid-template-columns: repeat(2, 1fr); }
+    .fams, .more-feats { grid-template-columns: repeat(2, 1fr); }
     .feat, .term-grid, .os, .faq-grid { grid-template-columns: 1fr; gap: 32px; }
     .feat-rev .feat-copy { order: 0; }
   }
   @media (max-width: 640px) {
     .hero { padding: 48px 0 96px; }
-    .fams, .safe { grid-template-columns: 1fr; }
+    .fams, .safe, .more-feats { grid-template-columns: 1fr; }
+    .fchips { grid-template-columns: repeat(2, 1fr); }
     .feat-vis { padding: 18px; min-height: 0; }
     .os { padding: 28px 20px; }
     .slice { grid-template-columns: 1fr 20px 64px; }
