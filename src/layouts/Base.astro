@@ -1,0 +1,246 @@
+---
+import '../styles/global.css';
+import Kite from '../components/Kite.astro';
+import Icon from '../components/Icon.astro';
+import Email from '../components/Email.astro';
+import { REPO, BLOB, VERSION_FALLBACK, ONE_LINER } from '../data/site.js';
+
+interface Props { title: string; description?: string; path?: string }
+const { title, description = ONE_LINER, path = '/' } = Astro.props;
+const canonical = new URL(path, 'https://crewkite.dev').href;
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'CrewKite',
+  description: ONE_LINER,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'macOS 14 or later on Apple silicon; Linux x64 and arm64 (preview)',
+  softwareVersion: VERSION_FALLBACK,
+  license: 'https://www.apache.org/licenses/LICENSE-2.0',
+  url: 'https://crewkite.dev',
+  downloadUrl: 'https://crewkite.dev/download',
+  codeRepository: REPO,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  author: { '@type': 'Person', name: 'Raymond J. Kraft' },
+  publisher: { '@type': 'Organization', name: 'Roots No Limits LLC' },
+};
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="theme-color" content="#151718" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f7f8f5" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CrewKite" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content="https://crewkite.dev/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://crewkite.dev/og.png" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+  <script is:inline>(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')d.dataset.theme=t;}catch(e){}})();</script>
+  <slot name="head" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top" id="top">
+    <div class="wrap top-row">
+      <a class="brand" href="/" aria-label="CrewKite home">
+        <Kite size={22} />
+        <span>CrewKite</span>
+      </a>
+      <nav aria-label="Main">
+        <a href="/download" class="nav-link">Download</a>
+        <a href="/safety" class="nav-link">Safety</a>
+        <a href={REPO} class="nav-link nav-gh" aria-label="CrewKite on GitHub">
+          <Icon name="code" size={16} />
+          <span>GitHub</span>
+          <span class="count" data-stars hidden aria-label="stars"></span>
+        </a>
+        <button class="theme" type="button" aria-label="Switch theme" title="Switch theme">
+          <span class="t-sun"><Icon name="sun" size={17} /></span>
+          <span class="t-moon"><Icon name="moon" size={17} /></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="/" aria-label="CrewKite home"><Kite size={22} /><span>CrewKite</span></a>
+        <p class="foot-note">CrewKite by Roots No Limits LLC, created by Raymond J. Kraft, <Email /></p>
+        <p class="foot-note">This site sets no cookies and counts page views without identifying you.</p>
+      </div>
+      <div>
+        <h2 class="foot-h">Product</h2>
+        <ul>
+          <li><a href="/download">Download</a></li>
+          <li><a href="/safety">Safety</a></li>
+          <li><a href="/#faq">FAQ</a></li>
+          <li><a href="/changelog">Changelog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="foot-h">Project</h2>
+        <ul>
+          <li><a href={REPO}>Source on GitHub</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href={`${BLOB}/SECURITY.md`}>Report a security issue</a></li>
+          <li><a href={`${BLOB}/LICENSE`}>Apache License 2.0</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="foot-h">Domains</h2>
+        <ul>
+          <li><a href="https://crewkite.dev">crewkite.dev</a></li>
+          <li><a href="https://crewkite.app">crewkite.app</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+  <script src="/site.js" defer></script>
+</body>
+</html>
+
+<style is:global>
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: saturate(150%) blur(14px);
+    -webkit-backdrop-filter: saturate(150%) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 200ms var(--ease);
+  }
+  .top.scrolled {
+    border-bottom-color: var(--border);
+  }
+  .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 650;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .top nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 150ms, background 150ms;
+  }
+  .nav-link:hover,
+  .nav-link[aria-current='page'] {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .theme {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .theme:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .t-sun { display: none; }
+  :root[data-theme='light'] .t-sun { display: block; }
+  :root[data-theme='light'] .t-moon { display: none; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) .t-sun { display: block; }
+    :root:not([data-theme='dark']) .t-moon { display: none; }
+  }
+  @media (max-width: 560px) {
+    .nav-gh span:not(.count) { display: none; }
+    .nav-link { padding: 0 9px; }
+    .top nav .count { display: none; }
+  }
+
+  .foot {
+    border-top: 1px solid var(--border);
+    padding: 56px 0 64px;
+    margin-top: 32px;
+    font-size: 14px;
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  .foot-note {
+    margin-top: 12px;
+    color: var(--text-muted);
+    max-width: 40ch;
+  }
+  .foot-h {
+    font-size: 12px;
+    font-family: var(--mono);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .foot ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .foot ul a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .foot ul a:hover {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  @media (max-width: 720px) {
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .foot-brand { grid-column: 1 / -1; }
+  }
+</style>

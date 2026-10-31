@@ -1,0 +1,24 @@
+---
+// The default is the macOS build. The Worker rewrites this button from the request's user agent:
+// Linux gets the preview, Windows gets a plain line with no button. No client script is involved.
+import Icon from './Icon.astro';
+import { ASSETS, url } from '../data/site.js';
+interface Props { variant?: 'hero' | 'final' }
+const { variant = 'hero' } = Astro.props;
+---
+<a class="btn btn-primary dl" data-dl={variant} href={url(ASSETS.mac)}>
+  <Icon name="download" /><span data-dl-label>Download for macOS</span>
+</a>
+<style>
+  .dl { min-width: 220px; }
+  :global(.dl-note) {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 18px;
+    border-radius: var(--radius);
+    border: 1px dashed var(--border-strong);
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+</style>

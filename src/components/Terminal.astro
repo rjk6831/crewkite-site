@@ -1,0 +1,114 @@
+---
+// A replay of the recorded CLI session in docs/images/cli-session.txt. Boxes are drawn with CSS so
+// they line up in any font. Without JavaScript or with reduced motion every line shows at once.
+import Kite from './Kite.astro';
+---
+<figure class="term" data-term aria-label="Replay of a recorded CrewKite CLI session: a message, a plan and an edit permission prompt">
+  <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>crewkite</span></div>
+  <div class="term-body" aria-hidden="true">
+    <div class="tl" data-t="0"><span class="dim">$</span> crewkite</div>
+    <div class="tl brand" data-t="1"><Kite size={34} tail /><span class="word">CrewKite</span></div>
+    <div class="tl box" data-t="2"><span class="typed" data-type>Clamp the discount at the subtotal</span></div>
+    <div class="tl status" data-t="2">
+      <span><b class="o">O</b> connect</span>
+      <span><b class="a">A</b> <i class="bar"><i></i></i> 30% left</span>
+      <span><b class="l">L</b> set up</span>
+    </div>
+    <div class="tl gap" data-t="3"><span class="dim">›</span> Clamp the discount at the subtotal</div>
+    <div class="tl" data-t="3"><b class="a">A</b> fixture-model <span class="acc">◆</span>&nbsp;&nbsp;<span class="dim">Waiting for you</span></div>
+    <div class="tl in1" data-t="3"><span class="ok">✓</span> Read 2 files, searched once</div>
+    <div class="tl in1" data-t="4">The discount can push the total below zero. I will clamp it:</div>
+    <div class="tl in2" data-t="4">• keep subtotalMinor as is</div>
+    <div class="tl in2" data-t="4">• clamp discountMinor at the subtotal</div>
+    <div class="tl code in1" data-t="4">return subtotal - Math.min(discount, subtotal);</div>
+    <div class="tl perm in1" data-t="5">
+      <div>Edit net.mjs?</div>
+      <div><span class="acc">[1] Allow once</span>&nbsp;&nbsp;&nbsp;[2] Deny</div>
+      <div class="dim">Thread policy: Ask each time.</div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .term {
+    margin: 0;
+    border-radius: 14px;
+    border: 1px solid #2b3033;
+    background: #0d0f10;
+    color: #d6dbd9;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    --tbg: #0d0f10;
+  }
+  .term :global(.kite) { --bg: #0d0f10; }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 38px;
+    padding: 0 14px;
+    border-bottom: 1px solid #22272a;
+    font: 500 12px/1 var(--mono);
+    color: #8f9996;
+  }
+  .dots { display: flex; gap: 7px; }
+  .dots i { width: 11px; height: 11px; border-radius: 50%; background: #2f3538; }
+  .term-body {
+    padding: 18px 20px 22px;
+    font: 400 13px/1.7 var(--mono);
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tl { transition: opacity 300ms var(--ease); }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .tl:not(.on) { opacity: 0; }
+  }
+  .box :global(.w) { transition: opacity 120ms; }
+  .box :global(.w.off) { opacity: 0; }
+  .brand { display: flex; align-items: center; gap: 14px; margin: 10px 0 14px; }
+  .word { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; color: #e5e8e7; }
+  .box {
+    border: 1px solid #3a4145;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #e5e8e7;
+  }
+  .status { display: flex; flex-wrap: wrap; gap: 4px 20px; color: #8f9996; font-size: 12px; margin-bottom: 10px; }
+  .bar { display: inline-block; width: 64px; height: 8px; border-radius: 2px; background: #2b3033; vertical-align: 0; overflow: hidden; }
+  .bar i { display: block; width: 30%; height: 100%; background: #e1be83; }
+  .gap { margin-top: 4px; }
+  .in1 { padding-left: 16px; }
+  .in2 { padding-left: 28px; }
+  .code {
+    margin: 6px 0 6px 16px;
+    padding: 6px 12px;
+    border: 1px solid #2b3033;
+    border-radius: 8px;
+    color: #9ed3ad;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .perm {
+    margin: 6px 0 0 16px;
+    padding: 8px 12px;
+    border: 3px double #e1be83;
+    border-radius: 4px;
+    color: #e1be83;
+  }
+  .o { color: #5fcfc4; font-weight: 400; }
+  .a { color: #f0917c; font-weight: 400; }
+  .l { color: #e8c56e; font-weight: 400; }
+  .acc { color: #d0e7a1; }
+  .ok { color: #9ed3ad; }
+  .dim { color: #8f9996; }
+  @media (max-width: 480px) {
+    .term-body { font-size: 11.5px; padding: 14px 12px; min-height: 0; }
+    .in1 { padding-left: 8px; }
+    .in2 { padding-left: 16px; }
+    .code, .perm { margin-left: 8px; }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Kite from '../components/Kite.astro';
+---
+<Base title="Page not found: CrewKite" path="/404">
+  <section class="nf">
+    <div class="wrap">
+      <Kite size={64} tail />
+      <h1>This page is not here.</h1>
+      <p class="lede">The link may be old. The home page and the download page are one click away.</p>
+      <p class="nf-a"><a class="btn btn-primary" href="/">Home</a><a class="btn btn-ghost" href="/download">Download</a></p>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { padding: 120px 0; text-align: center; }
+  .nf .wrap { display: flex; flex-direction: column; align-items: center; }
+  .nf h1 { margin-top: 28px; font-size: 40px; }
+  .nf .lede { margin-left: auto; margin-right: auto; }
+  .nf-a { margin-top: 28px; display: flex; gap: 12px; }
+</style>

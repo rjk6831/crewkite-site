@@ -1,0 +1,23 @@
+---
+// The address renders as text with a copy button and no mailto link, so bulk scrapers that
+// harvest mailto hrefs find nothing. The user part and domain sit in separate spans.
+import Icon from './Icon.astro';
+---
+<span class="email"><span>ray</span><span aria-hidden="true">&#64;</span><span class="sr">at</span><span>rootsnolimits.com</span><button class="copy email-copy" type="button" data-copy-email aria-label="Copy email address" hidden><Icon name="copy" size={13} /></button></span>
+
+<style>
+  .email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    font-family: var(--mono);
+    font-size: 0.92em;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .email-copy {
+    margin-left: 8px;
+    height: 24px;
+    padding: 0 7px;
+  }
+</style>
