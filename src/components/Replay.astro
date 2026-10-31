@@ -288,8 +288,6 @@ const gauges = [
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    mask-image: linear-gradient(to bottom, transparent 0, #000 70px);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 70px);
   }
   .thread-inner {
     display: flex;
@@ -311,7 +309,7 @@ const gauges = [
      replay never moves layout. The thread scrolls with a transform. */
   @media (prefers-reduced-motion: no-preference) {
     :global(.js) .thread { justify-content: flex-start; }
-    :global(.js) .thread-inner { padding-top: 64px; transition: transform 600ms var(--ease); will-change: transform; }
+    :global(.js) .thread-inner { padding-top: 24px; transition: transform 600ms var(--ease); will-change: transform; }
     :global(.js) .it:not(.on),
     :global(.js) .acc-done:not(.on),
     :global(.js) .sub:not(.on) { opacity: 0; filter: blur(2px); }
@@ -444,22 +442,18 @@ const gauges = [
   [data-type] :global(.w.off) { opacity: 0; }
 
   .caption {
-    position: absolute;
-    left: 50%;
-    bottom: -18px;
-    transform: translateX(-50%);
-    width: min(500px, calc(100% - 24px));
+    display: block;
+    width: min(560px, calc(100% - 24px));
+    min-height: 38px;
+    margin: 16px auto 0;
     text-align: center;
     padding: 8px 16px;
     border-radius: 999px;
     background: var(--surface-raised);
     border: 1px solid var(--border-strong);
-    box-shadow: 0 10px 30px -12px #0008;
     font-size: 13.5px;
     font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: var(--text);
   }
   .caption span { display: inline-block; transition: opacity 250ms, transform 250ms; }
   .caption span.swap { opacity: 0; transform: translateY(4px); }
@@ -491,14 +485,7 @@ const gauges = [
     .win-title { display: none; }
     .win-tag { margin-left: auto; }
     .strip { gap: 6px; padding: 8px 10px; font-size: 10.5px; }
-    .caption {
-      position: static;
-      transform: none;
-      margin: 12px auto 0;
-      font-size: 12.5px;
-      white-space: normal;
-      box-shadow: none;
-    }
+    .caption { font-size: 12.5px; border-radius: 14px; min-height: 54px; display: grid; place-items: center; }
     .perm-actions .pbtn:nth-child(2) { display: none; }
   }
 </style>

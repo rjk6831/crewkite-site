@@ -79,7 +79,7 @@ const faqs = [
         <Icon name="arrow" size={14} />
       </a>
       <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span>, <span class="n-g">Google</span> and <span class="n-l">a local model</span>.</h1>
-      <p class="hero-sub reveal">{ONE_LINER}</p>
+      <p class="hero-sub reveal">Run the coding agents you already pay for as threads on your own computer. When one hits its limit, the thread moves to the next with every message and edited file.</p>
       <ul class="fchips reveal" aria-label="Provider families">
         <li class="fchip fchip-o"><span class="fam fam-o">O</span>OpenAI</li>
         <li class="fchip fchip-a"><span class="fam fam-a">A</span>Anthropic</li>
@@ -124,7 +124,7 @@ const faqs = [
             <p class="fcard-plan">{f.plan}</p>
             {f.note && (
               <p class="fcard-note">
-                Google needs a terms acknowledgement in the app before it connects. <a href="#google-terms">Read why</a>
+                <a href="#google-terms">Needs a terms acknowledgement in the app.</a>
               </p>
             )}
           </article>
@@ -139,15 +139,15 @@ const faqs = [
     <div class="wrap">
       <div class="section-head reveal">
         <span class="eyebrow">Why CrewKite</span>
-        <h2 id="adds-h" class="h2">What CrewKite adds to the clients you have</h2>
-        <p class="lede">CrewKite runs each provider's own signed-in client, so your sign-in, your plan and the provider's terms stay yours. This is what it adds.</p>
+        <h2 id="adds-h" class="h2">What CrewKite does for you</h2>
+        <p class="lede">Each provider's own app does the work, on your sign-in and your plan. CrewKite runs them in one thread, tracks what each plan has left, and checks every change before it reaches your repository.</p>
       </div>
 
       <div class="feat reveal">
         <div class="feat-copy">
           <span class="feat-n mono">01</span>
           <h3>Keep working when a limit hits</h3>
-          <p>A thread moves to another provider mid task with its messages and edited files. Switch by hand, or pick a handoff rule: most allowance left, the soonest reset, even spend or Local first.</p>
+          <p>When OpenAI stops at its five-hour limit, the thread moves to Anthropic with every message and edited file, and the next reply picks up where the last one stopped. Pick a rule once, such as most allowance left or Local first, and CrewKite does the switch for you.</p>
         </div>
         <div class="feat-vis vis-hand" aria-hidden="true">
           <div class="ht ht-o"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI<span class="ht-lim">5 h limit reached</span></div><b></b><b></b></div>
@@ -160,8 +160,8 @@ const faqs = [
       <div class="feat feat-rev reveal">
         <div class="feat-copy">
           <span class="feat-n mono">02</span>
-          <h3>See every allowance in one place</h3>
-          <p>The rail shows the five-hour and weekly windows each provider reports, when each one resets and how long ago CrewKite read it. Local shows no limit.</p>
+          <h3>See what every plan has left</h3>
+          <p>Five-hour and weekly windows for all four providers sit in one rail, each with the time to its reset. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
         </div>
         <div class="feat-vis vis-allow" aria-hidden="true">
           <div class="al" style="--c:var(--openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 1 h 40 min</span></div><div class="al-r"><i style="--v:0"><em></em></i><span>5 h 0%</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>week 80%</span></div></div>
@@ -174,24 +174,8 @@ const faqs = [
       <div class="feat reveal">
         <div class="feat-copy">
           <span class="feat-n mono">03</span>
-          <h3>Split large work across providers</h3>
-          <p>An orchestrator proposes a plan of up to 8 slices. The controller assigns each slice by allowance and difficulty, and a reviewer, a fixer and a challenger check the result.</p>
-        </div>
-        <div class="feat-vis vis-plan" aria-hidden="true">
-          <div class="plan-h"><Kite size={14} /><span>Plan</span><span class="mono plan-c">4 slices</span></div>
-          <div class="slice" style="--i:0"><span class="s-t">Map the rounding paths</span><span class="s-d">Easy</span><span class="fam fam-l">L</span><span class="s-s"><em>Done</em></span></div>
-          <div class="slice" style="--i:1"><span class="s-t">Clamp netMinor at zero</span><span class="s-d">Medium</span><span class="fam fam-a">A</span><span class="s-s"><em>Done</em></span></div>
-          <div class="slice" style="--i:2"><span class="s-t">Fix the tax rounding</span><span class="s-d">Hard</span><span class="fam fam-o">O</span><span class="s-s"><em>Done</em></span></div>
-          <div class="slice" style="--i:3"><span class="s-t">Add tests for the edges</span><span class="s-d">Easy</span><span class="fam fam-g">G</span><span class="s-s"><em>Done</em></span></div>
-          <div class="plan-f mono">Crew finished: 4 slices, 4 reviews, 1 fix.</div>
-        </div>
-      </div>
-
-      <div class="feat feat-rev reveal">
-        <div class="feat-copy">
-          <span class="feat-n mono">04</span>
-          <h3>Review before anything lands</h3>
-          <p>Each thread works in its own copy of the repository. Read the diff, accept or discard each hunk, then Accept makes a new local branch. Your checkout stays as it was.</p>
+          <h3>Nothing lands until you accept it</h3>
+          <p>Every thread works in its own copy of your repository. Read the diff, keep or drop each hunk, then accept to a new local branch. Your checkout stays exactly as you left it.</p>
         </div>
         <div class="feat-vis vis-changes" aria-hidden="true">
           <div class="ch-h"><span>Changes</span><span class="mono">3 files</span></div>
@@ -202,11 +186,11 @@ const faqs = [
         </div>
       </div>
 
-      <div class="feat reveal">
+      <div class="feat feat-rev reveal">
         <div class="feat-copy">
-          <span class="feat-n mono">05</span>
-          <h3>Approve what runs</h3>
-          <p>Commands, edits and tool calls ask first unless your policy allows them. Prompts and model output cannot grant permissions. Subagents a provider starts show under the step that started them.</p>
+          <span class="feat-n mono">04</span>
+          <h3>You approve what runs</h3>
+          <p>Commands, edits and tool calls ask first unless you allow them. When a provider starts subagents, each one shows live under the step that started it, so nothing runs out of sight.</p>
         </div>
         <div class="feat-vis vis-perm" aria-hidden="true">
           <div class="pc">
@@ -223,26 +207,38 @@ const faqs = [
         </div>
       </div>
 
+      <div class="feat reveal">
+        <div class="feat-copy">
+          <span class="feat-n mono">05</span>
+          <h3>Split big jobs across providers</h3>
+          <p>An orchestrator breaks a large request into up to 8 slices, and each slice goes to the provider with room for it. A second model reviews the work before you see it.</p>
+        </div>
+        <div class="feat-vis vis-plan" aria-hidden="true">
+          <div class="plan-h"><Kite size={14} /><span>Plan</span><span class="mono plan-c">4 slices</span></div>
+          <div class="slice" style="--i:0"><span class="s-t">Map the rounding paths</span><span class="s-d">Easy</span><span class="fam fam-l">L</span><span class="s-s"><em>Done</em></span></div>
+          <div class="slice" style="--i:1"><span class="s-t">Clamp netMinor at zero</span><span class="s-d">Medium</span><span class="fam fam-a">A</span><span class="s-s"><em>Done</em></span></div>
+          <div class="slice" style="--i:2"><span class="s-t">Fix the tax rounding</span><span class="s-d">Hard</span><span class="fam fam-o">O</span><span class="s-s"><em>Done</em></span></div>
+          <div class="slice" style="--i:3"><span class="s-t">Add tests for the edges</span><span class="s-d">Easy</span><span class="fam fam-g">G</span><span class="s-s"><em>Done</em></span></div>
+          <div class="plan-f mono">Crew finished: 4 slices, 4 reviews, 1 fix.</div>
+        </div>
+      </div>
+
       <div class="more-feats">
         <article class="mf reveal">
-          <span class="mf-n mono">06</span>
           <h3>Use the plans you already pay for</h3>
-          <p>CrewKite runs each provider's own signed-in client, sets no API key and adds no plan of its own. Model and effort lists come live from each client, so a new model shows up the day the provider serves it.</p>
+          <p>CrewKite drives each provider's own signed-in app. No API keys, no extra subscription, no per-token bill. New models show up the day your provider serves them.</p>
         </article>
         <article class="mf reveal" style="--d:70ms">
-          <span class="mf-n mono">07</span>
-          <h3>Run a local model beside the cloud ones</h3>
-          <p>An LM Studio model takes the easy slices that fit its context, at no cost beyond your hardware.</p>
+          <h3>Bring a local model</h3>
+          <p>Connect LM Studio and it takes the small slices that fit, free, on your own hardware.</p>
         </article>
         <article class="mf reveal" style="--d:140ms">
-          <span class="mf-n mono">08</span>
-          <h3>Work on large repositories</h3>
-          <p>A thread's copy has no file count cap and checks free disk space before it starts.</p>
+          <h3>Built for big repositories</h3>
+          <p>No file count cap. CrewKite checks free disk space before it copies, and history search covers every thread.</p>
         </article>
         <article class="mf reveal" style="--d:210ms">
-          <span class="mf-n mono">09</span>
-          <h3>Keep your work on your computer</h3>
-          <p>CrewKite has no account, sends no telemetry and hosts nothing. It is Apache 2.0.</p>
+          <h3>Your work stays on your computer</h3>
+          <p>No account, no telemetry, nothing hosted. Apache 2.0, so you can read every line.</p>
         </article>
       </div>
       <ul class="chips reveal" aria-label="Also in this version">
@@ -438,7 +434,8 @@ const faqs = [
     font-weight: 550;
     font-size: 15px;
     overflow: hidden;
-    transition: border-color 200ms, transform 200ms var(--ease);
+    cursor: default;
+    user-select: none;
   }
   .fchip::after {
     content: '';
@@ -450,8 +447,7 @@ const faqs = [
     opacity: 0.8;
     transition: transform 300ms var(--ease);
   }
-  .fchip:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); transform: translateY(-1px); }
-  .fchip:hover::after { transform: scaleX(1); }
+
   .fchip .fam { width: 22px; height: 22px; font-size: 11px; border-radius: 6px; }
   .fchip-o { --c: var(--openai-fill); }
   .fchip-a { --c: var(--anthropic-fill); }
@@ -572,15 +568,22 @@ const faqs = [
   }
 
   /* Features */
+  /* Each benefit is one text-and-demo pair. Named areas keep it at two cells at every width. */
   .feat {
     display: grid;
-    grid-template-columns: 1fr 1.15fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-areas: 'copy vis';
     gap: 64px;
     align-items: center;
     padding: 40px 0;
   }
+  .feat-rev {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas: 'vis copy';
+  }
+  .feat-copy { grid-area: copy; }
+  .feat-vis { grid-area: vis; }
   .feat + .feat { border-top: 1px solid var(--border); }
-  .feat-rev .feat-copy { order: 2; }
   .feat-n { color: var(--accent); font-size: 13px; }
   .feat h3 { margin-top: 10px; font-size: clamp(22px, 2.6vw, 30px); }
   .feat p { margin-top: 14px; color: var(--text-muted); max-width: 52ch; }
@@ -634,7 +637,7 @@ const faqs = [
   .ht-lim { margin-left: auto; font-size: 11.5px; color: var(--red); }
   .ht-carry { margin-left: auto; display: flex; gap: 6px; }
   .ht-carry span { font-size: 11px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-muted); }
-  .ht-o { opacity: 0.6; }
+  .ht-o b { background: var(--border); }
   .ht-a { border-color: color-mix(in srgb, var(--anthropic) 45%, var(--border)); }
   .hand-line {
     display: flex;
@@ -963,8 +966,9 @@ const faqs = [
 
   @media (max-width: 1000px) {
     .fams, .more-feats { grid-template-columns: repeat(2, 1fr); }
-    .feat, .term-grid, .os, .faq-grid { grid-template-columns: 1fr; gap: 32px; }
-    .feat-rev .feat-copy { order: 0; }
+    .term-grid, .os, .faq-grid { grid-template-columns: 1fr; gap: 32px; }
+    .feat,
+    .feat-rev { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'copy' 'vis'; gap: 24px; }
   }
   @media (max-width: 640px) {
     .hero { padding: 48px 0 96px; }
