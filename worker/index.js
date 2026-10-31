@@ -59,11 +59,11 @@ export default {
     }
 
     if (path === '/api/latest' || path === '/api/release') {
-      const rel = await getRelease(ctx);
+      const rel = await getRelease(ctx, env);
       return json(rel);
     }
     if (path === '/api/stars') {
-      const stars = await getStars(ctx);
+      const stars = await getStars(ctx, env);
       return json({ stars });
     }
     if (path === '/latest') {
@@ -72,7 +72,7 @@ export default {
 
     const res = await env.ASSETS.fetch(request);
     const type = res.headers.get('content-type') || '';
-    const out = type.includes('text/html') ? await rewrite(res, request, ctx) : new Response(res.body, res);
+    const out = type.includes('text/html') ? await rewrite(res, request, ctx, env) : new Response(res.body, res);
     for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
     if (/\.(woff2|webp|png|svg)$/.test(path)) out.headers.set('Cache-Control', 'public, max-age=2592000');
     else if (path.endsWith('.js')) out.headers.set('Cache-Control', 'public, max-age=3600');
@@ -126,24 +126,56 @@ async function cached(key, ctx, load) {
   return value;
 }
 
-const GH = { 'user-agent': 'crewkite.dev', accept: 'application/vnd.github+json' };
+// A read-only token is optional. Without one the API allows 60 calls an hour per egress IP, and
+// Cloudflare egress IPs are shared, so the release lookup also has a path that skips the API.
+const gh = (env) => ({
+  'user-agent': 'crewkite.dev',
+  accept: 'application/vnd.github+json',
+  ...(env.GITHUB_TOKEN ? { authorization: `Bearer ${env.GITHUB_TOKEN}` } : {}),
+});
 
-async function getRelease(ctx) {
-  const rel = await cached('release-v1', ctx, async () => {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: GH });
-    if (!r.ok) return null;
+async function parseSums(res) {
+  const sums = {};
+  if (!res.ok) return sums;
+  for (const line of (await res.text()).split('\n')) {
+    const m = line.trim().match(/^([0-9a-f]{64})\s+\*?(.+)$/i);
+    if (m) sums[m[2].trim()] = m[1].toLowerCase();
+  }
+  return sums;
+}
+
+// Without the API: the tag comes from the releases/latest redirect, checksums from SHA256SUMS and
+// sizes from a HEAD on each listed file. No release date on this path.
+async function releaseWithoutApi() {
+  const head = await fetch(`${REPO_URL}/releases/latest`, { redirect: 'manual', headers: { 'user-agent': 'crewkite.dev' } });
+  const loc = head.headers.get('location') || '';
+  const tag = loc.match(/\/releases\/tag\/([^/?#]+)/)?.[1];
+  if (!tag) return null;
+  const sums = await parseSums(await fetch(`${DL}/SHA256SUMS`, { headers: { 'user-agent': 'crewkite.dev' } }));
+  const assets = await Promise.all(
+    Object.keys(sums).map(async (name) => {
+      const h = await fetch(`${DL}/${name}`, { method: 'HEAD', headers: { 'user-agent': 'crewkite.dev' } });
+      const size = Number(h.headers.get('content-length')) || null;
+      return { name, size, sha256: sums[name], url: `${DL}/${name}` };
+    }),
+  );
+  return {
+    version: decodeURIComponent(tag).replace(/^v/, ''),
+    date: null,
+    notesUrl: `${REPO_URL}/releases/tag/${tag}`,
+    notarized: false,
+    assets,
+  };
+}
+
+async function getRelease(ctx, env) {
+  const rel = await cached('release-v2', ctx, async () => {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: gh(env) });
+    if (r.status === 404) return null;
+    if (!r.ok) return releaseWithoutApi();
     const data = await r.json();
-    const sums = {};
     const sumAsset = data.assets?.find((a) => a.name === 'SHA256SUMS');
-    if (sumAsset) {
-      const t = await fetch(sumAsset.browser_download_url, { headers: { 'user-agent': 'crewkite.dev' } });
-      if (t.ok) {
-        for (const line of (await t.text()).split('\n')) {
-          const m = line.trim().match(/^([0-9a-f]{64})\s+\*?(.+)$/i);
-          if (m) sums[m[2].trim()] = m[1].toLowerCase();
-        }
-      }
-    }
+    const sums = sumAsset ? await parseSums(await fetch(sumAsset.browser_download_url, { headers: { 'user-agent': 'crewkite.dev' } })) : {};
     let notarized = false;
     const receipt = data.assets?.find((a) => a.name === 'release.json');
     if (receipt) {
@@ -166,9 +198,9 @@ async function getRelease(ctx) {
   return rel || { version: FALLBACK_VERSION, date: null, notesUrl: `${REPO_URL}/releases`, notarized: false, assets: [], fallback: true };
 }
 
-async function getStars(ctx) {
+async function getStars(ctx, env) {
   const v = await cached('stars-v1', ctx, async () => {
-    const r = await fetch(`https://api.github.com/repos/${REPO}`, { headers: GH });
+    const r = await fetch(`https://api.github.com/repos/${REPO}`, { headers: gh(env) });
     if (!r.ok) return null;
     const d = await r.json();
     return typeof d.stargazers_count === 'number' ? { n: d.stargazers_count } : null;
@@ -183,8 +215,8 @@ const fmtDate = (iso) =>
 
 // Release facts, star count and the platform button go into the HTML at the edge, so the page
 // shows them on first paint with no client request and no layout shift.
-async function rewrite(res, request, ctx) {
-  const [rel, stars] = await Promise.all([getRelease(ctx), getStars(ctx)]);
+async function rewrite(res, request, ctx, env) {
+  const [rel, stars] = await Promise.all([getRelease(ctx, env), getStars(ctx, env)]);
   const byName = Object.fromEntries(rel.assets.map((a) => [a.name, a]));
   const platform = platformOf(request.headers.get('user-agent') || '');
 

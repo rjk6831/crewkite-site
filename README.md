@@ -15,6 +15,8 @@ The website for [CrewKite](https://github.com/rjk6831/crewkite). It is a static 
   - Pages get the version, release date, file sizes, checksums and star count written in at the edge, so they show on first paint with no request from the browser.
   - Every response carries the security headers. The CSP allows only the inline theme script by hash, which `scripts/postbuild.mjs` computes at build time.
 
+The GitHub API allows 60 unauthenticated calls an hour per IP, and Worker egress IPs are shared. Set a fine-grained, read-only token as the `GITHUB_TOKEN` secret (`npx wrangler secret put GITHUB_TOKEN`) to lift that limit. Without it, the release lookup falls back to the `releases/latest` redirect, the `SHA256SUMS` file and a HEAD request per file, which needs no API call but has no release date, and the star count stays hidden.
+
 Downloads link to fixed asset names under `releases/latest/download/` on GitHub. The site never hosts a binary.
 
 ## Develop
