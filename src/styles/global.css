@@ -49,7 +49,8 @@
   --radius-sm: 6px;
   --max: 1200px;
   --gutter: 24px;
-  --section: 96px;
+  /* Half the gap between two sections: each pads top and bottom, so neighbors sit 72 px apart. */
+  --section: 36px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -381,7 +382,7 @@ section {
 @media (max-width: 720px) {
   :root {
     --gutter: 16px;
-    --section: 64px;
+    --section: 28px;
   }
   .lede {
     font-size: 16px;

@@ -62,10 +62,6 @@ export default {
       const rel = await getRelease(ctx, env);
       return json(rel);
     }
-    if (path === '/api/stars') {
-      const stars = await getStars(ctx, env);
-      return json({ stars });
-    }
     if (path === '/latest') {
       return Response.redirect(latestFor(request.headers.get('user-agent') || ''), 302);
     }
@@ -200,25 +196,14 @@ async function getRelease(ctx, env) {
   return rel || { version: FALLBACK_VERSION, date: null, notesUrl: `${REPO_URL}/releases`, notarized: false, assets: [], fallback: true };
 }
 
-async function getStars(ctx, env) {
-  const v = await cached('stars-v1', ctx, async () => {
-    const r = await fetch(`https://api.github.com/repos/${REPO}`, { headers: gh(env) });
-    if (!r.ok) return null;
-    const d = await r.json();
-    return typeof d.stargazers_count === 'number' ? { n: d.stargazers_count } : null;
-  });
-  return v ? v.n : null;
-}
-
 const fmtSize = (b) => (b >= 1e9 ? `${(b / 1e9).toFixed(1)} GB` : `${Math.round(b / 1e6)} MB`);
-const fmtStars = (n) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n));
 const fmtDate = (iso) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
-// Release facts, star count and the platform button go into the HTML at the edge, so the page
-// shows them on first paint with no client request and no layout shift.
+// Release facts and the platform button go into the HTML at the edge, so the page shows them on
+// first paint with no client request and no layout shift.
 async function rewrite(res, request, ctx, env) {
-  const [rel, stars] = await Promise.all([getRelease(ctx, env), getStars(ctx, env)]);
+  const rel = await getRelease(ctx, env);
   const byName = Object.fromEntries(rel.assets.map((a) => [a.name, a]));
   const platform = platformOf(request.headers.get('user-agent') || '');
 
@@ -254,18 +239,6 @@ async function rewrite(res, request, ctx, env) {
         if (rel.notarized) e.setInnerContent('Developer ID, notarized');
       },
     });
-
-  if (stars != null) {
-    r = r
-      .on('[data-stars]', {
-        element: (e) => {
-          e.removeAttribute('hidden');
-          e.setInnerContent(fmtStars(stars));
-        },
-      })
-      .on('[data-stars-row]', { element: (e) => e.removeAttribute('hidden') })
-      .on('[data-stars-plain]', { element: (e) => e.setInnerContent(stars.toLocaleString('en-US')) });
-  }
 
   if (platform === 'linux' || platform === 'linux-arm') {
     r = r
