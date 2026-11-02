@@ -148,12 +148,12 @@ const faqs = [
         <div class="feat-copy">
           <span class="feat-n mono">01</span>
           <h3>Keep working when a limit hits</h3>
-          <p>When OpenAI stops at its five-hour limit, the thread moves to Anthropic with every message and edited file, and the next reply picks up where the last one stopped. Pick a rule once, such as most allowance left or Local first, and CrewKite does the switch for you.</p>
+          <p>When Anthropic stops at its five-hour limit, the thread moves to OpenAI with every message and edited file, and the next reply picks up where the last one stopped. Pick a rule once, such as most allowance left or Local first, and CrewKite does the switch for you.</p>
         </div>
         <div class="feat-vis vis-hand" aria-hidden="true">
-          <div class="ht ht-o"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI<span class="ht-lim">5 h limit reached</span></div><b></b><b></b></div>
-          <div class="hand-line"><span>Continued on Anthropic from OpenAI. Reason: five-hour limit reached.</span></div>
-          <div class="ht ht-a"><div class="ht-h"><span class="fam fam-a">A</span>Anthropic<span class="ht-carry"><span class="mono">12 messages</span><span class="mono">3 files</span></span></div><b></b><b></b><b></b></div>
+          <div class="ht ht-from"><div class="ht-h"><span class="fam fam-a">A</span>Anthropic · Opus 5.5<span class="ht-lim">5 h limit reached</span></div><b></b><b></b></div>
+          <div class="hand-line"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: five-hour limit reached.</span></div>
+          <div class="ht ht-to"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI · gpt-6.1-sol<span class="ht-carry"><span class="mono">12 messages</span><span class="mono">3 files</span></span></div><b></b><b></b><b></b></div>
           <div class="hand-mode"><span>Handoff mode</span><b>Most allowance left</b></div>
         </div>
       </div>
@@ -162,11 +162,11 @@ const faqs = [
         <div class="feat-copy">
           <span class="feat-n mono">02</span>
           <h3>See what every plan has left</h3>
-          <p>Five-hour and weekly windows for all four providers sit in one rail, each with the time to its reset. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
+          <p>Every provider's allowance sits in one rail: the five-hour and weekly windows where a plan has them, each with the time to its reset. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
         </div>
         <div class="feat-vis vis-allow" aria-hidden="true">
-          <div class="al" style="--c:var(--openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 1 h 40 min</span></div><div class="al-r"><i style="--v:0"><em></em></i><span>5 h 0%</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>week 80%</span></div></div>
-          <div class="al" style="--c:var(--anthropic-fill)"><div class="al-h"><span class="fam fam-a">A</span>Anthropic<span>resets in 2 h</span></div><div class="al-r"><i style="--v:30"><em></em></i><span>30% left</span></div></div>
+          <div class="al" style="--c:var(--openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 2 d</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>80% left</span></div></div>
+          <div class="al" style="--c:var(--anthropic-fill)"><div class="al-h"><span class="fam fam-a">A</span>Anthropic<span>resets in 1 h 40 min</span></div><div class="al-r"><i style="--v:30"><em></em></i><span>5 h 30%</span></div><div class="al-r"><i style="--v:64"><em></em></i><span>week 64%</span></div></div>
           <div class="al" style="--c:var(--google-fill)"><div class="al-h"><span class="fam fam-g">G</span>Google<span>resets in 3 d</span></div><div class="al-r"><i style="--v:85"><em></em></i><span>5 h 85%</span></div><div class="al-r"><i style="--v:65"><em></em></i><span>week 65%</span></div></div>
           <div class="al" style="--c:var(--local-fill)"><div class="al-h"><span class="fam fam-l">L</span>Local<span>on this computer</span></div><div class="al-r al-inf"><i style="--v:100"><em></em></i><b>∞</b><i style="--v:100"><em></em></i><span>No limits</span></div></div>
         </div>
@@ -281,7 +281,7 @@ const faqs = [
       <div class="cs-row reveal">
         <div class="cs-copy">
           <h3>Settings</h3>
-          <p>Settings shows every allowance as a gauge, with each provider's five-hour and weekly windows, model limits such as Fable weekly or Gemini 4 Argon weekly, and the time to each reset. The kite meter beside Send shows how much of the model's context window the next message will use, which is separate from your plan's allowance.</p>
+          <p>Settings shows every allowance as a gauge, with the five-hour and weekly windows where a plan has them, model limits such as Fable weekly or Gemini 4 Argon weekly, and the time to each reset. The kite meter beside Send shows how much of the model's context window the next message will use, which is separate from your plan's allowance.</p>
         </div>
         <div class="shots shots-3">
           <figure class="shot">
@@ -725,8 +725,8 @@ const faqs = [
   .ht-lim { margin-left: auto; font-size: 11.5px; color: var(--red); }
   .ht-carry { margin-left: auto; display: flex; gap: 6px; }
   .ht-carry span { font-size: 11px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-muted); }
-  .ht-o b { background: var(--border); }
-  .ht-a { border-color: color-mix(in srgb, var(--anthropic) 45%, var(--border)); }
+  .ht-from b { background: var(--border); }
+  .ht-to { border-color: color-mix(in srgb, var(--openai) 45%, var(--border)); }
   .hand-line {
     display: flex;
     align-items: center;
@@ -741,14 +741,14 @@ const faqs = [
     flex: 1;
     height: 1px;
     min-width: 12px;
-    background: linear-gradient(90deg, var(--openai), var(--anthropic));
+    background: linear-gradient(90deg, var(--anthropic), var(--openai));
   }
   .hand-mode { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; color: var(--text-dim); }
   .hand-mode b { font-weight: 500; color: var(--text); }
   @media (prefers-reduced-motion: no-preference) {
-    .js .vis-hand .hand-line, .js .vis-hand .ht-a, .js .vis-hand .ht-carry span { opacity: 0; transform: translateY(6px); transition: all 500ms var(--ease); }
+    .js .vis-hand .hand-line, .js .vis-hand .ht-to, .js .vis-hand .ht-carry span { opacity: 0; transform: translateY(6px); transition: all 500ms var(--ease); }
     .js .in .vis-hand .hand-line { opacity: 1; transform: none; transition-delay: 500ms; }
-    .js .in .vis-hand .ht-a { opacity: 1; transform: none; transition-delay: 900ms; }
+    .js .in .vis-hand .ht-to { opacity: 1; transform: none; transition-delay: 900ms; }
     .js .in .vis-hand .ht-carry span { opacity: 1; transform: none; transition-delay: 1300ms; }
     .js .in .vis-hand .ht-carry span + span { transition-delay: 1500ms; }
   }

@@ -299,17 +299,17 @@
       if (subCount) subCount.textContent = '0';
       if (inner) inner.style.transform = 'translateY(0)';
       rp.querySelectorAll('[data-type]').forEach((el) => prep(el).forEach((w) => w.classList.add('off')));
-      setG('o5', 9); setG('ow', 82); setG('a5', 33); setG('g5', 88); setG('gw', 66);
+      setG('ow', 81); setG('a5', 12); setG('aw', 66); setG('g5', 88); setG('gw', 66);
       live(null);
-      if (cur) { cur.textContent = 'O'; cur.className = 'fam fam-o'; }
+      if (cur) { cur.textContent = 'A'; cur.className = 'fam fam-a'; }
       const steps = [
         async () => { await setCap('You ask once.'); show(0); return 1300; },
-        async () => { await setCap('OpenAI plans the change.'); rp.classList.add('running'); live('o'); show(1); await typeIn(1, id); return 500; },
-        async () => { await setCap('OpenAI reaches its five-hour limit.'); await Promise.all([count('o5', 9, 0, 1300, id), count('ow', 82, 80, 1300, id)]); return 400; },
-        async () => { await setCap('The thread moves to Anthropic with its messages and files.'); live('a'); show(3); return 1500; },
-        async () => { await setCap('Anthropic starts subagents. Each one shows under its step.'); show(4); count('a5', 33, 32, 900, id); await spawn(id); return 600; },
-        async () => { await setCap('Anthropic edits a scratch copy of the repository.'); show(5); await typeIn(5, id); return 300; },
-        async () => { show(6); count('a5', 32, 30, 900, id); return 1500; },
+        async () => { await setCap('Anthropic plans the change.'); rp.classList.add('running'); live('a'); show(1); await typeIn(1, id); return 400; },
+        async () => { await setCap('Anthropic starts subagents. Each one shows under its step.'); show(2); count('a5', 12, 6, 1400, id); await spawn(id); return 500; },
+        async () => { await setCap('Anthropic reaches its five-hour limit.'); await Promise.all([count('a5', 6, 0, 1100, id), count('aw', 66, 64, 1100, id)]); return 400; },
+        async () => { await setCap('The thread moves to OpenAI with its messages and files.'); live('o'); show(3); return 1500; },
+        async () => { await setCap('OpenAI edits a scratch copy of the repository.'); show(4); await typeIn(4, id); return 300; },
+        async () => { show(6); count('ow', 81, 80, 900, id); return 1500; },
         async () => { await setCap('Commands wait for your approval.'); show(7); return 1400; },
         async () => { await press(8, id); return 600; },
         async () => { await setCap('Google answers a side question.'); live('g'); show(9); count('g5', 88, 85, 1400, id); count('gw', 66, 65, 1400, id); await typeIn(9, id); return 700; },
