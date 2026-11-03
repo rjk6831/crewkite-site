@@ -7,12 +7,13 @@ import Icon from '../components/Icon.astro';
 import Email from '../components/Email.astro';
 import Download from '../components/Download.astro';
 import Terminal from '../components/Terminal.astro';
-import { REPO, BLOB, ONE_LINER, VERSION_FALLBACK } from '../data/site.js';
+import { REPO, BLOB, ONE_LINER, VERSION_FALLBACK, CREW } from '../data/site.js';
 
 const families = [
   {
     key: 'o', name: 'OpenAI', client: 'Codex, through its app-server client',
     plan: 'As of 31 October 2026, OpenAI says its coding client is included in its Free, Go, Plus, Pro, Business, Edu and Enterprise plans. Usage limits depend on the plan, the model and the task.',
+    aside: 'CrewKite runs this client in its own home with its own sign-in, so nothing it does shows in your own OpenAI app.',
   },
   {
     key: 'a', name: 'Anthropic', client: 'Claude Code, through its stream-json mode',
@@ -56,6 +57,14 @@ const faqs = [
     a: `<p>The Linux preview runs on x64 and arm64 with OpenAI, Anthropic and Local. Google is not on Linux yet. Windows is not supported yet. WSL2 is untested, so I cannot say whether the Linux preview runs there.</p>`,
   },
   {
+    q: 'Can I ask something while a model is working?',
+    a: `<p>Yes. A side question runs beside the builder on the model you pick, such as a local one, and never stops it. The answer shows in the thread under an Ask mark.</p>`,
+  },
+  {
+    q: 'Do I sign in every time?',
+    a: `<p>No. Connect each provider once on this computer in Settings. After that CrewKite reconnects on its own at every launch. The OpenAI client runs in CrewKite's own home with its own sign-in, so nothing it does shows in your own OpenAI app.</p>`,
+  },
+  {
     q: 'How does a handoff work?',
     a: `<p>Pick a model from another provider and send, or let the thread move by itself when a provider reaches its limit. The new provider starts from your messages, the earlier answers, the list of changed files and the patches that still fit, in the same scratch copy. When you return to a provider, it resumes its own session and gets the turns it missed. <a href="${BLOB}/docs/continuity.md">Continuity and recovery</a> has the details.</p>`,
   },
@@ -81,11 +90,16 @@ const faqs = [
       </a>
       <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span>, <span class="n-g">Google</span> and <span class="n-l">a local model</span>.</h1>
       <p class="hero-sub reveal">Run the coding agents you already pay for as threads on your own computer. When one hits its limit, the thread moves to the next with every message and edited file.</p>
-      <ul class="rchips reveal" aria-label="A crew as the app shows it">
-        <li class="rchip rchip-a"><span class="fam fam-a">A</span><span class="r-role">Orchestrator</span><span class="r-seg"><span class="sr">, </span>Anthropic <span class="mono">Opus 5.5</span></span><span class="r-seg"><span class="sr">, </span>Medium</span><span class="r-badge"><span class="sr">, </span>3 subagents</span></li>
-        <li class="rchip rchip-o"><span class="fam fam-o">O</span><span class="r-role">Builder</span><span class="r-seg"><span class="sr">, </span>OpenAI <span class="mono">gpt-6.1-sol</span></span><span class="r-seg"><span class="sr">, </span>High</span></li>
-        <li class="rchip rchip-g"><span class="fam fam-g">G</span><span class="r-role">Ask</span><span class="r-seg"><span class="sr">, </span>Google <span class="mono">gemini-3.8-flash</span></span></li>
-        <li class="rchip rchip-l"><span class="fam fam-l">L</span><span class="r-role">Reviewer</span><span class="r-seg"><span class="sr">, </span>Local <span class="mono">gpt-oss-20b</span></span></li>
+      <ul class="rchips reveal" aria-label="A crew as the app shows it, with subagents on for every role">
+        {CREW.map((c) => (
+          <li class={`rchip rchip-${c.fam}`}>
+            <span class={`fam fam-${c.fam}`}>{c.fam.toUpperCase()}</span>
+            <span class="r-role">{c.role}</span>
+            <span class="r-seg"><span class="sr">, </span>{c.family} <span class="mono">{c.model}</span></span>
+            {c.effort && <span class="r-seg"><span class="sr">, </span>{c.effort}</span>}
+            <span class="r-badge"><span class="sr">, </span>Subagents</span>
+          </li>
+        ))}
       </ul>
       <div class="hero-cta reveal">
         <Download variant="hero" />
@@ -113,7 +127,7 @@ const faqs = [
       <div class="section-head reveal">
         <span class="eyebrow">Providers</span>
         <h2 id="fam-h" class="h2">Run the clients you already sign in to</h2>
-        <p class="lede">CrewKite starts each provider's own client with your sign-in and your plan. Model and effort lists come live from each client, so a new model shows up the day the provider serves it.</p>
+        <p class="lede">CrewKite starts each provider's own client with your sign-in and your plan. Connect each provider once on this computer, and CrewKite reconnects on its own at every later launch. Model and effort lists come live from each client, so a new model shows up the day the provider serves it.</p>
       </div>
       <div class="fams">
         {families.map((f, i) => (
@@ -124,6 +138,7 @@ const faqs = [
             </div>
             <p class="fcard-client">{f.client}</p>
             <p class="fcard-plan">{f.plan}</p>
+            {f.aside && <p class="fcard-plan">{f.aside}</p>}
             {f.note && (
               <p class="fcard-note">
                 <a href="#google-terms">Needs a terms acknowledgement in the app.</a>
@@ -163,7 +178,7 @@ const faqs = [
         <div class="feat-copy">
           <span class="feat-n mono">02</span>
           <h3>See what every plan has left</h3>
-          <p>Every provider's allowance sits in one rail: the five-hour and weekly windows where a plan has them, each with the time to its reset. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
+          <p>Every provider's allowance sits in one rail, each window with the time to its reset. OpenAI shows its weekly window, Anthropic and Google their five-hour and weekly windows, and Local has no limits. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
         </div>
         <div class="feat-vis vis-allow" aria-hidden="true">
           <div class="al" style="--c:var(--family-openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 2 d</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>80% left</span></div></div>
@@ -265,7 +280,13 @@ const faqs = [
       <div class="cs-row reveal">
         <div class="cs-copy">
           <h3>Crews</h3>
-          <p>A crew is a builder, a reviewer, a challenger, a fixer and an orchestrator. Each role runs on any family you have connected, so OpenAI can build a slice while a local model reviews it.</p>
+          <p>A crew is an orchestrator, a builder, a fixer, a reviewer and a challenger, plus the model that answers side questions. Each role runs on any family you have connected, with its own effort level, and each can start subagents. This is the crew in these screens:</p>
+          <ul class="crew-list">
+            {CREW.map((c) => (
+              <li><span class={`fam fam-${c.fam}`} aria-hidden="true">{c.fam.toUpperCase()}</span><b>{c.role}</b><span>{c.family} <span class="mono">{c.model}</span>{c.effort && `, ${c.effort}`}</span></li>
+            ))}
+          </ul>
+          <p class="crew-sub">Subagents on for every role.</p>
         </div>
         <div class="shots shots-2">
           <Shot id="crew-builder" />
@@ -523,9 +544,9 @@ const faqs = [
     margin-left: var(--space-1);
     padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-lg);
-    font: 500 var(--text-xs)/1.2 var(--font-mono);
-    color: var(--family-anthropic);
-    background: color-mix(in srgb, var(--family-anthropic) 10%, transparent);
+    font: var(--weight-medium) var(--text-xs) / 1.2 var(--font-mono);
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 10%, transparent);
     white-space: nowrap;
   }
   .rchip-o { --c: var(--family-openai); }
@@ -929,6 +950,12 @@ const faqs = [
   .cs-row + .cs-row { border-top: 1px solid var(--border); }
   .cs-copy { max-width: 62ch; }
   .cs-copy h3 { font-size: var(--text-h3); }
+  .crew-list { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--text-md); }
+  .crew-list li { display: grid; grid-template-columns: 20px 11ch 1fr; align-items: center; gap: var(--space-3); }
+  .crew-list .fam { width: 20px; height: 20px; font-size: var(--text-2xs); border-radius: var(--radius-sm); }
+  .crew-list b { font-weight: var(--weight-semibold); }
+  .crew-list .mono { font-size: var(--text-sm); }
+  .crew-sub { font-size: var(--text-sm); color: var(--text-dim); }
   .cs-copy p { margin-top: var(--space-3); color: var(--text-muted); }
   .shots { display: grid; gap: var(--space-6); align-items: start; }
   .shots-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }

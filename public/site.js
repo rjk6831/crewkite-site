@@ -314,16 +314,17 @@
       if (cur) { cur.textContent = 'A'; cur.className = 'fam fam-a'; }
       const steps = [
         async () => { await setCap('You ask once.'); show(0); return 1300; },
-        async () => { await setCap('Anthropic plans the change.'); rp.classList.add('running'); live('a'); show(1); await typeIn(1, id); return 400; },
+        async () => { await setCap('The Anthropic orchestrator plans the change.'); rp.classList.add('running'); live('a'); show(1); await typeIn(1, id); return 400; },
         async () => { await setCap('Anthropic starts subagents. Each one shows under its step.'); show(2); count('a5', 12, 6, 1400, id); await spawn(id); return 500; },
         async () => { await setCap('Anthropic reaches its five-hour limit.'); await Promise.all([count('a5', 6, 0, 1100, id), count('aw', 66, 64, 1100, id)]); return 400; },
-        async () => { await setCap('The thread moves to OpenAI with its messages and files.'); live('o'); show(3); return 1500; },
+        async () => { await setCap('The thread moves to the OpenAI builder with its messages and files.'); live('o'); show(3); return 1500; },
         async () => { await setCap('OpenAI edits a scratch copy of the repository.'); show(4); await typeIn(4, id); return 300; },
         async () => { show(6); count('ow', 81, 80, 900, id); return 1500; },
         async () => { await setCap('Commands wait for your approval.'); show(7); return 1400; },
         async () => { await press(8, id); return 600; },
-        async () => { await setCap('Google answers a side question.'); live('g'); show(9); count('g5', 88, 85, 1400, id); count('gw', 66, 65, 1400, id); await typeIn(9, id); return 700; },
-        async () => { await setCap('A local model reviews the work.'); live('l'); show(10); await typeIn(10, id); return 800; },
+        async () => { await setCap('A side question runs on the local model beside the builder.'); live('l'); show(9); await typeIn(9, id); return 700; },
+        async () => { await setCap('The OpenAI reviewer finds a gap.'); live('o'); show(10); await typeIn(10, id); return 600; },
+        async () => { await setCap('The Google fixer closes it.'); live('g'); show(13); count('g5', 88, 85, 1400, id); count('gw', 66, 65, 1400, id); await typeIn(13, id); return 800; },
         async () => { await setCap('Accept makes a new local branch.'); live(null); show(11); return 1300; },
         async () => { await press(12, id); show(12); rp.classList.remove('running'); return 4200; },
       ];

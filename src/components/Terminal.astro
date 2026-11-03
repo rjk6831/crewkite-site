@@ -4,7 +4,7 @@
 // JavaScript or with reduced motion every line shows at once.
 import Kite from './Kite.astro';
 ---
-<figure class="term" data-term aria-label="Illustrative CrewKite CLI session: the model menu, a message on Opus 5.5 and an edit permission prompt">
+<figure class="term" data-term aria-label="Illustrative CrewKite CLI session: the model menu with each crew role marked, a message to the Opus 5.5 orchestrator and an edit permission prompt">
   <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>crewkite</span><span class="term-tag">Illustrative</span></div>
   <div class="term-body" aria-hidden="true">
     <div class="tl" data-t="0"><span class="dim">$</span> crewkite</div>
@@ -18,13 +18,13 @@ import Kite from './Kite.astro';
     <div class="tl box" data-t="2"><span class="typed" data-type>/model</span></div>
     <div class="tl menu" data-t="3">
       <div class="m-h dim">Model for the next message</div>
-      <div class="m-r m-on"><b class="a">A</b><span>Opus 5.5</span><span>Fable 5.1</span><span>Sonnet 5.5</span></div>
-      <div class="m-r"><b class="o">O</b><span>gpt-6.1-sol</span></div>
-      <div class="m-r"><b class="g">G</b><span>gemini-3.8-flash</span></div>
-      <div class="m-r"><b class="l">L</b><span>Flint</span></div>
+      <div class="m-r m-on"><b class="a">A</b><span>Opus 5.5 <em>Orchestrator</em></span><span>Fable 5.1 <em>Challenger</em></span><span>Sonnet 5.5</span></div>
+      <div class="m-r"><b class="o">O</b><span>gpt-6.1-sol <em>Builder</em></span><span>gpt-astra-6 <em>Reviewer</em></span></div>
+      <div class="m-r"><b class="g">G</b><span>gemini-4-argon <em>Fixer</em></span></div>
+      <div class="m-r"><b class="l">L</b><span>gpt-oss-20b <em>Ask</em></span></div>
     </div>
     <div class="tl gap" data-t="4"><span class="dim">›</span> Clamp the discount at the subtotal</div>
-    <div class="tl" data-t="4"><b class="a">A</b> Opus 5.5 <span class="acc">◆</span>&nbsp;&nbsp;<span class="dim">Waiting for you</span></div>
+    <div class="tl" data-t="4"><b class="a">A</b> Opus 5.5 <span class="dim">Orchestrator</span> <span class="acc">◆</span>&nbsp;&nbsp;<span class="dim">Waiting for you</span></div>
     <div class="tl in1" data-t="4"><span class="ok">✓</span> Read 2 files, searched once</div>
     <div class="tl in1" data-t="5">The discount can push the total below zero. I will clamp it.</div>
     <div class="tl code in1" data-t="5">return subtotal - Math.min(discount, subtotal);</div>
@@ -123,6 +123,7 @@ import Kite from './Kite.astro';
   .m-h { font-size: var(--text-xs); margin-bottom: var(--space-0-5); }
   .m-r { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4); padding: 1px var(--space-2); border-radius: var(--radius-sm); }
   .m-r b { width: 1ch; }
+  .m-r em { font-style: normal; color: var(--terminal-dim); }
   .m-on { background: var(--terminal-highlight); }
   .m-on span:first-of-type { color: var(--terminal-accent); }
   .g { color: var(--terminal-google); font-weight: var(--weight-regular); }

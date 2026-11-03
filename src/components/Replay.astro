@@ -12,7 +12,7 @@ const gauges = [
   { fam: 'g', name: 'Google', rows: [{ key: 'g5', label: '5 h', v: 85 }, { key: 'gw', label: 'week', v: 65 }], sub: 'resets in 3 d' },
 ];
 ---
-<figure class="replay" data-replay aria-label="Illustrative replay of one CrewKite thread: Anthropic plans and starts subagents, the thread moves to OpenAI at Anthropic's five-hour limit, OpenAI edits, Google answers a side question, a local model reviews, and Accept makes a branch">
+<figure class="replay" data-replay aria-label="Illustrative replay of one CrewKite thread: the Anthropic orchestrator plans and starts subagents, the thread moves to the OpenAI builder at Anthropic's five-hour limit, a local model answers a side question beside the builder, the OpenAI reviewer finds a gap, the Google fixer closes it, and Accept makes a branch">
   <div class="win">
     <div class="win-bar">
       <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -67,7 +67,7 @@ const gauges = [
           <div class="it user" data-at="0">Add netMinor(subtotalMinor, discountMinor) to net.mjs. It must never return less than zero.</div>
 
           <div class="it turn" data-at="1">
-            <div class="turn-h"><span class="fam fam-a">A</span>Anthropic · Opus 5.5</div>
+            <div class="turn-h"><span class="fam fam-a">A</span>Orchestrator · Anthropic Opus 5.5</div>
             <p data-type>The function is a stub. I will find every caller first, then validate both inputs as safe integers and clamp the result at zero.</p>
           </div>
 
@@ -81,7 +81,7 @@ const gauges = [
           <div class="it divider" data-at="3"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: five-hour limit reached, resets in 1 h 40 min.</span></div>
 
           <div class="it turn" data-at="4">
-            <div class="turn-h"><span class="fam fam-o">O</span>OpenAI · gpt-6.1-sol</div>
+            <div class="turn-h"><span class="fam fam-o">O</span>Builder · OpenAI gpt-6.1-sol</div>
             <p data-type>netMinor is a stub today. I am replacing it with a version that checks both inputs are non-negative safe integers and returns the subtotal minus the discount, never below zero.</p>
           </div>
 
@@ -102,13 +102,18 @@ const gauges = [
           </div>
 
           <div class="it turn ask" data-at="9">
-            <div class="turn-h"><span class="fam fam-g">G</span>Google · ask<span class="ask-b">Ask</span></div>
-            <p data-type>The clamp is right. A test where the discount exceeds the subtotal would pin that edge.</p>
+            <div class="turn-h"><span class="fam fam-l">L</span>Local gpt-oss-20b<span class="ask-b">Ask</span></div>
+            <p data-type>Discounts reach netMinor in minor units from cart.mjs, so both inputs are integers. The builder keeps running.</p>
           </div>
 
           <div class="it turn" data-at="10">
-            <div class="turn-h"><span class="fam fam-l">L</span>Local · review</div>
-            <p data-type>Tests pass in the scratch copy. The clamp holds when the discount equals or exceeds the subtotal. No changes needed.</p>
+            <div class="turn-h"><span class="fam fam-o">O</span>Reviewer · OpenAI gpt-astra-6</div>
+            <p data-type>Tests pass in the scratch copy. One gap: no test where the discount exceeds the subtotal.</p>
+          </div>
+
+          <div class="it turn" data-at="13">
+            <div class="turn-h"><span class="fam fam-g">G</span>Fixer · Google gemini-4-argon</div>
+            <p data-type>Added that test. Six of six pass.</p>
           </div>
 
           <div class="it card accept" data-at="11">
