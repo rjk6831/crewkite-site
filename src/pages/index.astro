@@ -556,7 +556,7 @@ const faqs = [
   @keyframes chip { from { transform: scaleX(0); } }
   .hero-sub {
     margin-top: var(--space-6);
-    max-width: 64ch;
+    max-width: var(--measure);
     font-size: var(--text-lg);
     color: var(--text-muted);
   }
@@ -670,7 +670,7 @@ const faqs = [
     grid-template-areas: 'copy vis';
     gap: var(--space-16);
     align-items: center;
-    padding: var(--space-10) 0;
+    padding: var(--space-block) 0;
   }
   .feat-rev {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
@@ -681,7 +681,7 @@ const faqs = [
   .feat + .feat { border-top: 1px solid var(--border); }
   .feat-n { color: var(--accent); font-size: var(--text-sm); }
   .feat h3 { margin-top: var(--space-3); font-size: var(--text-h3); }
-  .feat p { margin-top: var(--space-4); color: var(--text-muted); max-width: 52ch; }
+  .feat p { margin-top: var(--space-4); color: var(--text-muted); max-width: var(--measure); }
   .chips {
     list-style: none;
     padding: 0;
@@ -945,10 +945,10 @@ const faqs = [
   .cs-row {
     display: grid;
     gap: var(--space-6);
-    padding: var(--space-10) 0;
+    padding: var(--space-block) 0;
   }
   .cs-row + .cs-row { border-top: 1px solid var(--border); }
-  .cs-copy { max-width: 62ch; }
+  .cs-copy { max-width: var(--measure); }
   .cs-copy h3 { font-size: var(--text-h3); }
   .crew-list { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--text-md); }
   .crew-list li { display: grid; grid-template-columns: 20px 11ch 1fr; align-items: center; gap: var(--space-3); }
@@ -1001,7 +1001,6 @@ const faqs = [
   }
   @media (max-width: 767px) {
     .shots-2, .shots-3 { grid-template-columns: minmax(0, 1fr); }
-    .cs-row { padding: var(--space-8) 0; }
     .git-vis { padding: var(--space-4); }
   }
 
@@ -1126,7 +1125,7 @@ const faqs = [
   .faq summary :global(svg) { color: var(--text-dim); transition: transform 220ms var(--ease-out); flex: none; }
   .faq details[open] summary :global(svg) { transform: rotate(45deg); color: var(--accent); }
   .faq summary:hover span { color: var(--accent); }
-  .faq-a { padding: 0 var(--space-1) var(--space-6); color: var(--text-muted); max-width: 68ch; }
+  .faq-a { padding: 0 var(--space-1) var(--space-6); color: var(--text-muted); max-width: var(--measure); }
   .faq-a :global(a) { color: var(--text); text-underline-offset: 3px; }
   .faq details::details-content {
     block-size: 0;

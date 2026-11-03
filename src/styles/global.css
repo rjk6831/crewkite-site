@@ -108,7 +108,10 @@ section {
   position: relative;
 }
 .eyebrow {
-  display: inline-flex;
+  /* A block of its own, so the line box is the label's height and the gap to the heading is the
+     rhythm token alone. */
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: var(--space-2);
   font: 500 var(--text-xs)/1 var(--font-mono);
@@ -125,16 +128,16 @@ section {
 }
 .h2 {
   font-size: var(--text-h2);
-  margin-top: var(--space-4);
+  margin-top: var(--rhythm-eyebrow);
 }
 .lede {
-  margin-top: var(--space-4);
-  max-width: 62ch;
+  margin-top: var(--rhythm-lede);
+  max-width: var(--measure);
   font-size: var(--text-lg);
   color: var(--text-muted);
 }
 .section-head {
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--rhythm-content);
 }
 
 /* Buttons */
@@ -278,10 +281,6 @@ section {
 }
 
 @media (max-width: 767px) {
-  :root {
-    --gutter: 16px;
-    --section: 28px;
-  }
   .lede {
     font-size: var(--text-base);
   }

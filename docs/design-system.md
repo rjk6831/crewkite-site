@@ -58,7 +58,20 @@ Weights are `--weight-light` 300, `--weight-regular` 400, `--weight-medium` 500,
 
 Spacing sits on a 4 px base: `--space-1` 4, `--space-2` 8, `--space-3` 12, `--space-4` 16, `--space-6` 24, `--space-8` 32, `--space-12` 48, `--space-16` 64, `--space-24` 96 and `--space-32` 128 px. Two extra steps have one job each: `--space-0-5` (2 px) for gaps inside small controls, and `--space-10` (40 px) from a section's lede to its content.
 
-Layout tokens build on the scale: `--content-max` (1200 px), `--space-gutter` (24 px, 16 on phones), `--space-section` and `--measure` (68ch for body copy).
+Layout tokens build on the scale: `--content-max` (1200 px), `--space-gutter` (24 px, 16 on phones) and `--measure` (52ch, about 68 characters of Inter, for body copy; body copy runs 60 to 72 characters a line).
+
+Rhythm, as the tokens set it:
+
+| Gap | Desktop | Phone | Token |
+|-----|---------|-------|-------|
+| Section to section | 96 px | 64 px | `--space-section`, half above and half below |
+| Sub-block to sub-block | 64 px | 48 px | `--space-block`, half above and half below |
+| Eyebrow to H2 | 12 px | 12 px | `--rhythm-eyebrow` |
+| H2 to lede | 16 px | 16 px | `--rhythm-lede` |
+| Lede to content | 40 px | 40 px | `--rhythm-content` |
+| Figure to caption | 12 px | 12 px | `--rhythm-caption` |
+
+The header is 72 px tall on desktop and 60 px on phones (`--header-height`), with the wordmark at 32 and 26 px (`--wordmark-height`).
 
 ## Shape, depth, layers and motion
 
@@ -73,10 +86,10 @@ Layout tokens build on the scale: `--content-max` (1200 px), `--space-gutter` (2
 | Component | Where | Notes |
 |-----------|-------|-------|
 | Button | `.btn`, `.btn-primary`, `.btn-ghost`, `.btn-sm` in global.css | 48 px tall, 36 px small. Primary uses the accent. |
-| Nav link | `.nav-link` in Base.astro | Header links and the theme toggle share one hit size. |
+| Nav link | `.nav-link` in Base.astro | 15 px text on a 40 px hit target; the theme toggle is the same size and reports its state with aria-pressed. |
 | Chip | `.rchip` (role chips), `.chips li` (feature chips), `.fam` (family mark) | Labels, never controls. |
 | Card | `.fcard`, `.scard`, `.mf`, `.feat-vis` | Surface, hairline border, `--radius-lg`. |
-| Screenshot frame | `.shot` in index.astro | One frame for every app picture: radius, border, shadow and background from tokens, caption under it. |
+| Screenshot frame | `Shot.astro`, fed by `src/data/media.js` | One frame for every app picture, a dark and a light file at 1x and 2x switched by the theme, and a one-sentence caption. `scripts/check-media.mjs` fails the build on a missing theme, density or caption. |
 | Code block | `.cmd` in global.css | Mono text with a copy button that confirms in place. |
 | Table | `.mtx` in download.astro | Scrolls sideways inside its own box on phones. |
 | Callout | `.fcard-note`, `.limits` | Notes that need a second look, such as Google's terms. |

@@ -118,9 +118,18 @@
 
   /* Layout. */
   --content-max: 1200px;
-  --measure: 68ch;
+  /* Body copy runs 60 to 72 characters a line. ch is the width of a zero, wider than an average
+     Inter letter, so 52ch holds about 68 characters. */
+  --measure: 52ch;
   --space-gutter: var(--space-6);
-  --space-section: var(--space-8);
+  /* Vertical rhythm. Sections sit 96 px apart (64 on phones): each adds half above and half below.
+     Sub-blocks inside a section sit 64 px apart (48 on phones). */
+  --space-section: var(--space-12);
+  --space-block: var(--space-8);
+  --rhythm-eyebrow: var(--space-3);
+  --rhythm-lede: var(--space-4);
+  --rhythm-content: var(--space-10);
+  --rhythm-caption: var(--space-3);
   --header-height: 72px;
   --wordmark-height: 32px;
   --wordmark-height-small: 26px;
@@ -204,6 +213,7 @@
     --header-height: 60px;
     --wordmark-height: 26px;
     --space-gutter: var(--space-4);
-    --space-section: var(--space-6);
+    --space-section: var(--space-8);
+    --space-block: var(--space-6);
   }
 }
