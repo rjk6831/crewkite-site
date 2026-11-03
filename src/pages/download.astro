@@ -137,96 +137,96 @@ const linux = [
 </Base>
 
 <style>
-  .dl-hero { padding: 72px 0 24px; }
-  .dl-h { margin-top: 14px; font-size: clamp(36px, 6vw, 60px); letter-spacing: -0.035em; }
-  .dl-meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--text-dim); }
+  .dl-hero { padding: var(--space-16) 0 var(--space-6); }
+  .dl-h { margin-top: var(--space-4); font-size: var(--text-display); letter-spacing: var(--tracking-display); }
+  .dl-meta { margin-top: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-sm); color: var(--text-dim); }
   .dl-meta a { color: var(--text-muted); }
-  .jump { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .jump { margin-top: var(--space-8); display: flex; flex-wrap: wrap; gap: var(--space-2); }
   .jump a {
-    padding: 7px 12px;
-    border-radius: 8px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border);
     background: var(--surface);
-    font-size: 14px;
+    font-size: var(--text-md);
     text-decoration: none;
     color: var(--text-muted);
   }
   .jump a:hover { color: var(--text); border-color: var(--border-strong); }
-  .plat { padding: var(--section) 0; border-top: 1px solid var(--border); }
+  .plat { padding: var(--space-section) 0; border-top: 1px solid var(--border); }
   .plat:target, .plat:has(:target) { background: linear-gradient(var(--accent-soft), transparent 60%); }
-  .plat.last { border-top: 0; padding-top: 8px; }
-  .plat-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: start; }
-  .plat-h { font-size: 28px; }
-  .plat-sub { margin-top: 10px; color: var(--text-muted); max-width: 62ch; }
+  .plat.last { border-top: 0; padding-top: var(--space-2); }
+  .plat-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-12); align-items: start; }
+  .plat-h { font-size: var(--text-h3); }
+  .plat-sub { margin-top: var(--space-3); color: var(--text-muted); max-width: 62ch; }
   .plat-sub a { color: var(--text); }
-  .win-note { font-size: 18px; }
-  .dl-row { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-  .asset-meta { display: inline-flex; gap: 12px; font-size: 12.5px; color: var(--text-dim); }
+  .win-note { font-size: var(--text-lg); }
+  .dl-row { margin-top: var(--space-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .asset-meta { display: inline-flex; gap: var(--space-3); font-size: var(--text-xs); color: var(--text-dim); }
   .sha {
-    margin-top: 14px;
+    margin-top: var(--space-4);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-3);
     max-width: 100%;
-    padding: 8px 8px 8px 12px;
-    border-radius: 8px;
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border);
     background: var(--sidebar);
   }
-  .sha code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--text-muted); }
-  .sha-l { font: 500 11px/1 var(--mono); color: var(--text-dim); flex: none; }
-  .sha-sm { margin-top: 8px; padding: 6px 10px; }
-  .steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 10px; }
+  .sha code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-xs); color: var(--text-muted); }
+  .sha-l { font: 500 var(--text-xs)/1 var(--font-mono); color: var(--text-dim); flex: none; }
+  .sha-sm { margin-top: var(--space-2); padding: var(--space-2) var(--space-3); }
+  .steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: var(--space-3); }
   .steps li {
     counter-increment: s;
     display: flex;
-    gap: 14px;
+    gap: var(--space-4);
     align-items: baseline;
-    padding: 14px 16px;
-    border-radius: 10px;
+    padding: var(--space-4) var(--space-4);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-muted);
   }
-  .steps li::before { content: counter(s); font: 600 13px/1 var(--mono); color: var(--accent); }
-  .steps b { color: var(--text); font-weight: 600; }
-  .ltable { margin-top: 24px; display: grid; gap: 12px; }
+  .steps li::before { content: counter(s); font: 600 var(--text-sm)/1 var(--font-mono); color: var(--accent); }
+  .steps b { color: var(--text); font-weight: var(--weight-semibold); }
+  .ltable { margin-top: var(--space-6); display: grid; gap: var(--space-3); }
   .lrow {
     display: grid;
     grid-template-columns: 200px 1fr 1fr;
-    gap: 16px;
-    padding: 16px;
-    border-radius: 12px;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
     background: var(--surface);
   }
-  .lfmt { display: grid; align-content: start; gap: 4px; }
-  .lfmt b { font-size: 17px; }
-  .lfmt span { font-size: 13px; color: var(--text-dim); }
-  .lcell { min-width: 0; display: grid; gap: 8px; }
-  .lcell-top { display: flex; align-items: center; gap: 10px; }
-  .lcell .cmd code { font-size: 12px; }
-  .verify { display: grid; gap: 8px; }
-  .v-l { font: 500 12px/1 var(--mono); color: var(--text-dim); margin-top: 6px; }
-  .mtx-wrap { margin-top: 24px; overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
-  .mtx { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 680px; }
-  .mtx th, .mtx td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); }
-  .mtx thead th { font-weight: 500; color: var(--text-muted); background: var(--surface-raised); white-space: nowrap; }
-  .mtx thead .fam { width: 16px; height: 16px; font-size: 9px; vertical-align: -3px; margin-right: 4px; }
-  .mtx tbody th { font-weight: 500; }
+  .lfmt { display: grid; align-content: start; gap: var(--space-1); }
+  .lfmt b { font-size: var(--text-lg); }
+  .lfmt span { font-size: var(--text-sm); color: var(--text-dim); }
+  .lcell { min-width: 0; display: grid; gap: var(--space-2); }
+  .lcell-top { display: flex; align-items: center; gap: var(--space-3); }
+  .lcell .cmd code { font-size: var(--text-xs); }
+  .verify { display: grid; gap: var(--space-2); }
+  .v-l { font: 500 var(--text-xs)/1 var(--font-mono); color: var(--text-dim); margin-top: var(--space-2); }
+  .mtx-wrap { margin-top: var(--space-6); overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); }
+  .mtx { width: 100%; border-collapse: collapse; font-size: var(--text-md); min-width: 680px; }
+  .mtx th, .mtx td { padding: var(--space-4) var(--space-4); text-align: left; border-bottom: 1px solid var(--border); }
+  .mtx thead th { font-weight: var(--weight-medium); color: var(--text-muted); background: var(--surface-raised); white-space: nowrap; }
+  .mtx thead .fam { width: 16px; height: 16px; font-size: var(--text-2xs); vertical-align: -3px; margin-right: var(--space-1); }
+  .mtx tbody th { font-weight: var(--weight-medium); }
   .mtx tr:last-child > * { border-bottom: 0; }
   .mtx .y { color: var(--green); }
   .mtx .n { color: var(--text-dim); }
-  .clients { margin: 0; display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .clients > div { display: flex; justify-content: space-between; gap: 16px; padding: 14px 16px; background: var(--surface); font-size: 14px; }
-  .clients dt { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+  .clients { margin: 0; display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  .clients > div { display: flex; justify-content: space-between; gap: var(--space-4); padding: var(--space-4) var(--space-4); background: var(--surface); font-size: var(--text-md); }
+  .clients dt { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-medium); }
   .clients dd { margin: 0; color: var(--text-muted); text-align: right; }
-  @media (max-width: 900px) {
-    .plat-grid { grid-template-columns: 1fr; gap: 24px; }
+  @media (max-width: 1023px) {
+    .plat-grid { grid-template-columns: 1fr; gap: var(--space-6); }
     .lrow { grid-template-columns: 1fr; }
   }
   @media (max-width: 480px) {
-    .clients > div { flex-direction: column; gap: 4px; }
+    .clients > div { flex-direction: column; gap: var(--space-1); }
     .clients dd { text-align: left; }
   }
 </style>

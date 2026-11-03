@@ -5,11 +5,11 @@ interface Props { size?: number; class?: string; tail?: boolean; label?: string 
 const { size = 28, class: cls = '', tail = false, label } = Astro.props;
 ---
 <svg class:list={['kite', cls]} width={size} height={size * 1.18} viewBox="0 0 100 118" role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'}>
-  <g stroke="var(--bg)" stroke-width="3.2" stroke-linejoin="round">
-    <path class="k-g" d="M79 3 L6 46 L58 52 Z" fill="var(--google-fill)"/>
-    <path class="k-l" d="M79 3 L97 61 L58 52 Z" fill="var(--local-fill)"/>
-    <path class="k-o" d="M6 46 L34 108 L58 52 Z" fill="var(--openai-fill)"/>
-    <path class="k-a" d="M97 61 L34 108 L58 52 Z" fill="var(--anthropic-fill)"/>
+  <g stroke="var(--background)" stroke-width="3.2" stroke-linejoin="round">
+    <path class="k-g" d="M79 3 L6 46 L58 52 Z" fill="var(--family-google-fill)"/>
+    <path class="k-l" d="M79 3 L97 61 L58 52 Z" fill="var(--family-local-fill)"/>
+    <path class="k-o" d="M6 46 L34 108 L58 52 Z" fill="var(--family-openai-fill)"/>
+    <path class="k-a" d="M97 61 L34 108 L58 52 Z" fill="var(--family-anthropic-fill)"/>
   </g>
   {tail && <path d="M34 108 C 30 114, 22 114, 18 117" fill="none" stroke="var(--text-dim)" stroke-width="2.4" stroke-linecap="round"/>}
 </svg>
