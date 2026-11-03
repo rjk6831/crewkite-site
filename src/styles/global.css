@@ -297,3 +297,13 @@ section {
     transition: none !important;
   }
 }
+
+/* Download count. The Worker fills [data-downloads] only at or above the threshold; the number has
+   a min-width in ch and tabular figures, so the count-up never moves the row. */
+[data-downloads][hidden] { display: none; }
+.dlc-n {
+  display: inline-block;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
