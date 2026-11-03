@@ -29,7 +29,8 @@
       const shrink = wide ? 600 : 400;
       const snap = 180;
       const land = D - snap;
-      const big = wide ? 2 : 1.5;
+      // It flies at 44 px tall on wide screens and 32 px on phones, then settles at the wordmark's size.
+      const big = Math.max(1, (wide ? 44 : 32) / (home.height || 17));
       const frames = [];
       const N = wide ? 90 : 30;
       for (let i = 0; i <= N; i++) {
@@ -105,13 +106,22 @@
   };
   kiteIntro();
 
-  // Theme toggle. The inline head script applies a saved choice before first paint.
-  const sysDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
-  d.querySelector('.theme')?.addEventListener('click', () => {
-    const now = root.dataset.theme || (sysDark() ? 'dark' : 'light');
-    const next = now === 'dark' ? 'light' : 'dark';
+  // Theme toggle. Dark on a first visit whatever the system setting; the inline head script applies a
+  // saved choice before first paint. The button is a toggle for the light theme, so a screen reader
+  // hears "Light theme, toggle button, pressed" or "not pressed".
+  const toggle = d.querySelector('.theme');
+  const sync = () => {
+    const light = root.dataset.theme === 'light';
+    toggle?.setAttribute('aria-pressed', String(light));
+    toggle?.setAttribute('title', light ? 'Switch to dark theme' : 'Switch to light theme');
+    d.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f8f5' : '#151718');
+  };
+  sync();
+  toggle?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
     root.dataset.theme = next;
     try { localStorage.setItem('theme', next); } catch (e) {}
+    sync();
   });
 
   const top = d.getElementById('top');

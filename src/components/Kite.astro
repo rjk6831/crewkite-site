@@ -1,15 +1,19 @@
 ---
-// The kite mark from the wordmark: four panels split by the spar and the crossbar.
-// Top left Google, top right Local, bottom left OpenAI, bottom right Anthropic.
+// The kite from the app's wordmark, traced from apps/desktop/src/renderer/assets/crewkite-wordmark.png
+// in the wordmark's own coordinates (the 998 by 322 crop the site exports), so it lands exactly on
+// the gap left in the header wordmark. Four panels split by the spar and the crossbar: top left
+// Google, top right Local, bottom left OpenAI, bottom right Anthropic. The split lines take the page
+// color, the way the wordmark leaves them transparent.
 interface Props { size?: number; class?: string; tail?: boolean; label?: string }
 const { size = 28, class: cls = '', tail = false, label } = Astro.props;
+const T = '945,3', L = '854,65', R = '994,94', B = '902,173', C = '925.6,79.8';
+const h = tail ? 200 : 170;
 ---
-<svg class:list={['kite', cls]} width={size} height={size * 1.18} viewBox="0 0 100 118" role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'}>
-  <g stroke="var(--background)" stroke-width="3.2" stroke-linejoin="round">
-    <path class="k-g" d="M79 3 L6 46 L58 52 Z" fill="var(--family-google-fill)"/>
-    <path class="k-l" d="M79 3 L97 61 L58 52 Z" fill="var(--family-local-fill)"/>
-    <path class="k-o" d="M6 46 L34 108 L58 52 Z" fill="var(--family-openai-fill)"/>
-    <path class="k-a" d="M97 61 L34 108 L58 52 Z" fill="var(--family-anthropic-fill)"/>
-  </g>
-  {tail && <path d="M34 108 C 30 114, 22 114, 18 117" fill="none" stroke="var(--text-dim)" stroke-width="2.4" stroke-linecap="round"/>}
+<svg class:list={['kite', cls]} width={size} height={Math.round((size * h) / 140)} viewBox={`854 3 140 ${h}`} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'}>
+  <polygon class="k-g" points={`${T} ${L} ${C}`} fill="var(--family-google-fill)" />
+  <polygon class="k-l" points={`${T} ${R} ${C}`} fill="var(--family-local-fill)" />
+  <polygon class="k-o" points={`${L} ${B} ${C}`} fill="var(--family-openai-fill)" />
+  <polygon class="k-a" points={`${R} ${B} ${C}`} fill="var(--family-anthropic-fill)" />
+  <path d="M945 3 L902 173 M854 65 L994 94" stroke="var(--background)" stroke-width="5" fill="none" />
+  {tail && <path d="M902 173 C 898 186, 888 192, 880 198" fill="none" stroke="var(--text-dim)" stroke-width="5" stroke-linecap="round" />}
 </svg>
