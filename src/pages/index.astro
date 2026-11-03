@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Shot from '../components/Shot.astro';
 import Replay from '../components/Replay.astro';
 import Kite from '../components/Kite.astro';
 import Icon from '../components/Icon.astro';
@@ -267,14 +268,8 @@ const faqs = [
           <p>A crew is a builder, a reviewer, a challenger, a fixer and an orchestrator. Each role runs on any family you have connected, so OpenAI can build a slice while a local model reviews it.</p>
         </div>
         <div class="shots shots-2">
-          <figure class="shot">
-            <img src="/img/shots/crew-builder.webp" width="635" height="550" loading="lazy" decoding="async" alt="A plan card with one slice assigned to the crew's builder on OpenAI gpt-6.1-sol, followed by the builder's commands, each waiting for approval." />
-            <figcaption>The plan gives the slice to the crew's builder on OpenAI gpt-6.1-sol. Its commands wait for approval.</figcaption>
-          </figure>
-          <figure class="shot">
-            <img src="/img/shots/crew-reviewer.webp" width="635" height="442" loading="lazy" decoding="async" alt="Local Flint as the reviewer reads the changed files and reports no findings, with a context line of 6,522 of 8,192." />
-            <figcaption>Local Flint reviews the change and reports no findings, using 6,522 of its 8,192 context tokens.</figcaption>
-          </figure>
+          <Shot id="crew-builder" />
+          <Shot id="crew-reviewer" />
         </div>
       </div>
 
@@ -284,18 +279,9 @@ const faqs = [
           <p>Settings shows every allowance as a gauge, with the five-hour and weekly windows where a plan has them, model limits such as Fable weekly or Gemini 4 Argon weekly, and the time to each reset. The kite meter beside Send shows how much of the model's context window the next message will use, which is separate from your plan's allowance.</p>
         </div>
         <div class="shots shots-3">
-          <figure class="shot">
-            <img src="/img/shots/gauges-anthropic.webp" width="422" height="440" loading="lazy" decoding="async" alt="Anthropic settings with the models Opus 5.5, Fable 5.1, Sonnet 5.5 and Haiku 5.5, and gauges for weekly, Fable weekly and five-hour allowance." />
-            <figcaption>Anthropic's weekly, Fable weekly and five-hour gauges, with every model the client lists.</figcaption>
-          </figure>
-          <figure class="shot">
-            <img src="/img/shots/gauges-google.webp" width="422" height="432" loading="lazy" decoding="async" alt="Google allowance gauges for weekly, Gemini 4 Argon weekly and five-hour, with Non-Gemini models listed under More allowances." />
-            <figcaption>Google's weekly, Gemini 4 Argon weekly and five-hour gauges, with Non-Gemini models under More allowances.</figcaption>
-          </figure>
-          <figure class="shot">
-            <img src="/img/shots/kite-meter.webp" width="468" height="382" loading="lazy" decoding="async" alt="The kite meter panel for gpt-6.1-sol showing how many tokens the next message takes and how much thread history is stored." />
-            <figcaption>The kite meter's next-message panel for gpt-6.1-sol.</figcaption>
-          </figure>
+          <Shot id="gauges-anthropic" />
+          <Shot id="gauges-google" />
+          <Shot id="kite-meter" />
         </div>
       </div>
 
@@ -947,16 +933,6 @@ const faqs = [
   .shots { display: grid; gap: var(--space-6); align-items: start; }
   .shots-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .shots-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .shot { margin: 0; }
-  .shot img {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-strong);
-    background: var(--background);
-    box-shadow: 0 18px 40px -24px var(--elevation-1);
-  }
-  .shot figcaption { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--text-muted); }
   .cs-git {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
     align-items: center;
