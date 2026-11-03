@@ -95,12 +95,12 @@ const faqs = [
           <li class={`rchip rchip-${c.fam}`}>
             <span class={`fam fam-${c.fam}`}>{c.fam.toUpperCase()}</span>
             <span class="r-role">{c.role}</span>
-            <span class="r-seg"><span class="sr">, </span>{c.family} <span class="mono">{c.model}</span></span>
+            <span class="r-seg"><span class="r-fam">{c.family} </span><span class="mono">{c.model}</span></span>
             {c.effort && <span class="r-seg"><span class="sr">, </span>{c.effort}</span>}
-            <span class="r-badge"><span class="sr">, </span>Subagents</span>
           </li>
         ))}
       </ul>
+      <p class="rchips-note reveal">Subagents on for every role.</p>
       <div class="hero-cta reveal">
         <Download variant="hero" />
         <a class="btn btn-ghost" href={REPO}>
@@ -516,40 +516,30 @@ const faqs = [
     list-style: none;
     margin: var(--space-8) 0 0;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
     justify-content: center;
     gap: var(--space-3);
-    max-width: 820px;
   }
   .rchip {
     display: inline-flex;
-    flex-wrap: wrap;
     align-items: center;
-    row-gap: var(--space-2);
     min-height: 36px;
-    padding: var(--space-1) var(--space-2) var(--space-1) var(--space-2);
+    padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-md);
     border: 1px solid var(--border);
     background: var(--surface);
     font-size: var(--text-sm);
     color: var(--text-muted);
+    white-space: nowrap;
     cursor: default;
     user-select: none;
   }
+  .rchips-note { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--text-dim); }
   .rchip .fam { width: 20px; height: 20px; font-size: var(--text-2xs); border-radius: var(--radius-sm); margin-right: var(--space-2); }
   .r-role { font-weight: var(--weight-semibold); color: var(--c); padding-right: var(--space-3); }
   .r-seg { padding: 0 var(--space-3); border-left: 1px solid var(--border-strong); color: var(--text); white-space: nowrap; }
   .r-seg .mono { font-size: var(--text-xs); }
-  .r-badge {
-    margin-left: var(--space-1);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-lg);
-    font: var(--weight-medium) var(--text-xs) / 1.2 var(--font-mono);
-    color: var(--c);
-    background: color-mix(in srgb, var(--c) 10%, transparent);
-    white-space: nowrap;
-  }
   .rchip-o { --c: var(--family-openai); }
   .rchip-a { --c: var(--family-anthropic); }
   .rchip-g { --c: var(--family-google); }
@@ -1157,6 +1147,9 @@ const faqs = [
     50% { transform: translateY(-8px) rotate(-3deg); }
   }
 
+  @media (max-width: 1279px) {
+    .rchips { grid-template-columns: repeat(2, auto); }
+  }
   @media (max-width: 1023px) {
     .fams, .more-feats { grid-template-columns: repeat(2, 1fr); }
     .term-grid, .os, .faq-grid { grid-template-columns: 1fr; gap: var(--space-8); }
@@ -1166,8 +1159,13 @@ const faqs = [
   @media (max-width: 767px) {
     .hero { padding: var(--space-12) 0 var(--space-section); }
     .fams, .safe, .more-feats { grid-template-columns: 1fr; }
-    .rchips { flex-direction: column; align-items: stretch; }
+    .rchips { grid-template-columns: minmax(0, 1fr); width: 100%; }
     .rchip { font-size: var(--text-sm); }
+    .r-role { min-width: 10ch; text-align: left; }
+  }
+  @media (max-width: 479px) {
+    /* The family mark already names the family; the word stays for screen readers. */
+    .r-fam { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .feat-vis { padding: var(--space-4); min-height: 0; }
     .os { padding: var(--space-8) var(--space-6); }
     .slice { grid-template-columns: 1fr 20px 64px; }
