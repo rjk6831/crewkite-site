@@ -8,6 +8,7 @@
     "build": "node scripts/check-media.mjs && astro build && node scripts/postbuild.mjs",
     "preview": "wrangler dev",
     "deploy": "npm run build && wrangler deploy",
+    "test": "node --test test/*.test.mjs",
     "check": "node scripts/copy-check.mjs && node scripts/check-tokens.mjs && node scripts/check-media.mjs"
   },
   "devDependencies": {

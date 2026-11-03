@@ -124,6 +124,61 @@
     sync();
   });
 
+  // Download count. The Worker renders it on the page only at or above its threshold, so a hidden
+  // slot stays hidden and nothing here can make the row reflow. A visible count counts up from 0 over
+  // about 600 ms (shown as is with reduced motion), then checks /api/downloads every five minutes
+  // while the tab is visible and only ever ticks up. Screen readers hear the first render once.
+  const counts = [...d.querySelectorAll('[data-downloads]:not([hidden])')];
+  if (counts.length) {
+    const nf = (() => { try { return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 1 }); } catch (e) { return new Intl.NumberFormat('en'); } })();
+    const fmt = (n) => (n >= 10000 ? `${nf.format(Math.floor(n / 100) / 10)}k` : nf.format(Math.round(n)));
+    let total = Math.max(...counts.map((c) => +c.querySelector('[data-total]')?.dataset.total || 0));
+    const paint = (n) => counts.forEach((c) => {
+      const el = c.querySelector('[data-total]');
+      if (!el) return;
+      el.textContent = fmt(n);
+      el.style.minWidth = `${Math.max(fmt(total).length, parseFloat(el.style.minWidth) || 0)}ch`;
+    });
+    const announce = () => counts.forEach((c, i) => {
+      const sr = c.querySelector('[data-downloads-sr]');
+      if (!sr) return;
+      const text = `${fmt(total)} downloads`;
+      if (i === 0) {
+        sr.setAttribute('aria-live', 'polite');
+        sr.textContent = '';
+        requestAnimationFrame(() => { sr.textContent = text; setTimeout(() => sr.removeAttribute('aria-live'), 1000); });
+      } else sr.textContent = text;
+    });
+    const countUp = (from, to, ms, done) => {
+      if (still || !window.requestAnimationFrame) { paint(to); done?.(); return; }
+      const t0 = performance.now();
+      const step = (now) => {
+        const p = Math.min(1, (now - t0) / ms);
+        paint(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step); else done?.();
+      };
+      requestAnimationFrame(step);
+    };
+    countUp(0, total, 600, announce);
+    const poll = async () => {
+      if (d.hidden) return;
+      try {
+        const r = await fetch('/api/downloads', { headers: { accept: 'application/json' } });
+        const j = await r.json();
+        if (j.visible && j.total > total) {
+          const from = total;
+          total = j.total;
+          counts.forEach((c) => c.querySelector('[data-downloads-sr]') && (c.querySelector('[data-downloads-sr]').textContent = `${fmt(total)} downloads`));
+          countUp(from, total, 600);
+        }
+      } catch (e) {}
+    };
+    let timer = null;
+    const arm = () => { clearInterval(timer); timer = d.hidden ? null : setInterval(poll, 300000); };
+    d.addEventListener('visibilitychange', arm);
+    arm();
+  }
+
   const top = d.getElementById('top');
   const onScroll = () => top?.classList.toggle('scrolled', scrollY > 8);
   addEventListener('scroll', onScroll, { passive: true });
