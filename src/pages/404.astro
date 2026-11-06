@@ -13,9 +13,9 @@ import Kite from '../components/Kite.astro';
   </section>
 </Base>
 <style>
-  .nf { padding: 120px 0; text-align: center; }
+  .nf { padding: var(--space-32) 0; text-align: center; }
   .nf .wrap { display: flex; flex-direction: column; align-items: center; }
-  .nf h1 { margin-top: 28px; font-size: 40px; }
+  .nf h1 { margin-top: var(--space-8); font-size: var(--text-h2); }
   /* The kite rests a little off-center and tilted. With motion allowed it drifts there once. */
   .nf-kite { display: inline-block; line-height: 0; transform: translateX(26px) rotate(-14deg); }
   @media (prefers-reduced-motion: no-preference) {
@@ -26,5 +26,5 @@ import Kite from '../components/Kite.astro';
     to { transform: translateX(26px) rotate(-14deg); opacity: 1; }
   }
   .nf .lede { margin-left: auto; margin-right: auto; }
-  .nf-a { margin-top: 28px; display: flex; gap: 12px; }
+  .nf-a { margin-top: var(--space-8); display: flex; gap: var(--space-3); }
 </style>

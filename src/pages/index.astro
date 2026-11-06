@@ -80,16 +80,16 @@ const faqs = [
       </a>
       <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span>, <span class="n-g">Google</span> and <span class="n-l">a local model</span>.</h1>
       <p class="hero-sub reveal">Run the coding agents you already pay for as threads on your own computer. When one hits its limit, the thread moves to the next with every message and edited file.</p>
-      <ul class="fchips reveal" aria-label="Provider families">
-        <li class="fchip fchip-o"><span class="fam fam-o">O</span>OpenAI</li>
-        <li class="fchip fchip-a"><span class="fam fam-a">A</span>Anthropic</li>
-        <li class="fchip fchip-g"><span class="fam fam-g">G</span>Google</li>
-        <li class="fchip fchip-l"><span class="fam fam-l">L</span>Local<span class="inf" aria-label="no limits">∞</span></li>
+      <ul class="rchips reveal" aria-label="A crew as the app shows it">
+        <li class="rchip rchip-a"><span class="fam fam-a">A</span><span class="r-role">Orchestrator</span><span class="r-seg"><span class="sr">, </span>Anthropic <span class="mono">Opus 5.5</span></span><span class="r-seg"><span class="sr">, </span>Medium</span><span class="r-badge"><span class="sr">, </span>3 subagents</span></li>
+        <li class="rchip rchip-o"><span class="fam fam-o">O</span><span class="r-role">Builder</span><span class="r-seg"><span class="sr">, </span>OpenAI <span class="mono">gpt-6.1-sol</span></span><span class="r-seg"><span class="sr">, </span>High</span></li>
+        <li class="rchip rchip-g"><span class="fam fam-g">G</span><span class="r-role">Ask</span><span class="r-seg"><span class="sr">, </span>Google <span class="mono">gemini-3.8-flash</span></span></li>
+        <li class="rchip rchip-l"><span class="fam fam-l">L</span><span class="r-role">Reviewer</span><span class="r-seg"><span class="sr">, </span>Local <span class="mono">gpt-oss-20b</span></span></li>
       </ul>
       <div class="hero-cta reveal">
         <Download variant="hero" />
         <a class="btn btn-ghost" href={REPO}>
-          <Icon name="code" />View on GitHub<span class="count" data-stars hidden></span>
+          <Icon name="code" />View on GitHub
         </a>
       </div>
       <p class="hero-meta reveal">
@@ -148,12 +148,12 @@ const faqs = [
         <div class="feat-copy">
           <span class="feat-n mono">01</span>
           <h3>Keep working when a limit hits</h3>
-          <p>When OpenAI stops at its five-hour limit, the thread moves to Anthropic with every message and edited file, and the next reply picks up where the last one stopped. Pick a rule once, such as most allowance left or Local first, and CrewKite does the switch for you.</p>
+          <p>When Anthropic stops at its five-hour limit, the thread moves to OpenAI with every message and edited file, and the next reply picks up where the last one stopped. Pick a rule once, such as most allowance left or Local first, and CrewKite does the switch for you.</p>
         </div>
         <div class="feat-vis vis-hand" aria-hidden="true">
-          <div class="ht ht-o"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI<span class="ht-lim">5 h limit reached</span></div><b></b><b></b></div>
-          <div class="hand-line"><span>Continued on Anthropic from OpenAI. Reason: five-hour limit reached.</span></div>
-          <div class="ht ht-a"><div class="ht-h"><span class="fam fam-a">A</span>Anthropic<span class="ht-carry"><span class="mono">12 messages</span><span class="mono">3 files</span></span></div><b></b><b></b><b></b></div>
+          <div class="ht ht-from"><div class="ht-h"><span class="fam fam-a">A</span>Anthropic · Opus 5.5<span class="ht-lim">5 h limit reached</span></div><b></b><b></b></div>
+          <div class="hand-line"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: five-hour limit reached.</span></div>
+          <div class="ht ht-to"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI · gpt-6.1-sol<span class="ht-carry"><span class="mono">12 messages</span><span class="mono">3 files</span></span></div><b></b><b></b><b></b></div>
           <div class="hand-mode"><span>Handoff mode</span><b>Most allowance left</b></div>
         </div>
       </div>
@@ -162,13 +162,13 @@ const faqs = [
         <div class="feat-copy">
           <span class="feat-n mono">02</span>
           <h3>See what every plan has left</h3>
-          <p>Five-hour and weekly windows for all four providers sit in one rail, each with the time to its reset. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
+          <p>Every provider's allowance sits in one rail: the five-hour and weekly windows where a plan has them, each with the time to its reset. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
         </div>
         <div class="feat-vis vis-allow" aria-hidden="true">
-          <div class="al" style="--c:var(--openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 1 h 40 min</span></div><div class="al-r"><i style="--v:0"><em></em></i><span>5 h 0%</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>week 80%</span></div></div>
-          <div class="al" style="--c:var(--anthropic-fill)"><div class="al-h"><span class="fam fam-a">A</span>Anthropic<span>resets in 2 h</span></div><div class="al-r"><i style="--v:30"><em></em></i><span>30% left</span></div></div>
-          <div class="al" style="--c:var(--google-fill)"><div class="al-h"><span class="fam fam-g">G</span>Google<span>resets in 3 d</span></div><div class="al-r"><i style="--v:85"><em></em></i><span>5 h 85%</span></div><div class="al-r"><i style="--v:65"><em></em></i><span>week 65%</span></div></div>
-          <div class="al" style="--c:var(--local-fill)"><div class="al-h"><span class="fam fam-l">L</span>Local<span>on this computer</span></div><div class="al-r al-inf"><i style="--v:100"><em></em></i><b>∞</b><i style="--v:100"><em></em></i><span>No limits</span></div></div>
+          <div class="al" style="--c:var(--family-openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 2 d</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>80% left</span></div></div>
+          <div class="al" style="--c:var(--family-anthropic-fill)"><div class="al-h"><span class="fam fam-a">A</span>Anthropic<span>resets in 1 h 40 min</span></div><div class="al-r"><i style="--v:30"><em></em></i><span>5 h 30%</span></div><div class="al-r"><i style="--v:64"><em></em></i><span>week 64%</span></div></div>
+          <div class="al" style="--c:var(--family-google-fill)"><div class="al-h"><span class="fam fam-g">G</span>Google<span>resets in 3 d</span></div><div class="al-r"><i style="--v:85"><em></em></i><span>5 h 85%</span></div><div class="al-r"><i style="--v:65"><em></em></i><span>week 65%</span></div></div>
+          <div class="al" style="--c:var(--family-local-fill)"><div class="al-h"><span class="fam fam-l">L</span>Local<span>on this computer</span></div><div class="al-r al-inf"><i style="--v:100"><em></em></i><b>∞</b><i style="--v:100"><em></em></i><span>No limits</span></div></div>
         </div>
       </div>
 
@@ -253,16 +253,92 @@ const faqs = [
     </div>
   </section>
 
+  <!-- Crews, settings and git -->
+  <section id="crews" aria-labelledby="crews-h">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">In the app</span>
+        <h2 id="crews-h" class="h2">Crews, settings and git</h2>
+      </div>
+
+      <div class="cs-row reveal">
+        <div class="cs-copy">
+          <h3>Crews</h3>
+          <p>A crew is a builder, a reviewer, a challenger, a fixer and an orchestrator. Each role runs on any family you have connected, so OpenAI can build a slice while a local model reviews it.</p>
+        </div>
+        <div class="shots shots-2">
+          <figure class="shot">
+            <img src="/img/shots/crew-builder.webp" width="635" height="550" loading="lazy" decoding="async" alt="A plan card with one slice assigned to the crew's builder on OpenAI gpt-6.1-sol, followed by the builder's commands, each waiting for approval." />
+            <figcaption>The plan gives the slice to the crew's builder on OpenAI gpt-6.1-sol. Its commands wait for approval.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/img/shots/crew-reviewer.webp" width="635" height="442" loading="lazy" decoding="async" alt="Local Flint as the reviewer reads the changed files and reports no findings, with a context line of 6,522 of 8,192." />
+            <figcaption>Local Flint reviews the change and reports no findings, using 6,522 of its 8,192 context tokens.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="cs-row reveal">
+        <div class="cs-copy">
+          <h3>Settings</h3>
+          <p>Settings shows every allowance as a gauge, with the five-hour and weekly windows where a plan has them, model limits such as Fable weekly or Gemini 4 Argon weekly, and the time to each reset. The kite meter beside Send shows how much of the model's context window the next message will use, which is separate from your plan's allowance.</p>
+        </div>
+        <div class="shots shots-3">
+          <figure class="shot">
+            <img src="/img/shots/gauges-anthropic.webp" width="422" height="440" loading="lazy" decoding="async" alt="Anthropic settings with the models Opus 5.5, Fable 5.1, Sonnet 5.5 and Haiku 5.5, and gauges for weekly, Fable weekly and five-hour allowance." />
+            <figcaption>Anthropic's weekly, Fable weekly and five-hour gauges, with every model the client lists.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/img/shots/gauges-google.webp" width="422" height="432" loading="lazy" decoding="async" alt="Google allowance gauges for weekly, Gemini 4 Argon weekly and five-hour, with Non-Gemini models listed under More allowances." />
+            <figcaption>Google's weekly, Gemini 4 Argon weekly and five-hour gauges, with Non-Gemini models under More allowances.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/img/shots/kite-meter.webp" width="468" height="382" loading="lazy" decoding="async" alt="The kite meter panel for gpt-6.1-sol showing how many tokens the next message takes and how much thread history is stored." />
+            <figcaption>The kite meter's next-message panel for gpt-6.1-sol.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="cs-row cs-git reveal">
+        <div class="cs-copy">
+          <h3>Git</h3>
+          <p>Every thread works in a scratch copy of your repository. Your checkout stays as it is until you accept a change, and Accept commits it on a new local branch.</p>
+        </div>
+        <div class="git-vis">
+          <svg viewBox="0 0 600 200" role="img" aria-label="The thread's scratch copy starts from your base commit. Your checkout stays unchanged. Accept commits the result on a new local branch.">
+            <path class="g-line g-main" d="M40 44 H570" />
+            <path class="g-line g-scratch" pathLength="1" d="M60 44 C 92 44, 96 156, 132 156 H 352" />
+            <path class="g-line g-branch" pathLength="1" d="M438 156 C 470 156, 470 100, 500 100 H 528" />
+            <circle class="g-base" cx="60" cy="44" r="7" />
+            <circle class="g-o" cx="186" cy="156" r="6" />
+            <circle class="g-o" cx="236" cy="156" r="6" />
+            <circle class="g-l" cx="290" cy="156" r="6" />
+            <rect class="g-accept" x="352" y="140" width="86" height="32" rx="8" />
+            <text class="g-accept-t" x="395" y="161" text-anchor="middle">Accept</text>
+            <circle class="g-new" cx="538" cy="100" r="7" />
+            <text class="g-t" x="60" y="24" text-anchor="middle">base commit</text>
+            <text class="g-t g-t-r" x="570" y="30" text-anchor="end">your checkout, unchanged</text>
+            <text class="g-t" x="236" y="190" text-anchor="middle">scratch copy: edits, tests, review</text>
+            <text class="g-t g-t-acc" x="538" y="80" text-anchor="middle">new local branch</text>
+          </svg>
+        </div>
+      </div>
+      <p class="cs-note reveal">Screens from a test build.</p>
+    </div>
+  </section>
+
   <!-- Why I built it -->
   <section id="why-built" class="built" aria-labelledby="built-h">
     <div class="wrap">
       <div class="built-col reveal">
         <h2 id="built-h" class="built-h">Why I built it</h2>
-        <p>I build products for underserved niche markets, and I start each one by talking with the people who have the problem. Along the way I kept running into problems in my own workflow that no tool solved.</p>
-        <p>I work across several AI subscriptions and a local model, because each one is strongest at something different: backend work, frontend and design, or catching defects in review. Using them together on one repository meant separate apps and terminals, watching every usage meter, and writing handoffs by hand. Each new agent reread the whole context, and the style of the work drifted with every switch.</p>
-        <p>CrewKite is the controller I wanted: every provider in one thread, held to how I want my work done. Its review methods draw on open-source projects like multi, ADHD and Ponytail, <a href="https://github.com/rjk6831/crewkite/blob/main/docs/credits.md">credited in the docs</a>, so you get those ideas without having to find them first.</p>
-        <p>CrewKite is free and open source. Other people's open-source work has helped me a great deal, and this is my turn to give back. I am measuring efficiency with a benchmark now, and I will not claim gains until the numbers are in. Until then, what I want most is your feedback. My best product decisions have come from real people telling me what they need. Try it, and tell me where it falls short.</p>
-        <p class="built-sig">Raymond J. Kraft</p>
+        <div class="built-text">
+          <p>I build products for underserved niche markets, and I start each one by talking with the people who have the problem. Along the way I kept running into problems in my own workflow that no tool solved.</p>
+          <p>I work across several AI subscriptions and a local model, because each one is strongest at something different: backend work, frontend and design, or catching defects in review. Using them together on one repository meant separate apps and terminals, watching every usage meter, and writing handoffs by hand. Each new agent reread the whole context, and the style of the work drifted with every switch.</p>
+          <p>CrewKite is the controller I wanted: every provider in one thread, held to how I want my work done. Its review methods draw on open-source projects like multi, ADHD and Ponytail, <a href="https://github.com/rjk6831/crewkite/blob/main/docs/credits.md">credited in the docs</a>, so you get those ideas without having to find them first.</p>
+          <p>CrewKite is free and open source. Other people's open-source work has helped me a great deal, and this is my turn to give back. I am measuring efficiency with a benchmark now, and I will not claim gains until the numbers are in. Until then, what I want most is your feedback. My best product decisions have come from real people telling me what they need. Try it, and tell me where it falls short.</p>
+          <p class="built-sig">Raymond J. Kraft</p>
+        </div>
       </div>
     </div>
   </section>
@@ -318,8 +394,8 @@ const faqs = [
         <dl class="os-stats">
           <div><dt>License</dt><dd>Apache 2.0</dd></div>
           <div><dt>Version</dt><dd class="mono" data-release="version">{VERSION_FALLBACK}</dd></div>
-          <div data-stars-row hidden><dt>GitHub stars</dt><dd class="mono" data-stars-plain></dd></div>
           <div><dt>Telemetry</dt><dd>None</dd></div>
+          <div><dt>Account</dt><dd>None</dd></div>
         </dl>
       </div>
     </div>
@@ -369,7 +445,7 @@ const faqs = [
 <style>
   /* Hero */
   .hero {
-    padding: 72px 0 40px;
+    padding: var(--space-16) 0 var(--space-section);
     overflow: hidden;
   }
   .hero-bg {
@@ -380,8 +456,8 @@ const faqs = [
       radial-gradient(ellipse 50% 40% at 50% 30%, var(--glow), transparent 70%),
       linear-gradient(var(--border) 1px, transparent 1px) 0 0 / 56px 56px,
       linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0 / 56px 56px;
-    mask-image: radial-gradient(ellipse 60% 55% at 50% 25%, #000 20%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 25%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 60% 55% at 50% 25%, var(--mask-ink) 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 25%, var(--mask-ink) 20%, transparent 75%);
     opacity: 0.55;
     pointer-events: none;
   }
@@ -395,110 +471,107 @@ const faqs = [
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 5px 12px 5px 5px;
-    border-radius: 999px;
+    gap: var(--space-3);
+    padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-strong);
     background: var(--surface);
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--text-muted);
     text-decoration: none;
-    transition: border-color 160ms;
+    transition: border-color var(--duration-fast);
   }
   .pill:hover { border-color: var(--accent); color: var(--text); }
   .pill-tag {
-    padding: 3px 9px;
-    border-radius: 999px;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-lg);
     background: var(--accent-soft);
     color: var(--accent);
-    font-weight: 600;
-    font-size: 12px;
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-xs);
   }
   h1 {
-    margin-top: 28px;
+    margin-top: var(--space-8);
     max-width: 20ch;
-    font-size: clamp(34px, 5.6vw, 66px);
+    font-size: var(--text-display);
     line-height: 1.04;
-    letter-spacing: -0.035em;
-    font-weight: 650;
+    letter-spacing: var(--tracking-display);
+    font-weight: var(--weight-bold);
   }
-  .n-o { color: var(--openai); }
-  .n-a { color: var(--anthropic); }
-  .n-g { color: var(--google); }
-  .n-l { color: var(--local); }
-  .fchips {
+  .n-o { color: var(--family-openai); }
+  .n-a { color: var(--family-anthropic); }
+  .n-g { color: var(--family-google); }
+  .n-l { color: var(--family-local); }
+  /* Role chips drawn like the app's: family mark, role in the family color, then segments split by
+     hairlines. They are labels, so nothing about them invites a click. */
+  .rchips {
     list-style: none;
-    margin: 28px 0 0;
+    margin: var(--space-8) 0 0;
     padding: 0;
-    width: 100%;
-    max-width: 640px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-  .fchip {
-    position: relative;
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 9px;
-    height: 46px;
-    border-radius: 12px;
+    gap: var(--space-3);
+    max-width: 820px;
+  }
+  .rchip {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: var(--space-2);
+    min-height: 36px;
+    padding: var(--space-1) var(--space-2) var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
     background: var(--surface);
-    font-weight: 550;
-    font-size: 15px;
-    overflow: hidden;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
     cursor: default;
     user-select: none;
   }
-  .fchip::after {
-    content: '';
-    position: absolute;
-    inset: auto 0 0;
-    height: 2px;
-    background: var(--c);
-    transform: scaleX(0.3);
-    opacity: 0.8;
-    transition: transform 300ms var(--ease);
+  .rchip .fam { width: 20px; height: 20px; font-size: var(--text-2xs); border-radius: var(--radius-sm); margin-right: var(--space-2); }
+  .r-role { font-weight: var(--weight-semibold); color: var(--c); padding-right: var(--space-3); }
+  .r-seg { padding: 0 var(--space-3); border-left: 1px solid var(--border-strong); color: var(--text); white-space: nowrap; }
+  .r-seg .mono { font-size: var(--text-xs); }
+  .r-badge {
+    margin-left: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-lg);
+    font: 500 var(--text-xs)/1.2 var(--font-mono);
+    color: var(--family-anthropic);
+    background: color-mix(in srgb, var(--family-anthropic) 10%, transparent);
+    white-space: nowrap;
   }
-
-  .fchip .fam { width: 22px; height: 22px; font-size: 11px; border-radius: 6px; }
-  .fchip-o { --c: var(--openai-fill); }
-  .fchip-a { --c: var(--anthropic-fill); }
-  .fchip-g { --c: var(--google-fill); }
-  .fchip-l { --c: var(--local-fill); }
-  .inf { color: var(--local); font-size: 17px; line-height: 1; }
-  .js .in .fchip::after { animation: chip 1s var(--ease) both; animation-delay: calc(var(--k, 0) * 120ms + 300ms); }
-  .fchip-a { --k: 1; }
-  .fchip-g { --k: 2; }
-  .fchip-l { --k: 3; }
+  .rchip-o { --c: var(--family-openai); }
+  .rchip-a { --c: var(--family-anthropic); }
+  .rchip-g { --c: var(--family-google); }
+  .rchip-l { --c: var(--family-local); }
   @keyframes chip { from { transform: scaleX(0); } }
   .hero-sub {
-    margin-top: 22px;
+    margin-top: var(--space-6);
     max-width: 64ch;
-    font-size: clamp(16px, 1.6vw, 19px);
+    font-size: var(--text-lg);
     color: var(--text-muted);
   }
   .hero-cta {
-    margin-top: 28px;
+    margin-top: var(--space-8);
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--space-3);
     justify-content: center;
   }
   .hero-meta {
-    margin-top: 18px;
+    margin-top: var(--space-4);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 6px 18px;
-    font-size: 13px;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
     color: var(--text-dim);
   }
   .hero-meta a { color: var(--text-muted); text-underline-offset: 3px; }
   .hero-shot {
-    margin-top: 64px;
+    margin-top: var(--space-16);
     width: 100%;
     max-width: 1080px;
     perspective: 1600px;
@@ -523,17 +596,17 @@ const faqs = [
   .fams {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: var(--space-4);
   }
   .fcard {
     position: relative;
-    padding: 22px;
-    border-radius: 14px;
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background: var(--surface);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--space-3);
     overflow: hidden;
     transition-delay: var(--d, 0ms);
     transition-property: opacity, transform, border-color;
@@ -551,33 +624,33 @@ const faqs = [
     inset: 0;
     background: radial-gradient(400px 160px at 50% -40px, color-mix(in srgb, var(--c) 16%, transparent), transparent);
     opacity: 0;
-    transition: opacity 300ms;
+    transition: opacity var(--duration-moderate);
     pointer-events: none;
   }
   .fcard:hover { border-color: color-mix(in srgb, var(--c) 50%, var(--border)); }
   .fcard:hover::after { opacity: 1; }
-  .fcard-o { --c: var(--openai-fill); }
-  .fcard-a { --c: var(--anthropic-fill); }
-  .fcard-g { --c: var(--google-fill); }
-  .fcard-l { --c: var(--local-fill); }
-  .fcard-top { display: flex; align-items: center; gap: 10px; }
-  .fcard-top .fam { width: 24px; height: 24px; font-size: 12px; border-radius: 7px; }
-  .fcard h3 { font-size: 20px; }
-  .fcard-client { font-weight: 500; font-size: 15px; }
-  .fcard-plan { font-size: 14px; color: var(--text-muted); }
+  .fcard-o { --c: var(--family-openai-fill); }
+  .fcard-a { --c: var(--family-anthropic-fill); }
+  .fcard-g { --c: var(--family-google-fill); }
+  .fcard-l { --c: var(--family-local-fill); }
+  .fcard-top { display: flex; align-items: center; gap: var(--space-3); }
+  .fcard-top .fam { width: 24px; height: 24px; font-size: var(--text-xs); border-radius: var(--radius-sm); }
+  .fcard h3 { font-size: var(--text-xl); }
+  .fcard-client { font-weight: var(--weight-medium); font-size: var(--text-ui); }
+  .fcard-plan { font-size: var(--text-md); color: var(--text-muted); }
   .fcard-note {
     margin-top: auto;
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--text-muted);
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: var(--space-3) var(--space-3);
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-strong);
     background: var(--surface-raised);
   }
-  .fcard-note a { color: var(--text); font-weight: 600; text-underline-offset: 3px; }
+  .fcard-note a { color: var(--text); font-weight: var(--weight-semibold); text-underline-offset: 3px; }
   .fams-note {
-    margin-top: 24px;
-    font-size: 15px;
+    margin-top: var(--space-6);
+    font-size: var(--text-ui);
     color: var(--text-muted);
     text-align: center;
   }
@@ -588,9 +661,9 @@ const faqs = [
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
     grid-template-areas: 'copy vis';
-    gap: 64px;
+    gap: var(--space-16);
     align-items: center;
-    padding: 40px 0;
+    padding: var(--space-10) 0;
   }
   .feat-rev {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
@@ -599,66 +672,66 @@ const faqs = [
   .feat-copy { grid-area: copy; }
   .feat-vis { grid-area: vis; }
   .feat + .feat { border-top: 1px solid var(--border); }
-  .feat-n { color: var(--accent); font-size: 13px; }
-  .feat h3 { margin-top: 10px; font-size: clamp(22px, 2.6vw, 30px); }
-  .feat p { margin-top: 14px; color: var(--text-muted); max-width: 52ch; }
+  .feat-n { color: var(--accent); font-size: var(--text-sm); }
+  .feat h3 { margin-top: var(--space-3); font-size: var(--text-h3); }
+  .feat p { margin-top: var(--space-4); color: var(--text-muted); max-width: 52ch; }
   .chips {
     list-style: none;
     padding: 0;
-    margin: 20px 0 0;
+    margin: var(--space-6) 0 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--space-2);
   }
   .chips li {
-    font-size: 12.5px;
-    padding: 5px 10px;
-    border-radius: 999px;
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-strong);
     color: var(--text-muted);
   }
   .feat-vis {
     position: relative;
     min-height: 300px;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background:
       radial-gradient(500px 220px at 70% 0%, var(--glow), transparent),
       var(--sidebar);
-    padding: 28px;
+    padding: var(--space-8);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 14px;
-    font-size: 13.5px;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
     overflow: hidden;
   }
 
   /* 01 handoff */
   .ht {
     display: grid;
-    gap: 7px;
-    padding: 12px 14px;
-    border-radius: 10px;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
     background: var(--surface);
   }
-  .ht-h { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); margin-bottom: 2px; }
-  .ht-h .fam { width: 16px; height: 16px; font-size: 9px; }
-  .ht b { height: 7px; border-radius: 4px; background: var(--border-strong); }
+  .ht-h { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-0-5); }
+  .ht-h .fam { width: 16px; height: 16px; font-size: var(--text-2xs); }
+  .ht b { height: 7px; border-radius: var(--radius-sm); background: var(--border-strong); }
   .ht b:nth-of-type(1) { width: 85%; }
   .ht b:nth-of-type(2) { width: 62%; }
   .ht b:nth-of-type(3) { width: 74%; }
-  .ht-lim { margin-left: auto; font-size: 11.5px; color: var(--red); }
-  .ht-carry { margin-left: auto; display: flex; gap: 6px; }
-  .ht-carry span { font-size: 11px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-muted); }
-  .ht-o b { background: var(--border); }
-  .ht-a { border-color: color-mix(in srgb, var(--anthropic) 45%, var(--border)); }
+  .ht-lim { margin-left: auto; font-size: var(--text-xs); color: var(--red); }
+  .ht-carry { margin-left: auto; display: flex; gap: var(--space-2); }
+  .ht-carry span { font-size: var(--text-xs); padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-lg); border: 1px solid var(--border-strong); color: var(--text-muted); }
+  .ht-from b { background: var(--border); }
+  .ht-to { border-color: color-mix(in srgb, var(--family-openai) 45%, var(--border)); }
   .hand-line {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 12.5px;
+    gap: var(--space-3);
+    font-size: var(--text-xs);
     color: var(--text-muted);
     text-align: center;
   }
@@ -668,60 +741,60 @@ const faqs = [
     flex: 1;
     height: 1px;
     min-width: 12px;
-    background: linear-gradient(90deg, var(--openai), var(--anthropic));
+    background: linear-gradient(90deg, var(--family-anthropic), var(--family-openai));
   }
-  .hand-mode { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; color: var(--text-dim); }
-  .hand-mode b { font-weight: 500; color: var(--text); }
+  .hand-mode { display: flex; justify-content: space-between; gap: var(--space-3); font-size: var(--text-xs); color: var(--text-dim); }
+  .hand-mode b { font-weight: var(--weight-medium); color: var(--text); }
   @media (prefers-reduced-motion: no-preference) {
-    .js .vis-hand .hand-line, .js .vis-hand .ht-a, .js .vis-hand .ht-carry span { opacity: 0; transform: translateY(6px); transition: all 500ms var(--ease); }
-    .js .in .vis-hand .hand-line { opacity: 1; transform: none; transition-delay: 500ms; }
-    .js .in .vis-hand .ht-a { opacity: 1; transform: none; transition-delay: 900ms; }
+    .js .vis-hand .hand-line, .js .vis-hand .ht-to, .js .vis-hand .ht-carry span { opacity: 0; transform: translateY(6px); transition: all var(--duration-slow) var(--ease-out); }
+    .js .in .vis-hand .hand-line { opacity: 1; transform: none; transition-delay: var(--duration-slow); }
+    .js .in .vis-hand .ht-to { opacity: 1; transform: none; transition-delay: var(--duration-slower); }
     .js .in .vis-hand .ht-carry span { opacity: 1; transform: none; transition-delay: 1300ms; }
     .js .in .vis-hand .ht-carry span + span { transition-delay: 1500ms; }
   }
 
   /* 02 allowances */
-  .vis-allow { gap: 14px; }
-  .al { display: grid; gap: 6px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
-  .al-h { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-  .al-h .fam { width: 16px; height: 16px; font-size: 9px; }
-  .al-h span:last-child { margin-left: auto; font-size: 11.5px; color: var(--text-dim); }
-  .al-r { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .vis-allow { gap: var(--space-4); }
+  .al { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); }
+  .al-h { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
+  .al-h .fam { width: 16px; height: 16px; font-size: var(--text-2xs); }
+  .al-h span:last-child { margin-left: auto; font-size: var(--text-xs); color: var(--text-dim); }
+  .al-r { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-xs); }
   .al-r > span { min-width: 76px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }
-  .al-r i { flex: 1; height: 5px; border-radius: 3px; background: var(--border); overflow: hidden; }
-  .al-r em { display: block; height: 100%; width: calc(var(--v) * 1%); background: var(--c); border-radius: 3px; }
-  .al-inf b { color: var(--local); font-weight: 400; font-size: 15px; line-height: 1; }
+  .al-r i { flex: 1; height: 5px; border-radius: var(--radius-sm); background: var(--border); overflow: hidden; }
+  .al-r em { display: block; height: 100%; width: calc(var(--v) * 1%); background: var(--c); border-radius: var(--radius-sm); }
+  .al-inf b { color: var(--family-local); font-weight: var(--weight-regular); font-size: var(--text-ui); line-height: 1; }
   @media (prefers-reduced-motion: no-preference) {
-    .js .vis-allow .al-r em { transform: scaleX(0); transform-origin: left; transition: transform 1100ms var(--ease); }
+    .js .vis-allow .al-r em { transform: scaleX(0); transform-origin: left; transition: transform 1100ms var(--ease-out); }
     .js .in .vis-allow .al-r em { transform: none; }
-    .js .in .vis-allow .al:nth-child(2) em { transition-delay: 120ms; }
+    .js .in .vis-allow .al:nth-child(2) em { transition-delay: var(--duration-instant); }
     .js .in .vis-allow .al:nth-child(3) em { transition-delay: 240ms; }
     .js .in .vis-allow .al:nth-child(4) em { transition-delay: 360ms; }
   }
 
   /* 02 plan */
-  .plan-h { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-  .plan-c { margin-left: auto; color: var(--text-dim); font-weight: 400; font-size: 12px; }
+  .plan-h { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-semibold); }
+  .plan-c { margin-left: auto; color: var(--text-dim); font-weight: var(--weight-regular); font-size: var(--text-xs); }
   .slice {
     display: grid;
     grid-template-columns: 1fr auto 20px 70px;
     align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    border-radius: 9px;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-3);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
     background: var(--surface);
   }
   .s-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .s-d { font-size: 12px; color: var(--text-dim); }
-  .s-s { text-align: right; font-size: 12px; }
+  .s-d { font-size: var(--text-xs); color: var(--text-dim); }
+  .s-s { text-align: right; font-size: var(--text-xs); }
   .s-s em { font-style: normal; color: var(--green); }
-  .plan-f { font-size: 12px; color: var(--text-muted); padding-top: 4px; }
+  .plan-f { font-size: var(--text-xs); color: var(--text-muted); padding-top: var(--space-1); }
   @media (prefers-reduced-motion: no-preference) {
     .js .vis-plan .s-s em { font-size: 0; color: var(--text-dim); }
-    .js .vis-plan .s-s em::before { content: 'Queued'; font-size: 12px; }
+    .js .vis-plan .s-s em::before { content: 'Queued'; font-size: var(--text-xs); }
     .js .in .vis-plan .s-s em,
-    .js .in .vis-plan .s-s em::before { animation: slice 2.4s steps(1) forwards; animation-delay: calc(300ms + var(--i) * 450ms); }
+    .js .in .vis-plan .s-s em::before { animation: slice 2.4s steps(1) forwards; animation-delay: calc(var(--duration-moderate) + var(--i) * 450ms); }
     .js .in .vis-plan .s-s em::before { animation-name: slice-t; }
   }
   @keyframes slice {
@@ -740,147 +813,226 @@ const faqs = [
   .pc {
     width: 100%;
     max-width: 440px;
-    padding: 16px;
-    border-radius: 12px;
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
     border: 1px solid var(--amber);
     background: var(--surface);
     display: grid;
-    gap: 12px;
+    gap: var(--space-3);
     box-shadow: 0 0 0 6px color-mix(in srgb, var(--amber) 8%, transparent);
   }
-  .pc-q { display: flex; gap: 8px; align-items: center; font-weight: 500; }
+  .pc-q { display: flex; gap: var(--space-2); align-items: center; font-weight: var(--weight-medium); }
   .pc-q :global(svg) { color: var(--amber); flex: none; }
   .pc-cmd {
-    padding: 8px 10px;
-    border-radius: 7px;
-    background: var(--diff-add);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--diff-add-bg);
     color: var(--green);
-    font-size: 12px;
+    font-size: var(--text-xs);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .pc-a { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pc-a { display: flex; flex-wrap: wrap; gap: var(--space-2); }
   .pb {
     height: 30px;
-    padding: 0 12px;
+    padding: 0 var(--space-3);
     display: inline-flex;
     align-items: center;
-    border-radius: 7px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-strong);
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
   }
   .pb-1 { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .pb-deny { color: var(--red); }
-  .js .in .vis-perm .pb-1 { animation: press 2.8s var(--ease) 1.2s infinite; }
+  .js .in .vis-perm .pb-1 { animation: press 2.8s var(--ease-out) 1.2s infinite; }
   @keyframes press {
     0%, 70%, 100% { box-shadow: 0 0 0 0 var(--accent-soft); transform: none; }
     80% { box-shadow: 0 0 0 7px var(--accent-soft); transform: scale(0.96); }
   }
-  .pc-lock { display: flex; align-items: center; gap: 6px; color: var(--text-dim); font-size: 12.5px; }
+  .pc-lock { display: flex; align-items: center; gap: var(--space-2); color: var(--text-dim); font-size: var(--text-xs); }
 
   /* 04 changes */
-  .ch-h { display: flex; justify-content: space-between; font-weight: 600; }
-  .ch-h .mono { color: var(--text-dim); font-weight: 400; font-size: 12px; }
+  .ch-h { display: flex; justify-content: space-between; font-weight: var(--weight-semibold); }
+  .ch-h .mono { color: var(--text-dim); font-weight: var(--weight-regular); font-size: var(--text-xs); }
   .ch-f {
     display: grid;
     grid-template-columns: 1fr auto 82px;
-    gap: 12px;
+    gap: var(--space-3);
     align-items: center;
-    padding: 10px 12px;
-    border-radius: 9px;
+    padding: var(--space-3) var(--space-3);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border);
     background: var(--surface);
-    font-size: 12.5px;
+    font-size: var(--text-xs);
   }
   .ch-f > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ch-k {
     justify-self: end;
-    font-size: 11.5px;
-    padding: 3px 8px;
-    border-radius: 6px;
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
     color: var(--green);
     background: color-mix(in srgb, var(--green) 12%, transparent);
   }
-  .js .vis-changes .ch-k { opacity: 0; transform: scale(0.8); transition: all 300ms var(--ease); }
-  .js .in .vis-changes .ch-k1 { opacity: 1; transform: none; transition-delay: 500ms; }
-  .js .in .vis-changes .ch-k2 { opacity: 1; transform: none; transition-delay: 900ms; }
+  .js .vis-changes .ch-k { opacity: 0; transform: scale(0.8); transition: all var(--duration-moderate) var(--ease-out); }
+  .js .in .vis-changes .ch-k1 { opacity: 1; transform: none; transition-delay: var(--duration-slow); }
+  .js .in .vis-changes .ch-k2 { opacity: 1; transform: none; transition-delay: var(--duration-slower); }
   .js .in .vis-changes .ch-k3 { opacity: 1; transform: none; transition-delay: 1300ms; }
   .ch-b {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    margin-top: 4px;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
   }
-  .ch-b .mono { display: inline-flex; gap: 6px; align-items: center; color: var(--text-muted); font-size: 12.5px; }
+  .ch-b .mono { display: inline-flex; gap: var(--space-2); align-items: center; color: var(--text-muted); font-size: var(--text-xs); }
   .ch-btn {
     height: 32px;
-    padding: 0 14px;
+    padding: 0 var(--space-4);
     display: inline-flex;
     align-items: center;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--accent);
     color: var(--accent-ink);
-    font-weight: 600;
-    font-size: 13px;
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-sm);
   }
-  .js .in .vis-changes .ch-btn { animation: press 2.8s var(--ease) 1.8s infinite; }
+  .js .in .vis-changes .ch-btn { animation: press 2.8s var(--ease-out) 1.8s infinite; }
 
   /* 05 approvals and subagents */
   .vis-perm { align-items: stretch; }
-  .sp { border-radius: 12px; border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
-  .sp-h { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .sp { border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+  .sp-h { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); font-size: var(--text-sm); }
   .sp-h :global(svg) { color: var(--text-dim); }
-  .sp-b { margin-left: auto; font-size: 11px; padding: 3px 8px; border-radius: 999px; background: color-mix(in srgb, var(--anthropic) 14%, transparent); color: var(--anthropic); }
-  .sp-r { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12.5px; }
+  .sp-b { margin-left: auto; font-size: var(--text-xs); padding: var(--space-1) var(--space-2); border-radius: var(--radius-lg); background: color-mix(in srgb, var(--family-anthropic) 10%, transparent); color: var(--family-anthropic); }
+  .sp-r { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
   .sp-r + .sp-r { border-top: 1px solid var(--border); }
   .sp-r :global(svg) { color: var(--green); }
-  .sp-r code { color: var(--text-muted); font-size: 12px; }
+  .sp-r code { color: var(--text-muted); font-size: var(--text-xs); }
   @media (prefers-reduced-motion: no-preference) {
-    .js .vis-perm .sp-r { opacity: 0; transition: opacity 400ms var(--ease); transition-delay: calc(600ms + var(--i) * 350ms); }
+    .js .vis-perm .sp-r { opacity: 0; transition: opacity 400ms var(--ease-out); transition-delay: calc(600ms + var(--i) * 350ms); }
     .js .in .vis-perm .sp-r { opacity: 1; }
   }
 
   .more-feats {
-    margin-top: 40px;
+    margin-top: var(--space-10);
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: var(--space-4);
   }
   .mf {
-    padding: 24px;
-    border-radius: 14px;
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background: var(--surface);
     transition-delay: var(--d, 0ms);
   }
-  .mf-n { color: var(--accent); font-size: 13px; }
-  .mf h3 { margin-top: 10px; font-size: 18px; line-height: 1.25; }
-  .mf p { margin-top: 10px; color: var(--text-muted); font-size: 14.5px; }
-  #adds .chips { justify-content: center; margin-top: 28px; }
+  .mf-n { color: var(--accent); font-size: var(--text-sm); }
+  .mf h3 { margin-top: var(--space-3); font-size: var(--text-lg); line-height: 1.25; }
+  .mf p { margin-top: var(--space-3); color: var(--text-muted); font-size: var(--text-md); }
+  #adds .chips { justify-content: center; margin-top: var(--space-8); }
+
+  /* Crews, settings and git */
+  .cs-row {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-10) 0;
+  }
+  .cs-row + .cs-row { border-top: 1px solid var(--border); }
+  .cs-copy { max-width: 62ch; }
+  .cs-copy h3 { font-size: var(--text-h3); }
+  .cs-copy p { margin-top: var(--space-3); color: var(--text-muted); }
+  .shots { display: grid; gap: var(--space-6); align-items: start; }
+  .shots-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shots-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .shot { margin: 0; }
+  .shot img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--background);
+    box-shadow: 0 18px 40px -24px var(--elevation-1);
+  }
+  .shot figcaption { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--text-muted); }
+  .cs-git {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: center;
+    gap: var(--space-12);
+  }
+  .git-vis {
+    padding: var(--space-6) var(--space-6);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--sidebar);
+  }
+  .git-vis svg { width: 100%; height: auto; overflow: visible; }
+  .g-line { fill: none; stroke-width: 2.5; stroke-linecap: round; }
+  .g-main { stroke: var(--border-strong); }
+  .g-scratch { stroke: var(--text-dim); stroke-dasharray: 1; }
+  .g-branch { stroke: var(--accent); stroke-dasharray: 1; }
+  .g-base { fill: var(--text-muted); }
+  .g-o { fill: var(--family-openai-fill); }
+  .g-l { fill: var(--family-local-fill); }
+  .g-new { fill: var(--accent); }
+  .g-accept { fill: var(--accent); }
+  .g-accept-t { fill: var(--accent-ink); font: 600 var(--text-md) var(--font-sans); }
+  .g-t { fill: var(--text-muted); font: 500 var(--text-sm) var(--font-sans); }
+  .g-t-acc { fill: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .cs-git .g-scratch,
+    .js .cs-git .g-branch { stroke-dashoffset: 1; transition: stroke-dashoffset var(--duration-slower) var(--ease-out); }
+    .js .cs-git.in .g-scratch { stroke-dashoffset: 0; transition-delay: var(--duration-base); }
+    .js .cs-git.in .g-branch { stroke-dashoffset: 0; transition-delay: 1100ms; }
+    .js .cs-git .g-new,
+    .js .cs-git .g-t-acc { opacity: 0; transition: opacity 400ms var(--ease-out) 1900ms; }
+    .js .cs-git.in .g-new,
+    .js .cs-git.in .g-t-acc { opacity: 1; }
+  }
+  .cs-note { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--text-dim); }
+  @media (max-width: 1023px) {
+    .shots-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cs-git { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+  }
+  @media (max-width: 767px) {
+    .shots-2, .shots-3 { grid-template-columns: minmax(0, 1fr); }
+    .cs-row { padding: var(--space-8) 0; }
+    .git-vis { padding: var(--space-4); }
+  }
 
   /* Why I built it */
-  /* About 65 characters per line in Inter at 16 px; ch is the width of a zero, wider than the average letter. */
+  /* One column on phones, two from 768 px. Each column holds about 49ch, close to 65 characters of
+     Inter at 16 px, since ch is the width of a zero. Paragraphs never split across columns. */
   .built-col {
     max-width: 49ch;
     text-align: left;
   }
+  @media (min-width: 768px) {
+    .built-col { max-width: calc(2 * 49ch + 56px); }
+    .built-text {
+      column-count: 2;
+      column-gap: var(--space-16);
+    }
+    .built-text p { break-inside: avoid; }
+    .built-col .built-text p { margin: 0 0 var(--space-4); }
+    .built-col .built-text .built-sig { margin: var(--space-2) 0 0; }
+  }
   .built-h {
-    font-size: clamp(26px, 3vw, 32px);
-    margin-bottom: 20px;
+    font-size: var(--text-h3);
+    margin-bottom: var(--space-6);
   }
   .built-col p {
-    font-size: 16px;
+    font-size: var(--text-base);
     line-height: 1.7;
     color: var(--text);
   }
-  .built-col p + p { margin-top: 16px; }
+  .built-col p + p { margin-top: var(--space-4); }
   .built-col a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--accent); }
   .built-col .built-sig {
-    margin-top: 24px;
-    font-weight: 300;
+    margin-top: var(--space-6);
+    font-weight: var(--weight-light);
     color: var(--text-muted);
   }
 
@@ -888,40 +1040,40 @@ const faqs = [
   .safe {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: var(--space-4);
   }
   .scard {
-    padding: 28px;
-    border-radius: 14px;
+    padding: var(--space-8);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background: var(--surface);
     transition-delay: var(--d, 0ms);
   }
   .scard :global(svg) { color: var(--accent); }
-  .scard h3 { margin-top: 18px; font-size: 19px; line-height: 1.3; }
-  .scard p { margin-top: 8px; color: var(--text-muted); font-size: 15px; }
-  .more { margin-top: 28px; }
+  .scard h3 { margin-top: var(--space-4); font-size: var(--text-lg); line-height: 1.3; }
+  .scard p { margin-top: var(--space-2); color: var(--text-muted); font-size: var(--text-ui); }
+  .more { margin-top: var(--space-8); }
   .arrow-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-2);
     color: var(--accent);
-    font-weight: 600;
+    font-weight: var(--weight-semibold);
     text-decoration: none;
   }
-  .arrow-link :global(svg) { transition: transform 160ms var(--ease); }
+  .arrow-link :global(svg) { transition: transform var(--duration-fast) var(--ease-out); }
   .arrow-link:hover :global(svg) { transform: translateX(3px); }
 
   /* Terminal */
   .term-grid {
     display: grid;
     grid-template-columns: 1fr 1.3fr;
-    gap: 56px;
+    gap: var(--space-16);
     align-items: center;
   }
   .term-grid > *, .feat > *, .faq-grid > *, .os > * { min-width: 0; }
-  .term-cmd { margin-top: 28px; max-width: 360px; }
-  .small { margin-top: 12px; font-size: 14px; color: var(--text-dim); }
+  .term-cmd { margin-top: var(--space-8); max-width: 360px; }
+  .small { margin-top: var(--space-3); font-size: var(--text-md); color: var(--text-dim); }
   .small a { color: var(--text-muted); }
   .lede code { color: var(--text); }
 
@@ -929,54 +1081,54 @@ const faqs = [
   .os {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
-    gap: 48px;
-    padding: 48px;
-    border-radius: 20px;
+    gap: var(--space-12);
+    padding: var(--space-12);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background:
       radial-gradient(600px 300px at 0% 0%, var(--glow), transparent),
       var(--surface);
   }
-  .os-links { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 14px 28px; }
+  .os-links { margin-top: var(--space-8); display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-8); }
   .os-stats {
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
     background: var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     align-self: center;
   }
-  .os-stats > div { background: var(--surface-raised); padding: 20px; }
-  .os-stats dt { font-size: 12px; color: var(--text-dim); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
-  .os-stats dd { margin: 6px 0 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .os-stats > div { background: var(--surface-raised); padding: var(--space-6); }
+  .os-stats dt { font-size: var(--text-xs); color: var(--text-dim); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+  .os-stats dd { margin: var(--space-2) 0 0; font-size: var(--text-xl); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-snug); }
 
   /* FAQ */
-  .faq-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 56px; align-items: start; }
+  .faq-grid { display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-16); align-items: start; }
   .faq { border-top: 1px solid var(--border); }
   .faq details { border-bottom: 1px solid var(--border); }
   .faq summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 20px 4px;
-    font-size: 17px;
-    font-weight: 550;
+    gap: var(--space-4);
+    padding: var(--space-6) var(--space-1);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
     cursor: pointer;
     list-style: none;
   }
   .faq summary::-webkit-details-marker { display: none; }
-  .faq summary :global(svg) { color: var(--text-dim); transition: transform 220ms var(--ease); flex: none; }
+  .faq summary :global(svg) { color: var(--text-dim); transition: transform 220ms var(--ease-out); flex: none; }
   .faq details[open] summary :global(svg) { transform: rotate(45deg); color: var(--accent); }
   .faq summary:hover span { color: var(--accent); }
-  .faq-a { padding: 0 4px 22px; color: var(--text-muted); max-width: 68ch; }
+  .faq-a { padding: 0 var(--space-1) var(--space-6); color: var(--text-muted); max-width: 68ch; }
   .faq-a :global(a) { color: var(--text); text-underline-offset: 3px; }
   .faq details::details-content {
     block-size: 0;
     overflow: hidden;
-    transition: block-size 280ms var(--ease), content-visibility 280ms allow-discrete;
+    transition: block-size 280ms var(--ease-out), content-visibility 280ms allow-discrete;
   }
   .faq details[open]::details-content { block-size: auto; }
   :global(html) { interpolate-size: allow-keywords; }
@@ -985,8 +1137,8 @@ const faqs = [
   .final-box {
     position: relative;
     text-align: center;
-    padding: 72px 24px;
-    border-radius: 24px;
+    padding: var(--space-16) var(--space-6);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background:
       radial-gradient(500px 260px at 50% 0%, var(--glow), transparent),
@@ -997,27 +1149,28 @@ const faqs = [
     overflow: hidden;
   }
   .final-box .lede { margin-left: auto; margin-right: auto; }
-  .final-box :global(.final-kite) { margin-bottom: 20px; animation: float 6s ease-in-out infinite; }
+  .final-box :global(.final-kite) { margin-bottom: var(--space-6); animation: float 6s ease-in-out infinite; }
   @keyframes float {
     50% { transform: translateY(-8px) rotate(-3deg); }
   }
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1023px) {
     .fams, .more-feats { grid-template-columns: repeat(2, 1fr); }
-    .term-grid, .os, .faq-grid { grid-template-columns: 1fr; gap: 32px; }
+    .term-grid, .os, .faq-grid { grid-template-columns: 1fr; gap: var(--space-8); }
     .feat,
-    .feat-rev { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'copy' 'vis'; gap: 24px; }
+    .feat-rev { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'copy' 'vis'; gap: var(--space-6); }
   }
-  @media (max-width: 640px) {
-    .hero { padding: 48px 0 96px; }
+  @media (max-width: 767px) {
+    .hero { padding: var(--space-12) 0 var(--space-section); }
     .fams, .safe, .more-feats { grid-template-columns: 1fr; }
-    .fchips { grid-template-columns: repeat(2, 1fr); }
-    .feat-vis { padding: 18px; min-height: 0; }
-    .os { padding: 28px 20px; }
+    .rchips { flex-direction: column; align-items: stretch; }
+    .rchip { font-size: var(--text-sm); }
+    .feat-vis { padding: var(--space-4); min-height: 0; }
+    .os { padding: var(--space-8) var(--space-6); }
     .slice { grid-template-columns: 1fr 20px 64px; }
     .s-d { display: none; }
     .hero-cta { width: 100%; }
     .hero-cta > :global(*) { flex: 1 1 100%; }
-    .final-box { padding: 48px 18px; }
+    .final-box { padding: var(--space-12) var(--space-4); }
   }
 </style>
