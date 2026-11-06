@@ -10,19 +10,21 @@ export const ASSETS = {
   rpmArm: 'crewkite.aarch64.rpm',
 };
 export const url = (name) => `${DL}/${name}`;
-// The 0.1.0 hero line, word for word from the provider copy. Providers appear in GOAL order (Google,
-// OpenAI, Anthropic, Local) everywhere; the order is display only.
+// ONE_LINER is the meta description, og:description and JSON-LD description; HERO_SUB sits under
+// the H1. Providers appear in GOAL order (Google, OpenAI, Anthropic, Local); the order is display only.
 export const ONE_LINER =
-  'CrewKite runs the coding agents you already pay for, Google, OpenAI, Anthropic and a local model, as one crew on your own computer.';
+  'CrewKite runs Antigravity, Codex, Claude Code and a local model in LM Studio as one crew on your own computer, on the plans you already pay for. Free and open source.';
+export const HERO_SUB =
+  'CrewKite runs the coding agents you already pay for as one crew on your own computer, and keeps the work going when one of them reaches its limit.';
 
-// The crew shown everywhere on the site: the hero chips, the replay, the terminal demo and the Crews
-// section. It matches the Demo crew in the release stills, with flight mode Balanced and subagents on
-// for every role. Model names are written exactly as the stills show them.
+// The crew shown everywhere on the site, in the order the app's Edit crew dialog lists it, with
+// effort written as the app writes it. Model names are exactly as the release stills show them.
+// Side questions sit outside the crew, as in the app, so Ask is its own line.
 export const CREW = [
-  { role: 'Orchestrator', fam: 'a', family: 'Anthropic', model: 'Opus 5.5', effort: 'Medium' },
   { role: 'Builder', fam: 'o', family: 'OpenAI', model: 'gpt-6.1-sol', effort: 'High' },
-  { role: 'Fixer', fam: 'g', family: 'Google', model: 'gemini-4-argon', effort: 'Medium' },
-  { role: 'Reviewer', fam: 'o', family: 'OpenAI', model: 'gpt-6-astra', effort: 'Extra High' },
+  { role: 'Reviewer', fam: 'o', family: 'OpenAI', model: 'gpt-6-astra', effort: 'Extra high' },
   { role: 'Challenger', fam: 'a', family: 'Anthropic', model: 'Opus 5.5', effort: 'Medium' },
-  { role: 'Ask', fam: 'l', family: 'Local', model: 'gpt-oss-20b' },
+  { role: 'Fixer', fam: 'g', family: 'Google', model: 'gemini-4-argon', effort: 'Medium' },
+  { role: 'Orchestrator', fam: 'a', family: 'Anthropic', model: 'Opus 5.5', effort: 'Medium' },
 ];
+export const ASK = { fam: 'l', family: 'Local', model: 'gpt-oss-20b' };

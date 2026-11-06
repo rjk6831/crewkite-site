@@ -130,6 +130,7 @@ const gauges = [
   </div>
   <figcaption class="caption">
     <span data-caption>Accept makes a new local branch.</span>
+    <button class="rp-again" type="button" data-replay-again hidden><Icon name="play" size={13} />Replay</button>
   </figcaption>
 </figure>
 
@@ -312,6 +313,10 @@ const gauges = [
   }
   /* With motion allowed, items start invisible from the first paint and only change opacity, so the
      replay never moves layout. The thread scrolls with a transform. */
+  /* A replay the visitor started steps through even with reduced motion, with no transitions. */
+  .stepped .it:not(.on),
+  .stepped .acc-done:not(.on),
+  .stepped .sub:not(.on) { opacity: 0; }
   @media (prefers-reduced-motion: no-preference) {
     :global(.js) .thread { justify-content: flex-start; }
     :global(.js) .thread-inner { padding-top: var(--space-6); transition: transform 600ms var(--ease-out); will-change: transform; }
@@ -461,6 +466,23 @@ const gauges = [
     color: var(--text);
   }
   .caption span { display: inline-block; transition: opacity 250ms, transform 250ms; }
+  /* Shown when a pass ends, or from the start with reduced motion, where nothing plays on its own. */
+  .caption { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
+  .rp-again {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: 28px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    font: var(--weight-medium) var(--text-sm) / 1 var(--font-sans);
+    cursor: pointer;
+  }
+  .rp-again[hidden] { display: none; }
+  .rp-again:hover { background: var(--surface-hover); }
   .caption span.swap { opacity: 0; transform: translateY(4px); }
 
   @media (max-width: 1023px) {

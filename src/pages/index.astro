@@ -8,8 +8,8 @@ import Icon from '../components/Icon.astro';
 import Email from '../components/Email.astro';
 import Download from '../components/Download.astro';
 import Terminal from '../components/Terminal.astro';
-import { REPO, BLOB, ONE_LINER, VERSION_FALLBACK, CREW } from '../data/site.js';
-import { FEATURES, FAMILIES, PROVIDERS_LEDE, GOOGLE_TERMS, GOOGLE_TERMS_LINK, LINUX_LINE, WHATS_NEXT, XAI_NEXT, RUN_TESTS, RUN_TESTS_LONG } from '../data/copy.js';
+import { REPO, BLOB, HERO_SUB, VERSION_FALLBACK, CREW, ASK } from '../data/site.js';
+import { FEATURES, FAMILIES, PROVIDERS_LEDE, GOOGLE_TERMS, GOOGLE_TERMS_LINK, LINUX_LINE, GOAL_NOD, ROADMAP_NEXT, ROADMAP_LATER, ROADMAP_LINK, RUN_TESTS, RUN_TESTS_LONG, RUN_TESTS_FACTS } from '../data/copy.js';
 
 const faqs = [
   {
@@ -59,7 +59,7 @@ const faqs = [
   },
 ];
 ---
-<Base title="CrewKite: one desktop workspace for Google, OpenAI, Anthropic and a local model" path="/">
+<Base title="CrewKite: Google, OpenAI, Anthropic and Local, one crew" path="/">
   <!-- Hero -->
   <section class="hero" aria-labelledby="hero-h">
     <div class="hero-bg" aria-hidden="true"></div>
@@ -69,8 +69,8 @@ const faqs = [
         <span>Version <span data-release="version">{VERSION_FALLBACK}</span></span>
         <Icon name="arrow" size={14} />
       </a>
-      <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-g">Google</span>, <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span> and <span class="n-l">a local model</span>.</h1>
-      <p class="hero-sub reveal">{ONE_LINER}</p>
+      <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-g">Google</span>, <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span> and <span class="n-l">Local</span>.</h1>
+      <p class="hero-sub reveal">{HERO_SUB}</p>
       <ul class="rchips reveal" aria-label="The crew in the release screens, with subagents on for every role">
         {CREW.map((c) => (
           <li class={`rchip rchip-${c.fam}`}>
@@ -81,7 +81,7 @@ const faqs = [
           </li>
         ))}
       </ul>
-      <p class="rchips-note reveal">Subagents on for every role. Flight mode Balanced.</p>
+      <p class="rchips-note reveal">Side questions: {ASK.family} <span class="mono">{ASK.model}</span>. Subagents on for every role.</p>
       <div class="hero-cta reveal">
         <Download variant="hero" />
         <a class="btn btn-ghost" href={REPO}>
@@ -131,9 +131,9 @@ const faqs = [
         <h2 id="fam-h" class="h2">Run the clients you already sign in to</h2>
         <p class="lede">{PROVIDERS_LEDE}</p>
       </div>
-      <div class="fams">
+      <div class="fams" data-goal>
         {FAMILIES.map((f, i) => (
-          <article class={`fcard fcard-${f.key} reveal`} style={`--d:${i * 70}ms`}>
+          <article class={`fcard fcard-${f.key} reveal`} style={`--d:${i * 70}ms; --g:${i * 120}ms`}>
             <div class="fcard-top">
               <span class={`fam fam-${f.key}`}>{f.key.toUpperCase()}</span>
               <h3>{f.name}</h3>
@@ -150,6 +150,7 @@ const faqs = [
           </article>
         ))}
       </div>
+      <p class="goal-nod reveal">{GOAL_NOD}</p>
       <p class="fams-note reveal">{LINUX_LINE}</p>
 
       <div class="blk blk-split reveal">
@@ -162,15 +163,6 @@ const faqs = [
         <Shot id="welcome" />
       </div>
 
-      <div class="blk reveal">
-        <div class="blk-copy">
-          <h3>What's next</h3>
-          <ul class="next">
-            {WHATS_NEXT.map((n) => <li>{n}</li>)}
-          </ul>
-          <p>{XAI_NEXT}</p>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -191,6 +183,7 @@ const faqs = [
               <li><span class={`fam fam-${c.fam}`} aria-hidden="true">{c.fam.toUpperCase()}</span><b>{c.role}</b><span>{c.family} <span class="mono">{c.model}</span>{c.effort && `, ${c.effort}`}</span></li>
             ))}
           </ul>
+          <p class="crew-side">Side questions: {ASK.family} <span class="mono">{ASK.model}</span>.</p>
           <p class="crew-sub">Subagents on for every role. Flight mode Balanced.</p>
         </div>
         <Shot id="crew-editor" />
@@ -275,28 +268,28 @@ const faqs = [
         <h2 id="review-h" class="h2">Nothing lands until you accept it</h2>
         <p class="lede">Every thread works in its own copy of your repository. Read the changes, keep or drop each file, then accept them to a new local branch. Your checkout stays as it is.</p>
       </div>
-      <div class="blk reveal">
+      <div class="blk review-grid reveal">
         <Shot id="changes" />
-      </div>
-      <div class="blk cs-git reveal">
-        <Shot id="accepted" />
-        <div class="git-vis">
-          <svg viewBox="0 0 600 200" role="img" aria-label="Illustration: the thread's copy starts from your base commit. Your checkout stays unchanged. Accept commits the result on a new local branch.">
-            <path class="g-line g-main" d="M40 44 H570" />
-            <path class="g-line g-scratch" pathLength="1" d="M60 44 C 92 44, 96 156, 132 156 H 352" />
-            <path class="g-line g-branch" pathLength="1" d="M438 156 C 470 156, 470 100, 500 100 H 528" />
-            <circle class="g-base" cx="60" cy="44" r="7" />
-            <circle class="g-o" cx="186" cy="156" r="6" />
-            <circle class="g-g" cx="236" cy="156" r="6" />
-            <circle class="g-o" cx="290" cy="156" r="6" />
-            <rect class="g-accept" x="352" y="140" width="86" height="32" rx="8" />
-            <text class="g-accept-t" x="395" y="161" text-anchor="middle">Accept</text>
-            <circle class="g-new" cx="538" cy="100" r="7" />
-            <text class="g-t" x="60" y="24" text-anchor="middle">base commit</text>
-            <text class="g-t g-t-r" x="570" y="30" text-anchor="end">your checkout, unchanged</text>
-            <text class="g-t" x="236" y="190" text-anchor="middle">the thread's copy: edits, tests, review</text>
-            <text class="g-t g-t-acc" x="538" y="80" text-anchor="middle">new local branch</text>
-          </svg>
+        <div class="review-side">
+          <Shot id="accepted" />
+          <div class="git-vis">
+            <svg viewBox="0 0 600 200" role="img" aria-label="Illustration: the thread's copy starts from your base commit. Your checkout stays unchanged. Accept commits the result on a new local branch.">
+              <path class="g-line g-main" d="M40 44 H570" />
+              <path class="g-line g-scratch" pathLength="1" d="M60 44 C 92 44, 96 156, 132 156 H 352" />
+              <path class="g-line g-branch" pathLength="1" d="M438 156 C 470 156, 470 100, 500 100 H 528" />
+              <circle class="g-base" cx="60" cy="44" r="7" />
+              <circle class="g-o" cx="186" cy="156" r="6" />
+              <circle class="g-g" cx="236" cy="156" r="6" />
+              <circle class="g-o" cx="290" cy="156" r="6" />
+              <rect class="g-accept" x="352" y="140" width="86" height="32" rx="8" />
+              <text class="g-accept-t" x="395" y="161" text-anchor="middle">Accept</text>
+              <circle class="g-new" cx="538" cy="100" r="7" />
+              <text class="g-t" x="60" y="24" text-anchor="middle">base commit</text>
+              <text class="g-t g-t-r" x="570" y="30" text-anchor="end">your checkout, unchanged</text>
+              <text class="g-t" x="236" y="190" text-anchor="middle">the thread's copy: edits, tests, review</text>
+              <text class="g-t g-t-acc" x="538" y="80" text-anchor="middle">new local branch</text>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -325,10 +318,13 @@ const faqs = [
         <h2 id="tests-h" class="h2">Run tests on demand</h2>
         <p class="lede">{RUN_TESTS}</p>
       </div>
-      <div class="blk reveal">
+      <div class="blk blk-split blk-tests reveal">
         <div class="blk-copy">
           <p class="tests-p" set:html={RUN_TESTS_LONG} />
         </div>
+        <ul class="facts" aria-label="Run tests at a glance">
+          {RUN_TESTS_FACTS.map((f) => <li><Icon name="check" size={16} />{f}</li>)}
+        </ul>
       </div>
     </div>
   </section>
@@ -372,13 +368,45 @@ const faqs = [
       <div class="reveal">
         <span class="eyebrow">Terminal too</span>
         <h2 id="term-h" class="h2">The same crews and threads from a CLI</h2>
-        <p class="lede">The CLI talks to the same controller as the desktop, so keep the desktop open. Slash commands such as <code>/model</code>, <code>/crew</code> and <code>/ask</code>, file mentions with <code>@</code>, and <code>-p</code> for scripts.</p>
-        <div class="cmd term-cmd"><code>pnpm crewkite</code><button class="copy" type="button" data-copy="pnpm crewkite" hidden><Icon name="copy" size={13} />Copy</button></div>
-        <div class="cmd term-cmd"><code>pnpm crewkite thread list --json</code><button class="copy" type="button" data-copy="pnpm crewkite thread list --json" hidden><Icon name="copy" size={13} />Copy</button></div>
-        <p class="small">From a source checkout, inside a project you added. <a href={`${BLOB}/docs/preview.md#try-the-cli`}>Try the CLI</a> walks through it, and <a href={`${BLOB}/apps/cli/README.md`}>the CLI guide</a> lists every key and command.</p>
+        <p class="lede">The installers include the CLI. It talks to the same controller as the desktop, so keep the desktop open. Slash commands such as <code>/model</code>, <code>/crew</code> and <code>/ask</code>, file mentions with <code>@</code>, and <code>-p</code> for scripts.</p>
+        <p class="cmd-l">Linux</p>
+        <div class="cmd term-cmd"><code>crewkite thread list --json</code><button class="copy" type="button" data-copy="crewkite thread list --json" hidden><Icon name="copy" size={13} />Copy</button></div>
+        <p class="cmd-l">macOS</p>
+        <div class="cmd term-cmd"><code>/Applications/CrewKite.app/Contents/Resources/bin/crewkite</code><button class="copy" type="button" data-copy="/Applications/CrewKite.app/Contents/Resources/bin/crewkite" hidden><Icon name="copy" size={13} />Copy</button></div>
+        <p class="small"><a href={`${BLOB}/docs/preview.md#try-the-cli`}>Try the CLI</a> walks through it, and <a href={`${BLOB}/apps/cli/README.md`}>the CLI guide</a> lists every key and command.</p>
       </div>
       <div class="reveal">
         <Terminal />
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section id="roadmap" aria-labelledby="road-h">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Roadmap</span>
+        <h2 id="road-h" class="h2">What's next</h2>
+      </div>
+      <div class="road">
+        <div class="road-col reveal">
+          <h3 class="road-h">0.2.0 (planned)</h3>
+          {ROADMAP_NEXT.map((r) => (
+            <article class="rcard">
+              <span class="fx-i"><Icon name={r.icon} size={20} /></span>
+              <h4>{r.title}</h4>
+              <p>{r.text}</p>
+              <ul>{r.facts.map((f) => <li>{f}</li>)}</ul>
+            </article>
+          ))}
+        </div>
+        <div class="road-col reveal">
+          <h3 class="road-h">After that, in rough order</h3>
+          <ol class="later">
+            {ROADMAP_LATER.map((r) => <li>{r}</li>)}
+          </ol>
+          <p class="road-link"><a class="arrow-link" href={ROADMAP_LINK}>The full roadmap <Icon name="arrow" size={16} /></a></p>
+        </div>
       </div>
     </div>
   </section>
@@ -624,8 +652,18 @@ const faqs = [
     transition: opacity var(--duration-moderate);
     pointer-events: none;
   }
-  .fcard:hover { border-color: color-mix(in srgb, var(--c) 50%, var(--border)); }
-  .fcard:hover::after { opacity: 1; }
+  /* Provider cards are static: no hover lift, glow or border change. On first view the four badges
+     light in GOAL order, once; reduced motion skips it. */
+  .fcard::after { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) [data-goal].lit .fcard-top .fam { animation: goal-lit var(--duration-slower) var(--ease-out) var(--g, 0ms) 1 both; }
+  }
+  @keyframes goal-lit {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 0%, transparent); }
+    35% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 40%, transparent); background: var(--c); color: var(--accent-ink); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 0%, transparent); }
+  }
+  .goal-nod { margin-top: var(--space-4); text-align: center; font-size: var(--text-sm); color: var(--text-dim); }
   .fcard-o { --c: var(--family-openai-fill); }
   .fcard-a { --c: var(--family-anthropic-fill); }
   .fcard-g { --c: var(--family-google-fill); }
@@ -669,8 +707,21 @@ const faqs = [
     background: var(--surface);
     transition-delay: var(--d, 0ms);
     transition-property: opacity, transform, border-color;
+    cursor: pointer;
   }
   .fx:hover { border-color: var(--border-strong); }
+  .fx h3 a::before {
+    content: '→';
+    position: absolute;
+    top: var(--space-6);
+    right: var(--space-6);
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  }
+  .fx:hover h3 a::before,
+  .fx:has(a:focus-visible) h3 a::before { opacity: 1; transform: none; }
   .fx-i {
     display: inline-grid;
     place-items: center;
@@ -709,6 +760,34 @@ const faqs = [
   .blk-h-2 { margin-top: var(--space-8); }
   .blk-note { font-size: var(--text-sm); color: var(--text-dim); }
   .tests-p { margin-top: 0; font-size: var(--text-base); }
+  .blk-tests { align-items: center; }
+  .facts { list-style: none; margin: 0; padding: var(--space-6); display: grid; gap: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); }
+  .facts li { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: start; gap: var(--space-3); font-size: var(--text-ui); color: var(--text); }
+  .facts li :global(svg) { width: 28px; height: 28px; padding: var(--space-1); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); }
+  .cmd-l { margin-top: var(--space-4); margin-bottom: var(--space-2); font: var(--weight-medium) var(--text-xs) / 1 var(--font-mono); color: var(--text-dim); }
+  /* Review: the narrow Changes panel beside the accepted line, which renders at least as large. */
+  .review-grid { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: var(--space-12); align-items: start; }
+  .review-side { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-8); min-width: 0; }
+  @media (max-width: 1023px) { .review-grid { grid-template-columns: minmax(0, 1fr); } .review-grid > :first-child { max-width: 420px; } }
+  /* On a phone the accepted line keeps its size and scrolls sideways inside its own frame. */
+  @media (max-width: 767px) {
+    .review-side :global([data-shot='accepted'] .shot-frame) { overflow-x: auto; }
+    .review-side :global([data-shot='accepted'] img) { width: 560px; max-width: none; }
+  }
+  .crew-side { margin-top: var(--space-3); font-size: var(--text-md); color: var(--text-muted); }
+
+  /* Roadmap: planned work beside the longer list. Stacks at 768 px and below, planned work first. */
+  .road { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+  .road-col { display: grid; gap: var(--space-4); }
+  .road-h { font-size: var(--text-lg); line-height: var(--text-lg-lh); color: var(--text-muted); font-weight: var(--weight-medium); }
+  .rcard { padding: var(--space-6); border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); }
+  .rcard h4 { margin-top: var(--space-4); font-size: var(--text-xl); line-height: var(--text-xl-lh); }
+  .rcard p { margin-top: var(--space-2); color: var(--text); }
+  .rcard ul { margin: var(--space-4) 0 0; padding-left: var(--space-6); display: grid; gap: var(--space-2); font-size: var(--text-md); color: var(--text-muted); }
+  .later { margin: 0; padding: var(--space-6) var(--space-6) var(--space-6) var(--space-12); display: grid; gap: var(--space-3); border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); }
+  .later li::marker { color: var(--accent); font-family: var(--font-mono); font-size: var(--text-sm); }
+  .road-link { margin-top: var(--space-2); }
+  @media (max-width: 767px) { .road { grid-template-columns: minmax(0, 1fr); } }
   .next { margin: var(--space-4) 0 0; padding: 0; list-style: none; display: grid; gap: var(--space-3); color: var(--text-muted); }
   .next li { position: relative; padding-left: var(--space-6); }
   .next li::before { content: ''; position: absolute; left: var(--space-1); top: 0.7em; width: 6px; height: 6px; border-radius: var(--radius-sm); background: var(--accent); }
@@ -824,14 +903,14 @@ const faqs = [
   .g-t { fill: var(--text-muted); font: 500 var(--text-sm) var(--font-sans); }
   .g-t-acc { fill: var(--accent); }
   @media (prefers-reduced-motion: no-preference) {
-    .js .cs-git .g-scratch,
-    .js .cs-git .g-branch { stroke-dashoffset: 1; transition: stroke-dashoffset var(--duration-slower) var(--ease-out); }
-    .js .cs-git.in .g-scratch { stroke-dashoffset: 0; transition-delay: var(--duration-base); }
-    .js .cs-git.in .g-branch { stroke-dashoffset: 0; transition-delay: 1100ms; }
-    .js .cs-git .g-new,
-    .js .cs-git .g-t-acc { opacity: 0; transition: opacity 400ms var(--ease-out) 1900ms; }
-    .js .cs-git.in .g-new,
-    .js .cs-git.in .g-t-acc { opacity: 1; }
+    .js .review-grid .g-scratch,
+    .js .review-grid .g-branch { stroke-dashoffset: 1; transition: stroke-dashoffset var(--duration-slower) var(--ease-out); }
+    .js .review-grid.in .g-scratch { stroke-dashoffset: 0; transition-delay: var(--duration-base); }
+    .js .review-grid.in .g-branch { stroke-dashoffset: 0; transition-delay: 1100ms; }
+    .js .review-grid .g-new,
+    .js .review-grid .g-t-acc { opacity: 0; transition: opacity 400ms var(--ease-out) 1900ms; }
+    .js .review-grid.in .g-new,
+    .js .review-grid.in .g-t-acc { opacity: 1; }
   }
   @media (max-width: 1023px) {
     .shots-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -912,7 +991,7 @@ const faqs = [
     align-items: center;
   }
   .term-grid > *, .feat > *, .faq-grid > *, .os > * { min-width: 0; }
-  .term-cmd { margin-top: var(--space-8); max-width: 360px; }
+  .term-cmd { max-width: 560px; }
   .small { margin-top: var(--space-3); font-size: var(--text-md); color: var(--text-dim); }
   .small a { color: var(--text-muted); }
   .lede code { color: var(--text); }

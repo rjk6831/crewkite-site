@@ -188,6 +188,17 @@
     arm();
   }
 
+  // GOAL nod: the four provider badges light in order once, the first time the cards come into view.
+  const goal = d.querySelector('[data-goal]');
+  if (goal && !still && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      goal.classList.add('lit');
+    }, { threshold: 0.4 });
+    io.observe(goal);
+  }
+
   // Release clips. Each plays muted and looped while it is on screen and pauses when it leaves;
   // only the video for the current theme plays. With reduced motion nothing starts on its own.
   const clips = [...d.querySelectorAll('[data-clip] video')];
@@ -295,15 +306,17 @@
     words.forEach((w) => w.classList.remove('off'));
   };
 
-  // Hero replay.
+  // Hero replay. It plays once on its own, then offers Replay. With reduced motion it starts on the
+  // finished frame and plays only when the visitor presses Replay.
   const rp = d.querySelector('[data-replay]');
-  if (rp && !still) {
+  if (rp) {
     const items = [...rp.querySelectorAll('[data-at]')];
     const subs = [...rp.querySelectorAll('[data-sub]')];
     const subCount = rp.querySelector('[data-sub-count]');
     const cap = rp.querySelector('[data-caption]');
     const cur = rp.querySelector('[data-cur]');
     const toggle = rp.querySelector('[data-replay-toggle]');
+    const again = rp.querySelector('[data-replay-again]');
     const thread = rp.querySelector('.thread');
     const inner = rp.querySelector('.thread-inner');
     let run = 0;
@@ -412,11 +425,25 @@
         const pause = await s();
         if (!(await wait(pause, id))) return;
       }
-      if (id === run) play();
+      if (id === run && again) {
+        again.hidden = false;
+        if (toggle) toggle.hidden = true;
+      }
     };
+    const start = () => {
+      if (again) again.hidden = true;
+      rp.classList.add('stepped');
+      if (toggle) {
+        toggle.hidden = false;
+        paused = false;
+        rp.classList.remove('paused');
+        toggle.setAttribute('aria-label', 'Pause replay');
+      }
+      play();
+    };
+    again?.addEventListener('click', start);
 
     if (toggle) {
-      toggle.hidden = false;
       toggle.addEventListener('click', () => {
         paused = !paused;
         rp.classList.toggle('paused', paused);
@@ -427,7 +454,7 @@
       new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(rp);
     }
     d.addEventListener('visibilitychange', () => { visible = !d.hidden; });
-    play();
+    if (still) { if (again) again.hidden = false; } else start();
   }
 
   // Terminal replay, once, when it scrolls into view.

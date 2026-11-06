@@ -281,13 +281,14 @@ section {
 .cmd code {
   flex: 1;
   min-width: 0;
-  overflow-x: auto;
   font-size: var(--text-sm);
-  white-space: pre;
-  scrollbar-width: thin;
+  /* Long commands and paths wrap, so nothing hides behind the Copy button. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .cmd .copy {
   flex: none;
+  align-self: flex-start;
 }
 
 @media (max-width: 767px) {
