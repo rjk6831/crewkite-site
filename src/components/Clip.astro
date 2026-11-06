@@ -1,0 +1,67 @@
+---
+// A release clip in the same frame as Shot. Videos load nothing until they come into view; site.js
+// plays the one for the current theme while it is on screen, muted and looped. With reduced motion
+// nothing plays on its own, and the controls are there to start it. A clip that exists in one theme
+// shows in both, labelled with its theme, and never pairs with a still from the other theme.
+import { CLIPS } from '../data/media.js';
+interface Props { id: keyof typeof CLIPS }
+const { id } = Astro.props;
+const c = CLIPS[id];
+if (!c) throw new Error(`Clip: no clip "${id}"`);
+const poster = (src: string) => src.replace(/\.mp4$/, '-poster.webp');
+const themes = c.only ? [c.only] : ['dark', 'light'];
+---
+<figure class="clip" data-clip={id}>
+  <div class="clip-frame">
+    {themes.map((t) => (
+      <video
+        class:list={['clip-v', !c.only && `clip-${t}`]}
+        src={c[t]}
+        poster={poster(c[t])}
+        width={c.width}
+        height={c.height}
+        muted
+        loop
+        playsinline
+        controls
+        preload="none"
+        aria-label={c.label}
+      ></video>
+    ))}
+    {c.only && <span class="clip-tag">Dark theme only</span>}
+  </div>
+  <figcaption>{c.caption}</figcaption>
+</figure>
+
+<style>
+  .clip { margin: 0; }
+  .clip-frame {
+    position: relative;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--background);
+    box-shadow: var(--elevation-1);
+    overflow: hidden;
+  }
+  video { display: block; width: 100%; height: auto; }
+  .clip-light { display: none; }
+  :global(:root[data-theme='light']) .clip-dark { display: none; }
+  :global(:root[data-theme='light']) .clip-light { display: block; }
+  .clip-tag {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--terminal-bg);
+    color: var(--terminal-text);
+    font: var(--weight-medium) var(--text-xs) / 1.2 var(--font-mono);
+  }
+  figcaption {
+    margin-top: var(--rhythm-caption);
+    max-width: var(--measure);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm-lh);
+    color: var(--text-muted);
+  }
+</style>
