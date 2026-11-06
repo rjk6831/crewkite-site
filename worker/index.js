@@ -145,12 +145,26 @@ async function parseSums(res) {
 
 // Without the API: the tag comes from the releases/latest redirect, checksums from SHA256SUMS and
 // sizes from a HEAD on each listed file. No release date on this path.
+// release.json is the release receipt. It says whether the macOS build is notarized and, when it
+// records one, the minimum macOS version. The page claims neither without it.
+async function readReceipt(url) {
+  const out = { notarized: false, minMacos: null };
+  const t = await fetch(url, { headers: { 'user-agent': 'crewkite.dev' } });
+  if (!t.ok) return out;
+  const j = await t.json().catch(() => ({}));
+  out.notarized = j?.notarized === true || j?.signing?.notarized === true || j?.macos?.notarized === true;
+  const m = j?.macos?.minimumVersion ?? j?.macos?.minimumOS ?? j?.minimumMacOS ?? j?.minimumSystemVersion;
+  if (typeof m === 'string' && /^\d+(\.\d+){0,2}$/.test(m)) out.minMacos = m;
+  return out;
+}
+
 async function releaseWithoutApi() {
   const head = await fetch(`${REPO_URL}/releases/latest`, { redirect: 'manual', headers: { 'user-agent': 'crewkite.dev' } });
   const loc = head.headers.get('location') || '';
   const tag = loc.match(/\/releases\/tag\/([^/?#]+)/)?.[1];
   if (!tag) return null;
   const sums = await parseSums(await fetch(`${DL}/SHA256SUMS`, { headers: { 'user-agent': 'crewkite.dev' } }));
+  const receipt = await readReceipt(`${DL}/release.json`);
   const assets = await Promise.all(
     Object.keys(sums).map(async (name) => {
       const h = await fetch(`${DL}/${name}`, { method: 'HEAD', headers: { 'user-agent': 'crewkite.dev' } });
@@ -162,33 +176,23 @@ async function releaseWithoutApi() {
     version: decodeURIComponent(tag).replace(/^v/, ''),
     date: null,
     notesUrl: `${REPO_URL}/releases/tag/${tag}`,
-    notarized: false,
+    notarized: receipt.notarized,
+    minMacos: receipt.minMacos,
+    fallback: false,
     assets,
   };
 }
 
 async function getRelease(ctx, env) {
-  const rel = await cached('release-v4', ctx, async () => {
+  const rel = await cached('release-v5', ctx, async () => {
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: gh(env) });
     if (r.status === 404) return null;
     if (!r.ok) return releaseWithoutApi();
     const data = await r.json();
     const sumAsset = data.assets?.find((a) => a.name === 'SHA256SUMS');
     const sums = sumAsset ? await parseSums(await fetch(sumAsset.browser_download_url, { headers: { 'user-agent': 'crewkite.dev' } })) : {};
-    // release.json is the release receipt. It says whether the macOS build is notarized and, when
-    // it records one, the minimum macOS version. The page claims neither without it.
-    let notarized = false;
-    let minMacos = null;
-    const receipt = data.assets?.find((a) => a.name === 'release.json');
-    if (receipt) {
-      const t = await fetch(receipt.browser_download_url, { headers: { 'user-agent': 'crewkite.dev' } });
-      if (t.ok) {
-        const j = await t.json().catch(() => ({}));
-        notarized = j?.notarized === true || j?.signing?.notarized === true || j?.macos?.notarized === true;
-        const m = j?.macos?.minimumVersion ?? j?.macos?.minimumOS ?? j?.minimumMacOS ?? j?.minimumSystemVersion;
-        if (typeof m === 'string' && /^\d+(\.\d+){0,2}$/.test(m)) minMacos = m;
-      }
-    }
+    const receiptAsset = data.assets?.find((a) => a.name === 'release.json');
+    const { notarized, minMacos } = receiptAsset ? await readReceipt(receiptAsset.browser_download_url) : { notarized: false, minMacos: null };
     return {
       version: String(data.tag_name || '').replace(/^v/, '') || FALLBACK_VERSION,
       date: data.published_at || null,
