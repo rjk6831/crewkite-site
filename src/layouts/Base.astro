@@ -15,9 +15,9 @@ const jsonld = {
   name: 'CrewKite',
   description: ONE_LINER,
   applicationCategory: 'DeveloperApplication',
-  operatingSystem: 'macOS on Apple silicon; Linux x64 and arm64 (preview)',
+  operatingSystem: 'macOS, Linux',
   softwareVersion: VERSION_FALLBACK,
-  license: 'https://www.apache.org/licenses/LICENSE-2.0',
+  license: 'Apache-2.0',
   url: 'https://crewkite.dev',
   downloadUrl: 'https://crewkite.dev/download',
   codeRepository: REPO,
@@ -25,6 +25,7 @@ const jsonld = {
   author: { '@type': 'Person', name: 'Raymond J. Kraft' },
   publisher: { '@type': 'Organization', name: 'Roots No Limits LLC' },
 };
+const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
 ---
 <!doctype html>
 <html lang="en">
@@ -34,11 +35,11 @@ const jsonld = {
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
-  <meta name="theme-color" content="#151718" media="(prefers-color-scheme: dark)" />
-  <meta name="theme-color" content="#f7f8f5" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#151718" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/jbmono.woff2" as="font" type="font/woff2" crossorigin />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="CrewKite" />
   <meta property="og:title" content={title} />
@@ -50,7 +51,7 @@ const jsonld = {
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://crewkite.dev/og.png" />
   <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
-  <script is:inline>(function(){var d=document.documentElement;d.classList.add('js');var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';d.dataset.theme=t;try{if(!sessionStorage.getItem('kite')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('kite-intro');sessionStorage.setItem('kite','1');}}catch(e){}})();</script>
+  <script is:inline>(function(){var d=document.documentElement;d.classList.add('js');var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='light'&&t!=='dark'){try{t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}catch(e){t='dark';}}d.dataset.theme=t;var q=/[?&]intro=1(&|$)/.test(location.search),s=null;try{s=sessionStorage.getItem('kite');}catch(e){}if((q||!s)&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('kite-intro');try{sessionStorage.setItem('kite','1');}catch(e){}}})();</script>
   <slot name="head" />
 </head>
 <body>
@@ -58,17 +59,18 @@ const jsonld = {
   <header class="top" id="top">
     <div class="wrap top-row">
       <a class="brand" href="/" aria-label="CrewKite home">
-        <span class="kite-x"><span class="kite-glow" aria-hidden="true"></span><span class="kite-y"><Kite size={22} /></span><span class="kite-string" aria-hidden="true"></span></span>
-        <span>CrewKite</span>
+        <span class="wordmark wordmark-base" aria-hidden="true">
+          <span class="kite-x"><span class="kite-glow"></span><span class="kite-y"><Kite size={20} /></span><span class="kite-string"></span></span>
+        </span>
       </a>
       <nav aria-label="Main">
-        <a href="/download" class="nav-link">Download</a>
-        <a href="/safety" class="nav-link">Safety</a>
+        <a href="/download" class="nav-link" aria-current={here === '/download' ? 'page' : undefined}>Download</a>
+        <a href="/safety" class="nav-link" aria-current={here === '/safety' ? 'page' : undefined}>Safety</a>
         <a href={REPO} class="nav-link nav-gh" aria-label="CrewKite on GitHub">
           <Icon name="code" size={16} />
           <span>GitHub</span>
         </a>
-        <button class="theme" type="button" aria-label="Switch theme" title="Switch theme">
+        <button class="theme" type="button" aria-label="Switch to light theme" title="Switch to light theme">
           <span class="t-sun"><Icon name="sun" size={17} /></span>
           <span class="t-moon"><Icon name="moon" size={17} /></span>
         </button>
@@ -83,7 +85,7 @@ const jsonld = {
   <footer class="foot">
     <div class="wrap foot-grid">
       <div class="foot-brand">
-        <a class="brand" href="/" aria-label="CrewKite home"><Kite size={22} /><span>CrewKite</span></a>
+        <a class="brand brand-foot" href="/" aria-label="CrewKite home"><span class="wordmark wordmark-full" aria-hidden="true"></span></a>
         <p class="foot-note">CrewKite by Roots No Limits LLC, created by Raymond J. Kraft, <Email /></p>
         <p class="foot-note">This site sets no cookies and counts page views without identifying you.</p>
       </div>
@@ -122,12 +124,12 @@ const jsonld = {
   .top {
     position: sticky;
     top: 0;
-    z-index: 50;
-    background: color-mix(in srgb, var(--background) 78%, transparent);
-    backdrop-filter: saturate(150%) blur(14px);
-    -webkit-backdrop-filter: saturate(150%) blur(14px);
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--duration-base) var(--ease-out);
+    z-index: var(--z-header);
+    /* Near-solid, so nothing behind it is legible at any scroll position, with a hairline under it. */
+    background: color-mix(in srgb, var(--background) 94%, transparent);
+    backdrop-filter: saturate(150%) blur(16px);
+    -webkit-backdrop-filter: saturate(150%) blur(16px);
+    border-bottom: var(--border-hairline) solid var(--border);
   }
   .top.scrolled {
     border-bottom-color: var(--border);
@@ -136,18 +138,56 @@ const jsonld = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    gap: var(--space-4);
+    height: var(--header-height);
   }
-  /* Kite entrance, once per visit. The head script sets .kite-intro before first paint; site.js flies
-     the mark with transform and opacity only, inside its reserved 22 px box, 300 ms after first
-     paint. The string and the glow are absolutely positioned, so they take no layout space. If the
-     script never runs, the mark fades in where it belongs. */
-  .kite-x,
-  .kite-y {
-    display: inline-block;
-    line-height: 0;
+
+  /* The wordmark is a background image per theme, so only the active theme's file loads and the
+     theme switch never flashes. The header copy has its kite cut out; the kite is an SVG layer drawn
+     in the wordmark's own coordinates and placed over the gap, so it can fly in on its own. */
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    text-decoration: none;
+    flex: none;
   }
-  .kite-x { position: relative; }
+  .wordmark {
+    position: relative;
+    display: block;
+    height: var(--wordmark-height);
+    aspect-ratio: 998 / 322;
+    background: no-repeat center / contain;
+  }
+  .wordmark-base { background-image: image-set(url('/img/brand/wordmark-base-dark-1x.webp') 1x, url('/img/brand/wordmark-base-dark-2x.webp') 2x); }
+  .wordmark-full { background-image: image-set(url('/img/brand/wordmark-full-dark-1x.webp') 1x, url('/img/brand/wordmark-full-dark-2x.webp') 2x); }
+  :root[data-theme='light'] .wordmark-base { background-image: image-set(url('/img/brand/wordmark-base-light-1x.webp') 1x, url('/img/brand/wordmark-base-light-2x.webp') 2x); }
+  :root[data-theme='light'] .wordmark-full { background-image: image-set(url('/img/brand/wordmark-full-light-1x.webp') 1x, url('/img/brand/wordmark-full-light-2x.webp') 2x); }
+  .brand-foot .wordmark { height: var(--wordmark-height-small); }
+
+  /* Kite entrance, once per visit. The head script sets .kite-intro before first paint; site.js
+     flies the kite layer with transform and opacity only, 300 ms after first paint. Its box sits
+     inside the wordmark, so the header never shifts. If the script never runs, the kite fades in
+     where it belongs. */
+  /* The kite is drawn larger than its slot in the raster, by --kite-mark-scale, so it reads as a
+     mark beside the word. It grows from its anchor, the point where the string meets the kite
+     (34% across, at the bottom of its box), so it stays on the wordmark baseline and keeps the same
+     ratio to the word at every breakpoint. */
+  .kite-x {
+    --kx: calc(85.57% + 0.34 * 14.03%);
+    --ky: calc(0.93% + 52.8%);
+    position: absolute;
+    left: calc(var(--kx) - 0.34 * 14.03% * var(--kite-mark-scale));
+    top: calc(var(--ky) - 52.8% * var(--kite-mark-scale));
+    width: calc(14.03% * var(--kite-mark-scale));
+    height: calc(52.8% * var(--kite-mark-scale));
+  }
+  .kite-y,
+  .kite-x .kite {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
   .kite-glow,
   .kite-string {
     position: absolute;
@@ -156,12 +196,12 @@ const jsonld = {
   }
   .kite-glow {
     inset: calc(-1 * var(--space-3));
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     background: radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0, transparent 68%);
   }
   .kite-string {
-    left: 42%;
-    top: 88%;
+    left: 32%;
+    top: 96%;
     width: 1px;
     height: 18px;
     background: linear-gradient(var(--text-dim), transparent);
@@ -175,60 +215,60 @@ const jsonld = {
     to { opacity: 1; }
   }
 
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-weight: var(--weight-bold);
-    font-size: var(--text-lg);
-    letter-spacing: var(--tracking-snug);
-    text-decoration: none;
-  }
   .top nav {
     display: flex;
     align-items: center;
     gap: var(--space-1);
   }
-  .nav-link {
+  .nav-link,
+  .theme {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-2);
-    height: 36px;
+    min-width: 40px;
+    height: 40px;
     padding: 0 var(--space-3);
     border-radius: var(--radius-sm);
-    font-size: var(--text-md);
-    font-weight: var(--weight-medium);
+    border: 0;
+    background: transparent;
+    font: var(--weight-medium) var(--text-ui) / 1 var(--font-sans);
     color: var(--text-muted);
     text-decoration: none;
-    transition: color 150ms, background 150ms;
+    cursor: pointer;
+    transition: color var(--duration-fast), background var(--duration-fast);
   }
+  .theme { padding: 0; width: 40px; }
   .nav-link:hover,
+  .theme:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
   .nav-link[aria-current='page'] {
     color: var(--text);
     background: var(--surface);
   }
-  .theme {
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    border: 0;
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
+  /* The toggle's cue, once, when the kite lands: one turn of the icon and a soft accent ring that
+     fades. Transform, opacity and shadow only, and nothing under reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .theme.cue { animation: theme-ring 700ms var(--ease-out) 1; }
+    .theme.cue svg { animation: theme-turn 360ms var(--ease-out) 1; }
   }
-  .theme:hover {
-    color: var(--text);
-    background: var(--surface);
+  @keyframes theme-turn {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes theme-ring {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+    35% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 28%, transparent); }
+    100% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--accent) 0%, transparent); }
   }
   .t-sun { display: none; }
   :root[data-theme='light'] .t-sun { display: block; }
   :root[data-theme='light'] .t-moon { display: none; }
   @media (max-width: 767px) {
-    .nav-gh span:not(.count) { display: none; }
+    .nav-gh span { display: none; }
     .nav-link { padding: 0 var(--space-2); }
-    .top nav .count { display: none; }
   }
 
   .foot {

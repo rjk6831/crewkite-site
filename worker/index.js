@@ -1,4 +1,5 @@
 import { CSP_SCRIPT_HASHES } from './csp.generated.js';
+import { getDownloads, fetchAllReleases, sumDownloads, downloadsMarkup, localeOf, payload } from './downloads.js';
 
 const CANONICAL = 'crewkite.dev';
 const REPO = 'rjk6831/crewkite';
@@ -9,8 +10,6 @@ const TTL = 600;
 
 const ASSETS = {
   mac: 'CrewKite-macOS-arm64.dmg',
-  appimageX64: 'CrewKite-linux-x86_64.AppImage',
-  appimageArm: 'CrewKite-linux-arm64.AppImage',
 };
 
 const REDIRECTS = {
@@ -62,6 +61,9 @@ export default {
       const rel = await getRelease(ctx, env);
       return json(rel);
     }
+    if (path === '/api/downloads') {
+      return json(await downloads(request, ctx, env), 300);
+    }
     if (path === '/latest') {
       return Response.redirect(latestFor(request.headers.get('user-agent') || ''), 302);
     }
@@ -78,11 +80,11 @@ export default {
   },
 };
 
-function json(body) {
+function json(body, ttl = TTL) {
   return new Response(JSON.stringify(body), {
     headers: {
       'content-type': 'application/json; charset=utf-8',
-      'cache-control': `public, max-age=${TTL}`,
+      'cache-control': `public, max-age=${ttl}`,
       'access-control-allow-origin': '*',
       ...SECURITY_HEADERS,
     },
@@ -100,8 +102,7 @@ function platformOf(ua) {
 function latestFor(ua) {
   const p = platformOf(ua);
   if (p === 'mac') return `${DL}/${ASSETS.mac}`;
-  if (p === 'linux') return `${DL}/${ASSETS.appimageX64}`;
-  if (p === 'linux-arm') return `${DL}/${ASSETS.appimageArm}`;
+  if (p === 'linux' || p === 'linux-arm') return `https://${CANONICAL}/download#linux`;
   return `https://${CANONICAL}/download`;
 }
 
@@ -167,20 +168,25 @@ async function releaseWithoutApi() {
 }
 
 async function getRelease(ctx, env) {
-  const rel = await cached('release-v2', ctx, async () => {
+  const rel = await cached('release-v3', ctx, async () => {
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: gh(env) });
     if (r.status === 404) return null;
     if (!r.ok) return releaseWithoutApi();
     const data = await r.json();
     const sumAsset = data.assets?.find((a) => a.name === 'SHA256SUMS');
     const sums = sumAsset ? await parseSums(await fetch(sumAsset.browser_download_url, { headers: { 'user-agent': 'crewkite.dev' } })) : {};
+    // release.json is the release receipt. It says whether the macOS build is notarized and, when
+    // it records one, the minimum macOS version. The page claims neither without it.
     let notarized = false;
+    let minMacos = null;
     const receipt = data.assets?.find((a) => a.name === 'release.json');
     if (receipt) {
       const t = await fetch(receipt.browser_download_url, { headers: { 'user-agent': 'crewkite.dev' } });
       if (t.ok) {
         const j = await t.json().catch(() => ({}));
         notarized = j?.notarized === true || j?.signing?.notarized === true || j?.macos?.notarized === true;
+        const m = j?.macos?.minimumVersion ?? j?.macos?.minimumOS ?? j?.minimumMacOS ?? j?.minimumSystemVersion;
+        if (typeof m === 'string' && /^\d+(\.\d+){0,2}$/.test(m)) minMacos = m;
       }
     }
     return {
@@ -188,22 +194,46 @@ async function getRelease(ctx, env) {
       date: data.published_at || null,
       notesUrl: data.html_url,
       notarized,
+      minMacos,
       assets: (data.assets || [])
         .filter((a) => a.name !== 'SHA256SUMS' && a.name !== 'release.json')
         .map((a) => ({ name: a.name, size: a.size, sha256: sums[a.name] || null, url: `${DL}/${a.name}` })),
     };
   });
-  return rel || { version: FALLBACK_VERSION, date: null, notesUrl: `${REPO_URL}/releases`, notarized: false, assets: [], fallback: true };
+  return rel || { version: FALLBACK_VERSION, date: null, notesUrl: `${REPO_URL}/releases`, notarized: false, minMacos: null, assets: [], fallback: true };
 }
 
-const fmtSize = (b) => (b >= 1e9 ? `${(b / 1e9).toFixed(1)} GB` : `${Math.round(b / 1e6)} MB`);
+// The download total, fresh for five minutes, with the last good value kept as a stale fallback.
+// DOWNLOADS_TEST_TOTAL forces a total for screenshots and tests; it is ignored on crewkite.dev.
+async function downloads(request, ctx, env) {
+  const host = new URL(request.url).hostname;
+  if (env.DOWNLOADS_TEST_TOTAL && host !== CANONICAL) {
+    return payload(Number(env.DOWNLOADS_TEST_TOTAL), new Date().toISOString());
+  }
+  const cache = caches.default;
+  const keyOf = (k) => new Request(`https://${CANONICAL}/__cache/${k}`);
+  const store = {
+    get: async (k) => {
+      const hit = await cache.match(keyOf(k));
+      return hit ? hit.json() : null;
+    },
+    put: async (k, v, ttl) => {
+      const res = new Response(JSON.stringify(v), { headers: { 'cache-control': `public, max-age=${ttl}` } });
+      ctx.waitUntil(cache.put(keyOf(k), res));
+    },
+  };
+  return getDownloads({ store, load: async () => sumDownloads(await fetchAllReleases(fetch, REPO, gh(env))) });
+}
+
+const fmtSize = (b) => `${(b / 1e6).toFixed(1)} MB`;
 const fmtDate = (iso) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
 // Release facts and the platform button go into the HTML at the edge, so the page shows them on
 // first paint with no client request and no layout shift.
 async function rewrite(res, request, ctx, env) {
-  const rel = await getRelease(ctx, env);
+  const [rel, dl] = await Promise.all([getRelease(ctx, env), downloads(request, ctx, env)]);
+  const locale = localeOf(request.headers.get('accept-language'));
   const byName = Object.fromEntries(rel.assets.map((a) => [a.name, a]));
   const platform = platformOf(request.headers.get('user-agent') || '');
 
@@ -234,9 +264,35 @@ async function rewrite(res, request, ctx, env) {
         if (a?.sha256) e.removeAttribute('hidden');
       },
     })
+    // The page renders the signing line from the release data; a published release.json that does
+    // not say notarized takes it off.
     .on('[data-signing]', {
       element: (e) => {
-        if (rel.notarized) e.setInnerContent('Developer ID, notarized');
+        if (!rel.fallback && !rel.notarized) e.remove();
+      },
+    })
+    .on('[data-min-macos]', {
+      element: (e) => {
+        if (!rel.minMacos) return;
+        e.setInnerContent(`Needs macOS ${rel.minMacos} or later.`);
+      },
+    })
+    .on('a[data-release="notes"]', { element: (e) => e.setAttribute('href', rel.notesUrl) })
+    // Only builds the release actually carries. With no asset list (GitHub unreachable and no cache)
+    // every block stays, so the page never comes up empty.
+    .on('[data-asset]', {
+      element: (e) => {
+        if (rel.assets.length && !byName[e.getAttribute('data-asset')]) e.remove();
+      },
+    })
+    .on('[data-downloads]', {
+      element: (e) => {
+        if (!dl.visible) return;
+        e.removeAttribute('hidden');
+        e.setAttribute('data-as-of', dl.asOf);
+        e.setAttribute('title', `As of ${new Date(dl.asOf).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' })} UTC`);
+        if (dl.stale) e.setAttribute('data-stale', '');
+        e.setInnerContent(downloadsMarkup(dl, locale), { html: true });
       },
     });
 

@@ -3,11 +3,23 @@ import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import Kite from '../components/Kite.astro';
 import { REPO, BLOB, ASSETS, url, DL, VERSION_FALLBACK } from '../data/site.js';
+import { RELEASE, mb, UNRELEASED_LABEL } from '../data/release.js';
 
+const live = RELEASE.published;
+const A = (name) => RELEASE.assets[name];
 const linux = [
-  { fmt: 'AppImage', x64: ASSETS.appimageX64, arm: ASSETS.appimageArm, x64cmd: `chmod +x ${ASSETS.appimageX64} && ./${ASSETS.appimageX64}`, armcmd: `chmod +x ${ASSETS.appimageArm} && ./${ASSETS.appimageArm}`, note: 'Any distribution with FUSE' },
-  { fmt: '.deb', x64: ASSETS.debX64, arm: ASSETS.debArm, x64cmd: `sudo apt install ./${ASSETS.debX64}`, armcmd: `sudo apt install ./${ASSETS.debArm}`, note: 'Debian, Ubuntu and derivatives' },
-  { fmt: '.rpm', x64: ASSETS.rpmX64, arm: ASSETS.rpmArm, x64cmd: `sudo dnf install ./${ASSETS.rpmX64}`, armcmd: `sudo dnf install ./${ASSETS.rpmArm}`, note: 'Fedora, RHEL and derivatives' },
+  { fmt: 'DEB', note: 'Ubuntu, Debian and derivatives', files: [['x64', ASSETS.debX64, `sudo apt install ./${ASSETS.debX64}`], ['arm64', ASSETS.debArm, `sudo apt install ./${ASSETS.debArm}`]] },
+  { fmt: 'RPM', note: 'Fedora and derivatives', files: [['x64', ASSETS.rpmX64, `sudo dnf install ./${ASSETS.rpmX64}`], ['arm64', ASSETS.rpmArm, `sudo dnf install ./${ASSETS.rpmArm}`]] },
+];
+// What's new, from the 0.1.0 release notes. The notes have the full list.
+const whatsNew = [
+  'Crews: give each role its own provider, model and effort, and let roles start subagents.',
+  'Limit handoff: when a provider runs out of included allowance, the thread moves to the next connected provider with its messages and edited files.',
+  'Allowances in view: the rail shows each provider\'s usage windows and reset times, and the kite meter shows what the next message will use.',
+  'Credits stay off: Allow credit spending is off by default for OpenAI and Anthropic.',
+  'Your checkout stays as it is: each thread works in its own copy, and you accept the changes.',
+  'Run tests runs your project\'s test command in the thread\'s copy, with no model turn and no credits.',
+  'Connect each provider once. CrewKite reconnects on its own after a restart, Local included.',
 ];
 ---
 <Base title="Download CrewKite" description="Download CrewKite for macOS on Apple silicon or the Linux preview for x64 and arm64, with SHA-256 checksums." path="/download">
@@ -15,36 +27,56 @@ const linux = [
     <div class="wrap">
       <span class="eyebrow">Download</span>
       <h1 class="dl-h">CrewKite <span data-release="version">{VERSION_FALLBACK}</span></h1>
-      <p class="lede">Each build comes from the latest GitHub release, with a SHA-256 checksum beside it. Each provider still needs its own client, signed in on your computer.</p>
+      <p class="lede">Every build comes from the GitHub release, with its SHA-256 checksum beside it. Each provider still needs its own client signed in on your computer.</p>
+      {!live && <p class="prerel"><Icon name="lock" size={15} />{UNRELEASED_LABEL}. The files below are final; the buttons turn on when the release is published.</p>}
       <p class="dl-meta mono">
         <span data-release="date-line" hidden></span>
-        <a href="/changelog">Release notes</a>
+        <span class="dlc" data-downloads hidden></span>
+        <a href="/changelog" data-release="notes">Release notes</a>
         <a href={`${REPO}/releases`}>All releases</a>
       </p>
       <nav class="jump" aria-label="Platforms">
-        <a href="#macos">macOS</a><a href="#linux">Linux</a><a href="#windows">Windows</a><a href="#verify">Verify</a><a href="#matrix">Platform matrix</a>
+        <a href="#new">What's new</a><a href="#macos">macOS</a><a href="#linux">Linux</a><a href="#windows">Windows</a><a href="#verify">Verify</a><a href="#matrix">Platform matrix</a>
       </nav>
     </div>
   </section>
 
-  <section id="macos" class="plat">
+  <section id="new" class="plat" aria-labelledby="new-h">
+    <div class="wrap plat-grid">
+      <div>
+        <h2 id="new-h" class="plat-h">What's new in <span data-release="version">{VERSION_FALLBACK}</span></h2>
+        <p class="plat-sub">The first public version. <a href={RELEASE.notesUrl} data-release="notes">Read the release notes</a> for the full list.</p>
+        <p class="plat-sub">Updates: choose Check for Updates in the app menu (Help on Linux), then download the new version from this page. CrewKite also checks once a day.</p>
+      </div>
+      <ul class="news">
+        {whatsNew.map((n) => <li>{n}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section id="macos" class="plat" data-asset={ASSETS.mac}>
     <div class="wrap plat-grid">
       <div>
         <h2 class="plat-h">macOS</h2>
-        <p class="plat-sub">macOS on Apple silicon. The release notes give the tested minimum version. Intel Macs are not built.</p>
+        <p class="plat-sub">For Macs with Apple silicon. Intel Macs are not built.</p>
         <div class="dl-row">
-          <a class="btn btn-primary" href={url(ASSETS.mac)}><Icon name="download" />Download .dmg</a>
-          <span class="asset-meta mono"><span data-size={ASSETS.mac}></span><span data-signing></span></span>
+          {live ? (
+            <a class="btn btn-primary" href={url(ASSETS.mac)}><Icon name="download" />Download .dmg</a>
+          ) : (
+            <button class="btn btn-primary" type="button" disabled><Icon name="download" />{UNRELEASED_LABEL}</button>
+          )}
+          <span class="asset-meta mono" data-size={ASSETS.mac}>{mb(A(ASSETS.mac).bytes)}</span>
         </div>
-        <div class="sha" data-sha-row={ASSETS.mac} hidden>
-          <span class="sha-l">SHA-256</span><code data-sha={ASSETS.mac}></code>
+        {RELEASE.notarized && <p class="signing" data-signing><Icon name="shield" size={15} />Signed with Developer ID and notarized by Apple.</p>}
+        <div class="sha" data-sha-row={ASSETS.mac}>
+          <span class="sha-l">SHA-256</span><code data-sha={ASSETS.mac}>{A(ASSETS.mac).sha256}</code>
           <button class="copy" type="button" data-copy-sha={ASSETS.mac} hidden><Icon name="copy" size={13} /><span data-label>Copy</span></button>
         </div>
       </div>
       <ol class="steps">
-        <li><b>Open</b> the .dmg you downloaded.</li>
-        <li><b>Drag</b> CrewKite into Applications.</li>
-        <li><b>Launch</b> CrewKite from Applications, then connect a provider in Settings.</li>
+        <li>Open the .dmg you downloaded.</li>
+        <li>Drag CrewKite into Applications.</li>
+        <li>On first launch, connect each provider once in Settings. After that CrewKite reconnects on its own.</li>
       </ol>
     </div>
   </section>
@@ -52,19 +84,25 @@ const linux = [
   <section id="linux" class="plat">
     <div class="wrap">
       <h2 class="plat-h">Linux preview</h2>
-      <p class="plat-sub">x64 and arm64. OpenAI, Anthropic and Local run on Linux. Google is not on Linux yet.</p>
+      <p class="plat-sub">The DEB is tested on Ubuntu 24.04 on x64 and arm64, including desktop launch and reopen with the normal Chromium sandbox. The RPM is tested on Fedora 45 for install, headless runtime and the CLI; desktop launch on Fedora is not tested yet.</p>
+      <p class="plat-sub">OpenAI, Anthropic and Local run on Linux. Google is not on Linux.</p>
       <div class="ltable" role="table" aria-label="Linux builds">
         {linux.map((r) => (
           <div class="lrow" role="row">
             <div class="lfmt" role="cell"><b>{r.fmt}</b><span>{r.note}</span></div>
-            {[['x64', r.x64, r.x64cmd], ['arm64', r.arm, r.armcmd]].map(([arch, file, cmd]) => (
-              <div class="lcell" role="cell">
+            {r.files.map(([arch, file, cmd]) => (
+              <div class="lcell" role="cell" data-asset={file}>
                 <div class="lcell-top">
-                  <a class="btn btn-ghost btn-sm" href={url(file)}><Icon name="download" size={16} />{arch}</a>
-                  <span class="asset-meta mono" data-size={file}></span>
+                  {live ? (
+                    <a class="btn btn-ghost btn-sm" href={url(file)}><Icon name="download" size={16} />{arch}</a>
+                  ) : (
+                    <button class="btn btn-ghost btn-sm" type="button" disabled aria-label={`${arch}, ${UNRELEASED_LABEL}`}><Icon name="download" size={16} />{arch}</button>
+                  )}
+                  <span class="asset-meta mono" data-size={file}>{mb(A(file).bytes)}</span>
+                  <span class="asset-name mono">{file}</span>
                 </div>
                 <div class="cmd"><code>{cmd}</code><button class="copy" type="button" data-copy={cmd} hidden><Icon name="copy" size={13} /><span data-label>Copy</span></button></div>
-                <div class="sha sha-sm" data-sha-row={file} hidden><span class="sha-l">SHA-256</span><code data-sha={file}></code></div>
+                <div class="sha sha-sm" data-sha-row={file}><span class="sha-l">SHA-256</span><code data-sha={file}>{A(file).sha256}</code></div>
               </div>
             ))}
           </div>
@@ -84,12 +122,14 @@ const linux = [
     <div class="wrap plat-grid">
       <div>
         <h2 class="plat-h">Verify the download</h2>
-        <p class="plat-sub">Download <a href={`${DL}/SHA256SUMS`}>SHA256SUMS</a> into the same folder, then check the file before you open it.</p>
+        <p class="plat-sub">Download <a href={`${DL}/SHA256SUMS`}>SHA256SUMS</a> into the same folder, then check the file before you open it. On macOS, check the signature too once CrewKite is in Applications.</p>
       </div>
       <div class="verify">
-        <p class="v-l">macOS</p>
+        <p class="v-l">macOS checksum</p>
         <div class="cmd"><code>shasum -a 256 -c SHA256SUMS --ignore-missing</code><button class="copy" type="button" data-copy="shasum -a 256 -c SHA256SUMS --ignore-missing" hidden><Icon name="copy" size={13} /><span data-label>Copy</span></button></div>
-        <p class="v-l">Linux</p>
+        <p class="v-l">macOS signature</p>
+        <div class="cmd"><code>spctl -a -vv /Applications/CrewKite.app</code><button class="copy" type="button" data-copy="spctl -a -vv /Applications/CrewKite.app" hidden><Icon name="copy" size={13} /><span data-label>Copy</span></button></div>
+        <p class="v-l">Linux checksum</p>
         <div class="cmd"><code>sha256sum -c SHA256SUMS --ignore-missing</code><button class="copy" type="button" data-copy="sha256sum -c SHA256SUMS --ignore-missing" hidden><Icon name="copy" size={13} /><span data-label>Copy</span></button></div>
       </div>
     </div>
@@ -101,11 +141,11 @@ const linux = [
       <div class="mtx-wrap">
         <table class="mtx">
           <thead>
-            <tr><th scope="col">Platform</th><th scope="col">Build</th><th scope="col"><span class="fam fam-o">O</span> OpenAI</th><th scope="col"><span class="fam fam-a">A</span> Anthropic</th><th scope="col"><span class="fam fam-g">G</span> Google</th><th scope="col"><span class="fam fam-l">L</span> Local</th></tr>
+            <tr><th scope="col">Platform</th><th scope="col">Build</th><th scope="col"><span class="fam fam-g">G</span> Google</th><th scope="col"><span class="fam fam-o">O</span> OpenAI</th><th scope="col"><span class="fam fam-a">A</span> Anthropic</th><th scope="col"><span class="fam fam-l">L</span> Local</th></tr>
           </thead>
           <tbody>
-            <tr><th scope="row">macOS, Apple silicon</th><td>.dmg</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
-            <tr><th scope="row">Linux x64 and arm64 (preview)</th><td>AppImage, .deb, .rpm</td><td class="y">Yes</td><td class="y">Yes</td><td class="n">Not yet</td><td class="y">Yes</td></tr>
+            <tr><th scope="row">macOS, Apple silicon</th><td>DMG</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
+            <tr><th scope="row">Linux x64 and arm64 (preview)</th><td>DEB, RPM</td><td class="n">Not on Linux</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
             <tr><th scope="row">Windows</th><td>Not supported yet</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr>
             <tr><th scope="row">macOS Intel</th><td>Not built</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="n">No</td></tr>
           </tbody>
@@ -117,14 +157,14 @@ const linux = [
   <section class="plat">
     <div class="wrap plat-grid">
       <div>
-        <h2 class="plat-h">Provider clients</h2>
-        <p class="plat-sub">CrewKite accepts a range of client builds within the major version I tested. Settings names the version it found. <a href={`${BLOB}/docs/providers.md#client-versions`}>Provider routes</a> has the setup for each.</p>
+        <h2 class="plat-h">Requirements</h2>
+        <p class="plat-sub">Each provider's own client, signed in on this computer. Settings names the version it found. <a href={`${BLOB}/docs/providers.md#client-versions`}>Provider routes</a> has the setup for each.</p>
       </div>
       <dl class="clients">
-        <div><dt><span class="fam fam-o">O</span>OpenAI</dt><dd>From 0.163.0, tested with 0.163.0</dd></div>
-        <div><dt><span class="fam fam-a">A</span>Anthropic</dt><dd>From 2.1.0, tested with 2.1.302</dd></div>
-        <div><dt><span class="fam fam-g">G</span>Google quota reader</dt><dd>From 1.4.0, tested with 1.4.2</dd></div>
-        <div><dt><span class="fam fam-l">L</span>Local</dt><dd>LM Studio with one loaded model</dd></div>
+        <div><dt><span class="fam fam-g">G</span>Google quota reader</dt><dd>1.4.0 or newer, macOS only</dd></div>
+        <div><dt><span class="fam fam-o">O</span>OpenAI client</dt><dd>0.163.0 or newer</dd></div>
+        <div><dt><span class="fam fam-a">A</span>Anthropic client</dt><dd>2.1.259 or newer</dd></div>
+        <div><dt><span class="fam fam-l">L</span>Local</dt><dd>LM Studio with a loaded model</dd></div>
       </dl>
     </div>
   </section>
@@ -157,7 +197,7 @@ const linux = [
   .plat.last { border-top: 0; padding-top: var(--space-2); }
   .plat-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-12); align-items: start; }
   .plat-h { font-size: var(--text-h3); }
-  .plat-sub { margin-top: var(--space-3); color: var(--text-muted); max-width: 62ch; }
+  .plat-sub { margin-top: var(--space-3); color: var(--text-muted); max-width: var(--measure); }
   .plat-sub a { color: var(--text); }
   .win-note { font-size: var(--text-lg); }
   .dl-row { margin-top: var(--space-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
@@ -189,7 +229,12 @@ const linux = [
     color: var(--text-muted);
   }
   .steps li::before { content: counter(s); font: 600 var(--text-sm)/1 var(--font-mono); color: var(--accent); }
-  .steps b { color: var(--text); font-weight: var(--weight-semibold); }
+  .signing { margin-top: var(--space-4); display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-md); color: var(--green); }
+  .prerel { margin-top: var(--space-4); display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--surface); font-size: var(--text-md); color: var(--text-muted); }
+  .asset-name { font-size: var(--text-xs); color: var(--text-dim); overflow-wrap: anywhere; }
+  .news { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-3); }
+  .news li { position: relative; padding-left: var(--space-6); color: var(--text-muted); max-width: var(--measure); }
+  .news li::before { content: ''; position: absolute; left: var(--space-1); top: 0.7em; width: 6px; height: 6px; border-radius: var(--radius-sm); background: var(--accent); }
   .ltable { margin-top: var(--space-6); display: grid; gap: var(--space-3); }
   .lrow {
     display: grid;
@@ -203,10 +248,10 @@ const linux = [
   .lfmt { display: grid; align-content: start; gap: var(--space-1); }
   .lfmt b { font-size: var(--text-lg); }
   .lfmt span { font-size: var(--text-sm); color: var(--text-dim); }
-  .lcell { min-width: 0; display: grid; gap: var(--space-2); }
-  .lcell-top { display: flex; align-items: center; gap: var(--space-3); }
+  .lcell { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+  .lcell-top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
   .lcell .cmd code { font-size: var(--text-xs); }
-  .verify { display: grid; gap: var(--space-2); }
+  .verify { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2); min-width: 0; }
   .v-l { font: 500 var(--text-xs)/1 var(--font-mono); color: var(--text-dim); margin-top: var(--space-2); }
   .mtx-wrap { margin-top: var(--space-6); overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); }
   .mtx { width: 100%; border-collapse: collapse; font-size: var(--text-md); min-width: 680px; }
@@ -222,8 +267,8 @@ const linux = [
   .clients dt { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-medium); }
   .clients dd { margin: 0; color: var(--text-muted); text-align: right; }
   @media (max-width: 1023px) {
-    .plat-grid { grid-template-columns: 1fr; gap: var(--space-6); }
-    .lrow { grid-template-columns: 1fr; }
+    .plat-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .lrow { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 480px) {
     .clients > div { flex-direction: column; gap: var(--space-1); }

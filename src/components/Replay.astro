@@ -4,31 +4,32 @@ import Icon from './Icon.astro';
 // An illustrative replay of one thread, drawn with the app's tokens and the preview project's data.
 // Without JavaScript or with reduced motion it shows the finished thread as a still frame.
 
-// Windows as the app shows them: OpenAI reports one weekly window, Anthropic and Google report a
-// five-hour and a weekly one. Final values are the still frame; the script starts a little higher.
+// The rail in GOAL order (Google, OpenAI, Anthropic, Local), as the app shows it. Google reports a
+// five-hour and a weekly window, OpenAI a weekly one; Anthropic's windows depend on the plan, so the
+// replay shows its remaining allowance with no window named. Readings are illustrative.
 const gauges = [
-  { fam: 'o', name: 'OpenAI', rows: [{ key: 'ow', label: '', v: 80, suffix: ' left' }], sub: 'resets in 2 d' },
-  { fam: 'a', name: 'Anthropic', rows: [{ key: 'a5', label: '5 h', v: 0 }, { key: 'aw', label: 'week', v: 64 }], sub: 'resets in 1 h 40 min' },
   { fam: 'g', name: 'Google', rows: [{ key: 'g5', label: '5 h', v: 85 }, { key: 'gw', label: 'week', v: 65 }], sub: 'resets in 3 d' },
+  { fam: 'o', name: 'OpenAI', rows: [{ key: 'ow', label: '', v: 80, suffix: ' left' }], sub: 'resets in 2 d' },
+  { fam: 'a', name: 'Anthropic', rows: [{ key: 'a5', label: '', v: 0, suffix: ' left' }], sub: 'resets in 1 h 40 min' },
 ];
 ---
-<figure class="replay" data-replay aria-label="Illustrative replay of one CrewKite thread: Anthropic plans and starts subagents, the thread moves to OpenAI at Anthropic's five-hour limit, OpenAI edits, Google answers a side question, a local model reviews, and Accept makes a branch">
+<figure class="replay" data-replay aria-label="Illustrative replay of one CrewKite thread: the Anthropic orchestrator plans and starts subagents, the thread moves to the OpenAI builder when Anthropic reaches its limit, a local model answers a side question beside the builder, the OpenAI reviewer finds a gap, the Google fixer closes it, and Accept makes a branch">
   <div class="win">
     <div class="win-bar">
       <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="win-fam" aria-hidden="true"><span class="fam fam-o" data-cur>O</span></span>
       <span class="win-title">Add netMinor(subtotalMinor, discountMinor) <em>demo-shop</em></span>
       <span class="win-tag">Illustrative replay</span>
-      <button class="rp-toggle" type="button" data-replay-toggle aria-label="Pause replay" hidden>
+      <button class="rp-toggle" type="button" data-replay-toggle aria-label="Pause replay" data-off tabindex="-1">
         <span class="i-pause"><Icon name="pause" size={14} /></span>
         <span class="i-play"><Icon name="play" size={14} /></span>
       </button>
     </div>
 
     <div class="strip" aria-hidden="true">
+      <span class="sg" data-row="g"><span class="fam fam-g">G</span><span class="sg-bar" style="--c:var(--family-google-fill)"><i data-g="g5" style="--v:85"></i></span><b><span data-gt="g5">85</span>%</b></span>
       <span class="sg" data-row="o"><span class="fam fam-o">O</span><span class="sg-bar" style="--c:var(--family-openai-fill)"><i data-g="ow" style="--v:80"></i></span><b><span data-gt="ow">80</span>%</b></span>
       <span class="sg" data-row="a"><span class="fam fam-a">A</span><span class="sg-bar" style="--c:var(--family-anthropic-fill)"><i data-g="a5" style="--v:0"></i></span><b><span data-gt="a5">0</span>%</b></span>
-      <span class="sg" data-row="g"><span class="fam fam-g">G</span><span class="sg-bar" style="--c:var(--family-google-fill)"><i data-g="g5" style="--v:85"></i></span><b><span data-gt="g5">85</span>%</b></span>
       <span class="sg" data-row="l"><span class="fam fam-l">L</span><span class="sg-bar sg-inf" style="--c:var(--family-local-fill)"><i style="--v:100"></i></span>∞</span>
     </div>
 
@@ -67,7 +68,7 @@ const gauges = [
           <div class="it user" data-at="0">Add netMinor(subtotalMinor, discountMinor) to net.mjs. It must never return less than zero.</div>
 
           <div class="it turn" data-at="1">
-            <div class="turn-h"><span class="fam fam-a">A</span>Anthropic · Opus 5.5</div>
+            <div class="turn-h"><span class="fam fam-a">A</span>Orchestrator · Anthropic Opus 5.5</div>
             <p data-type>The function is a stub. I will find every caller first, then validate both inputs as safe integers and clamp the result at zero.</p>
           </div>
 
@@ -78,10 +79,10 @@ const gauges = [
             <div class="sub" data-sub="3"><span class="sub-s ok-s"><Icon name="check" size={13} /></span>Subagent 3 <code>test/</code><span class="sub-m">Sonnet 5.5</span></div>
           </div>
 
-          <div class="it divider" data-at="3"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: five-hour limit reached, resets in 1 h 40 min.</span></div>
+          <div class="it divider" data-at="3"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: usage limit reached.</span></div>
 
           <div class="it turn" data-at="4">
-            <div class="turn-h"><span class="fam fam-o">O</span>OpenAI · gpt-6.1-sol</div>
+            <div class="turn-h"><span class="fam fam-o">O</span>Builder · OpenAI gpt-6.1-sol</div>
             <p data-type>netMinor is a stub today. I am replacing it with a version that checks both inputs are non-negative safe integers and returns the subtotal minus the discount, never below zero.</p>
           </div>
 
@@ -102,13 +103,18 @@ const gauges = [
           </div>
 
           <div class="it turn ask" data-at="9">
-            <div class="turn-h"><span class="fam fam-g">G</span>Google · ask<span class="ask-b">Ask</span></div>
-            <p data-type>The clamp is right. A test where the discount exceeds the subtotal would pin that edge.</p>
+            <div class="turn-h"><span class="fam fam-l">L</span>Local gpt-oss-20b<span class="ask-b">Ask</span></div>
+            <p data-type>Discounts reach netMinor in minor units from cart.mjs, so both inputs are integers. The builder keeps running.</p>
           </div>
 
           <div class="it turn" data-at="10">
-            <div class="turn-h"><span class="fam fam-l">L</span>Local · review</div>
-            <p data-type>Tests pass in the scratch copy. The clamp holds when the discount equals or exceeds the subtotal. No changes needed.</p>
+            <div class="turn-h"><span class="fam fam-o">O</span>Reviewer · OpenAI gpt-6-astra</div>
+            <p data-type>Tests pass in the scratch copy. One gap: no test where the discount exceeds the subtotal.</p>
+          </div>
+
+          <div class="it turn" data-at="13">
+            <div class="turn-h"><span class="fam fam-g">G</span>Fixer · Google gemini-4-argon</div>
+            <p data-type>Added that test. Six of six pass.</p>
           </div>
 
           <div class="it card accept" data-at="11">
@@ -124,6 +130,7 @@ const gauges = [
   </div>
   <figcaption class="caption">
     <span data-caption>Accept makes a new local branch.</span>
+    <button class="rp-again" type="button" data-replay-again hidden><Icon name="play" size={13} />Replay</button>
   </figcaption>
 </figure>
 
@@ -162,8 +169,13 @@ const gauges = [
     text-overflow: ellipsis;
   }
   .win-title em { font-style: normal; color: var(--text-dim); margin-left: var(--space-2); }
+  /* Fixed width, so the mono font arriving late never moves the bar. */
   .win-tag {
     flex: none;
+    width: 150px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
     font: 500 var(--text-xs)/1 var(--font-mono);
     color: var(--text-dim);
     padding: var(--space-1) var(--space-2);
@@ -181,6 +193,8 @@ const gauges = [
     color: var(--text-muted);
     cursor: pointer;
   }
+  /* Space is kept for the toggle before the script shows it, so nothing shifts. */
+  .rp-toggle[data-off] { visibility: hidden; }
   .rp-toggle .i-play { display: none; }
   .paused .rp-toggle .i-play { display: block; }
   .paused .rp-toggle .i-pause { display: none; }
@@ -306,6 +320,10 @@ const gauges = [
   }
   /* With motion allowed, items start invisible from the first paint and only change opacity, so the
      replay never moves layout. The thread scrolls with a transform. */
+  /* A replay the visitor started steps through even with reduced motion, with no transitions. */
+  .stepped .it:not(.on),
+  .stepped .acc-done:not(.on),
+  .stepped .sub:not(.on) { opacity: 0; }
   @media (prefers-reduced-motion: no-preference) {
     :global(.js) .thread { justify-content: flex-start; }
     :global(.js) .thread-inner { padding-top: var(--space-6); transition: transform 600ms var(--ease-out); will-change: transform; }
@@ -455,6 +473,23 @@ const gauges = [
     color: var(--text);
   }
   .caption span { display: inline-block; transition: opacity 250ms, transform 250ms; }
+  /* Shown when a pass ends, or from the start with reduced motion, where nothing plays on its own. */
+  .caption { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
+  .rp-again {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: 28px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    font: var(--weight-medium) var(--text-sm) / 1 var(--font-sans);
+    cursor: pointer;
+  }
+  .rp-again[hidden] { display: none; }
+  .rp-again:hover { background: var(--surface-hover); }
   .caption span.swap { opacity: 0; transform: translateY(4px); }
 
   @media (max-width: 1023px) {

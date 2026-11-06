@@ -108,7 +108,10 @@ section {
   position: relative;
 }
 .eyebrow {
-  display: inline-flex;
+  /* A block of its own, so the line box is the label's height and the gap to the heading is the
+     rhythm token alone. */
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: var(--space-2);
   font: 500 var(--text-xs)/1 var(--font-mono);
@@ -125,16 +128,16 @@ section {
 }
 .h2 {
   font-size: var(--text-h2);
-  margin-top: var(--space-4);
+  margin-top: var(--rhythm-eyebrow);
 }
 .lede {
-  margin-top: var(--space-4);
-  max-width: 62ch;
+  margin-top: var(--rhythm-lede);
+  max-width: var(--measure);
   font-size: var(--text-lg);
   color: var(--text-muted);
 }
 .section-head {
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--rhythm-content);
 }
 
 /* Buttons */
@@ -171,6 +174,16 @@ section {
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 36px -12px var(--accent);
+}
+/* An installer button before the release is published: visible, labelled, not clickable. */
+.btn:disabled,
+.btn:disabled:hover {
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
 }
 .btn-ghost {
   background: var(--surface);
@@ -268,20 +281,17 @@ section {
 .cmd code {
   flex: 1;
   min-width: 0;
-  overflow-x: auto;
   font-size: var(--text-sm);
-  white-space: pre;
-  scrollbar-width: thin;
+  /* Long commands and paths wrap, so nothing hides behind the Copy button. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .cmd .copy {
   flex: none;
+  align-self: flex-start;
 }
 
 @media (max-width: 767px) {
-  :root {
-    --gutter: 16px;
-    --section: 28px;
-  }
   .lede {
     font-size: var(--text-base);
   }
@@ -297,4 +307,14 @@ section {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* Download count. The Worker fills [data-downloads] only at or above the threshold; the number has
+   a min-width in ch and tabular figures, so the count-up never moves the row. */
+[data-downloads][hidden] { display: none; }
+.dlc-n {
+  display: inline-block;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
 }

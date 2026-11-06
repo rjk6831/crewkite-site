@@ -1,0 +1,47 @@
+---
+// The one frame for every app picture. Each slot renders a dark and a light image, each with 1x and
+// 2x sources; CSS shows the one that matches [data-theme]. The hidden one is display: none, so with
+// loading="lazy" the browser never fetches it, and both share one width and height, so a theme switch
+// never moves the page.
+import { MEDIA, sources } from '../data/media.js';
+interface Props { id: keyof typeof MEDIA; eager?: boolean }
+const { id, eager = false } = Astro.props;
+const m = MEDIA[id];
+if (!m) throw new Error(`Shot: no media entry "${id}"`);
+const s = sources(id);
+const set = ([a, b]: string[]) => `${a} 1x, ${b} 2x`;
+const loading = eager ? 'eager' : 'lazy';
+---
+<figure class="shot" data-shot={id}>
+  <div class="shot-frame">
+    <img class="shot-dark" src={s.dark[0]} srcset={set(s.dark)} width={m.width} height={m.height} loading={loading} decoding="async" alt={m.alt} />
+    <img class="shot-light" src={s.light[0]} srcset={set(s.light)} width={m.width} height={m.height} loading={loading} decoding="async" alt={m.alt} />
+  </div>
+  <figcaption>{m.caption}</figcaption>
+</figure>
+
+<style>
+  .shot { margin: 0; max-width: 100%; }
+  .shot-frame {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--background);
+    box-shadow: var(--elevation-1);
+    overflow: hidden;
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .shot-light { display: none !important; }
+  :global(:root[data-theme='light']) .shot-dark { display: none !important; }
+  :global(:root[data-theme='light']) .shot-light { display: block !important; }
+  figcaption {
+    margin-top: var(--rhythm-caption);
+    max-width: var(--measure);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm-lh);
+    color: var(--text-muted);
+  }
+</style>

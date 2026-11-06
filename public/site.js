@@ -29,7 +29,8 @@
       const shrink = wide ? 600 : 400;
       const snap = 180;
       const land = D - snap;
-      const big = wide ? 2 : 1.5;
+      // It flies at 44 px tall on wide screens and 32 px on phones, then settles at the wordmark's size.
+      const big = Math.max(1, (wide ? 44 : 32) / (home.height || 17));
       const frames = [];
       const N = wide ? 90 : 30;
       for (let i = 0; i <= N; i++) {
@@ -84,8 +85,18 @@
         { opacity: 0, transform: 'scale(1.25)' },
       ], { duration: 520, delay: land, easing: 'ease-out' });
 
+      let cued = false;
       const stop = () => {
         anims.forEach((a) => { try { a.finish(); } catch (e) {} });
+        // Once the kite has landed, point at the theme toggle once.
+        if (!cued) {
+          cued = true;
+          const t = d.querySelector('.theme');
+          if (t) {
+            t.addEventListener('animationend', (e) => { if (e.target === t) t.classList.remove('cue'); });
+            t.classList.add('cue');
+          }
+        }
         removeEventListener('scroll', stop);
         removeEventListener('pointerdown', stop, true);
         removeEventListener('keydown', stop, true);
@@ -105,14 +116,114 @@
   };
   kiteIntro();
 
-  // Theme toggle. The inline head script applies a saved choice before first paint.
-  const sysDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
-  d.querySelector('.theme')?.addEventListener('click', () => {
-    const now = root.dataset.theme || (sysDark() ? 'dark' : 'light');
-    const next = now === 'dark' ? 'light' : 'dark';
+  // Theme. A first visit follows the system setting; the head script applies it, or a saved choice,
+  // before first paint. The toggle overrides it and remembers the choice in this browser. Until a
+  // choice is saved, a change to the system setting carries through live.
+  const toggle = d.querySelector('.theme');
+  const saved = () => { try { const v = localStorage.getItem('theme'); return v === 'light' || v === 'dark' ? v : null; } catch (e) { return null; } };
+  const sync = () => {
+    const light = root.dataset.theme === 'light';
+    // The label and tooltip name the action the button takes.
+    const action = light ? 'Switch to dark theme' : 'Switch to light theme';
+    toggle?.setAttribute('aria-label', action);
+    toggle?.setAttribute('title', action);
+    d.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f8f5' : '#151718');
+  };
+  sync();
+  try {
+    matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+      if (saved()) return;
+      root.dataset.theme = e.matches ? 'light' : 'dark';
+      sync();
+    });
+  } catch (e) {}
+  toggle?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
     root.dataset.theme = next;
     try { localStorage.setItem('theme', next); } catch (e) {}
+    sync();
   });
+
+  // Download count. The Worker renders it on the page only at or above its threshold, so a hidden
+  // slot stays hidden and nothing here can make the row reflow. A visible count counts up from 0 over
+  // about 600 ms (shown as is with reduced motion), then checks /api/downloads every five minutes
+  // while the tab is visible and only ever ticks up. Screen readers hear the first render once.
+  const counts = [...d.querySelectorAll('[data-downloads]:not([hidden])')];
+  if (counts.length) {
+    const nf = (() => { try { return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 1 }); } catch (e) { return new Intl.NumberFormat('en'); } })();
+    const fmt = (n) => (n >= 10000 ? `${nf.format(Math.floor(n / 100) / 10)}k` : nf.format(Math.round(n)));
+    let total = Math.max(...counts.map((c) => +c.querySelector('[data-total]')?.dataset.total || 0));
+    const paint = (n) => counts.forEach((c) => {
+      const el = c.querySelector('[data-total]');
+      if (!el) return;
+      el.textContent = fmt(n);
+      el.style.minWidth = `${Math.max(fmt(total).length, parseFloat(el.style.minWidth) || 0)}ch`;
+    });
+    const announce = () => counts.forEach((c, i) => {
+      const sr = c.querySelector('[data-downloads-sr]');
+      if (!sr) return;
+      const text = `${fmt(total)} downloads`;
+      if (i === 0) {
+        sr.setAttribute('aria-live', 'polite');
+        sr.textContent = '';
+        requestAnimationFrame(() => { sr.textContent = text; setTimeout(() => sr.removeAttribute('aria-live'), 1000); });
+      } else sr.textContent = text;
+    });
+    const countUp = (from, to, ms, done) => {
+      if (still || !window.requestAnimationFrame) { paint(to); done?.(); return; }
+      const t0 = performance.now();
+      const step = (now) => {
+        const p = Math.min(1, (now - t0) / ms);
+        paint(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step); else done?.();
+      };
+      requestAnimationFrame(step);
+    };
+    countUp(0, total, 600, announce);
+    const poll = async () => {
+      if (d.hidden) return;
+      try {
+        const r = await fetch('/api/downloads', { headers: { accept: 'application/json' } });
+        const j = await r.json();
+        if (j.visible && j.total > total) {
+          const from = total;
+          total = j.total;
+          counts.forEach((c) => c.querySelector('[data-downloads-sr]') && (c.querySelector('[data-downloads-sr]').textContent = `${fmt(total)} downloads`));
+          countUp(from, total, 600);
+        }
+      } catch (e) {}
+    };
+    let timer = null;
+    const arm = () => { clearInterval(timer); timer = d.hidden ? null : setInterval(poll, 300000); };
+    d.addEventListener('visibilitychange', arm);
+    arm();
+  }
+
+  // GOAL nod: the four provider badges light in order once, the first time the cards come into view.
+  const goal = d.querySelector('[data-goal]');
+  if (goal && !still && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      goal.classList.add('lit');
+    }, { threshold: 0.4 });
+    io.observe(goal);
+  }
+
+  // Release clips. Each plays muted and looped while it is on screen and pauses when it leaves;
+  // only the video for the current theme plays. With reduced motion nothing starts on its own.
+  const clips = [...d.querySelectorAll('[data-clip] video')];
+  if (clips.length && 'IntersectionObserver' in window && !still) {
+    const shown = (v) => v.getClientRects().length > 0;
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      const v = e.target;
+      if (e.isIntersecting && shown(v)) { v.preload = 'auto'; v.play().catch(() => {}); } else v.pause();
+    }), { threshold: 0.5 });
+    // The markup carries controls for no-script and reduced motion; a clip that plays itself drops them.
+    clips.forEach((v) => { v.controls = false; io.observe(v); });
+    new MutationObserver(() => clips.forEach((v) => { if (!shown(v)) v.pause(); }))
+      .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  }
 
   const top = d.getElementById('top');
   const onScroll = () => top?.classList.toggle('scrolled', scrollY > 8);
@@ -206,15 +317,17 @@
     words.forEach((w) => w.classList.remove('off'));
   };
 
-  // Hero replay.
+  // Hero replay. It plays once on its own, then offers Replay. With reduced motion it starts on the
+  // finished frame and plays only when the visitor presses Replay.
   const rp = d.querySelector('[data-replay]');
-  if (rp && !still) {
+  if (rp) {
     const items = [...rp.querySelectorAll('[data-at]')];
     const subs = [...rp.querySelectorAll('[data-sub]')];
     const subCount = rp.querySelector('[data-sub-count]');
     const cap = rp.querySelector('[data-caption]');
     const cur = rp.querySelector('[data-cur]');
     const toggle = rp.querySelector('[data-replay-toggle]');
+    const again = rp.querySelector('[data-replay-again]');
     const thread = rp.querySelector('.thread');
     const inner = rp.querySelector('.thread-inner');
     let run = 0;
@@ -299,21 +412,22 @@
       if (subCount) subCount.textContent = '0';
       if (inner) inner.style.transform = 'translateY(0)';
       rp.querySelectorAll('[data-type]').forEach((el) => prep(el).forEach((w) => w.classList.add('off')));
-      setG('ow', 81); setG('a5', 12); setG('aw', 66); setG('g5', 88); setG('gw', 66);
+      setG('g5', 88); setG('gw', 66); setG('ow', 81); setG('a5', 12);
       live(null);
       if (cur) { cur.textContent = 'A'; cur.className = 'fam fam-a'; }
       const steps = [
         async () => { await setCap('You ask once.'); show(0); return 1300; },
-        async () => { await setCap('Anthropic plans the change.'); rp.classList.add('running'); live('a'); show(1); await typeIn(1, id); return 400; },
+        async () => { await setCap('The Anthropic orchestrator plans the change.'); rp.classList.add('running'); live('a'); show(1); await typeIn(1, id); return 400; },
         async () => { await setCap('Anthropic starts subagents. Each one shows under its step.'); show(2); count('a5', 12, 6, 1400, id); await spawn(id); return 500; },
-        async () => { await setCap('Anthropic reaches its five-hour limit.'); await Promise.all([count('a5', 6, 0, 1100, id), count('aw', 66, 64, 1100, id)]); return 400; },
-        async () => { await setCap('The thread moves to OpenAI with its messages and files.'); live('o'); show(3); return 1500; },
+        async () => { await setCap('Anthropic reaches its limit.'); await count('a5', 6, 0, 1100, id); return 400; },
+        async () => { await setCap('The thread moves to the OpenAI builder with its messages and files.'); live('o'); show(3); return 1500; },
         async () => { await setCap('OpenAI edits a scratch copy of the repository.'); show(4); await typeIn(4, id); return 300; },
         async () => { show(6); count('ow', 81, 80, 900, id); return 1500; },
         async () => { await setCap('Commands wait for your approval.'); show(7); return 1400; },
         async () => { await press(8, id); return 600; },
-        async () => { await setCap('Google answers a side question.'); live('g'); show(9); count('g5', 88, 85, 1400, id); count('gw', 66, 65, 1400, id); await typeIn(9, id); return 700; },
-        async () => { await setCap('A local model reviews the work.'); live('l'); show(10); await typeIn(10, id); return 800; },
+        async () => { await setCap('A side question runs on the local model beside the builder.'); live('l'); show(9); await typeIn(9, id); return 700; },
+        async () => { await setCap('The OpenAI reviewer finds a gap.'); live('o'); show(10); await typeIn(10, id); return 600; },
+        async () => { await setCap('The Google fixer closes it.'); live('g'); show(13); count('g5', 88, 85, 1400, id); count('gw', 66, 65, 1400, id); await typeIn(13, id); return 800; },
         async () => { await setCap('Accept makes a new local branch.'); live(null); show(11); return 1300; },
         async () => { await press(12, id); show(12); rp.classList.remove('running'); return 4200; },
       ];
@@ -322,11 +436,26 @@
         const pause = await s();
         if (!(await wait(pause, id))) return;
       }
-      if (id === run) play();
+      if (id === run && again) {
+        again.hidden = false;
+        if (toggle) { toggle.setAttribute('data-off', ''); toggle.tabIndex = -1; }
+      }
     };
+    const start = () => {
+      if (again) again.hidden = true;
+      rp.classList.add('stepped');
+      if (toggle) {
+        toggle.removeAttribute('data-off');
+        toggle.removeAttribute('tabindex');
+        paused = false;
+        rp.classList.remove('paused');
+        toggle.setAttribute('aria-label', 'Pause replay');
+      }
+      play();
+    };
+    again?.addEventListener('click', start);
 
     if (toggle) {
-      toggle.hidden = false;
       toggle.addEventListener('click', () => {
         paused = !paused;
         rp.classList.toggle('paused', paused);
@@ -337,7 +466,7 @@
       new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(rp);
     }
     d.addEventListener('visibilitychange', () => { visible = !d.hidden; });
-    play();
+    if (still) { if (again) again.hidden = false; } else start();
   }
 
   // Terminal replay, once, when it scrolls into view.
