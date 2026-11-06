@@ -12,13 +12,13 @@ export const FEATURES = [
   { icon: 'relay', title: 'Keeps going at the limit', text: 'When a provider runs out of included allowance, the work moves to the next connected one with its messages and edited files.', href: '#allowances' },
   { icon: 'gauge', title: 'Every allowance in view', text: 'The rail shows each provider\'s usage windows and when they reset, read on a timer from your own plans.', href: '#allowances' },
   { icon: 'meter', title: 'Next message meter', text: 'The kite meter shows what the next message will cost against each window before you send it.', href: '#meter' },
-  { icon: 'coin-off', title: 'Credits stay off', text: 'Allow credit spending is off by default for OpenAI and Anthropic, so a step that would spend credits moves to another provider before it starts.', href: '#credits' },
+  { icon: 'coin-off', title: 'Credits you control', text: 'Allow credit spending starts off for OpenAI and Anthropic, so once a plan runs out, the next turn moves to another provider before it spends a credit.', href: '#credits' },
   { icon: 'ask', title: 'Side questions', text: 'Ask a quick question on a local model while the builder keeps working.', href: '#meter' },
   { icon: 'branch', title: 'Safe by default', text: 'Every thread works in its own copy of your repository. Your checkout stays as it is until you accept a change.', href: '#review' },
   { icon: 'sliders', title: 'You set the pace', text: 'Flight mode decides how much the crew does on its own, and Permissions decides which commands it may run without asking.', href: '#control' },
   { icon: 'flask', title: 'Run tests on demand', text: 'Run tests runs your project\'s test command in the thread\'s copy and shows the exit status and output, with no model involved and no credits spent.', href: '#run-tests' },
   { icon: 'key', title: 'Your keys stay yours', text: 'CrewKite runs each provider\'s own client on your own plan. It adds no markup and holds no API key, and its OpenAI client has its own home, so nothing shows up in your own OpenAI app.', href: '#providers' },
-  { icon: 'chip', title: 'Local model included', text: 'gpt-oss-20b in LM Studio counts as a full crew member with no limits, and reconnects by itself when LM Studio restarts.', href: '#providers' },
+  { icon: 'chip', title: 'Any local model', text: 'Load Qwen, gpt-oss, Gemma or any chat model your hardware can run in LM Studio, and it joins the crew with no usage limits. CrewKite runs the agent loop for it and sizes every prompt to the model\'s context.', href: '#providers' },
   { icon: 'terminal', title: 'Terminal too', text: 'The same crews and threads from a CLI.', href: '#terminal' },
 ];
 
@@ -43,7 +43,7 @@ export const FAMILIES = [
   {
     key: 'l', name: 'Local', client: 'LM Studio, on this computer',
     plan: 'As of 31 October 2026, LM Studio is free to use at home and at work. Speed and context follow your hardware.',
-    aside: 'The site and the app use gpt-oss-20b. Local reconnects by itself when LM Studio restarts.',
+    aside: 'Load any chat model LM Studio can run on your machine, such as Qwen, gpt-oss or Gemma, and pick it in CrewKite. CrewKite runs the agent loop itself. It gives the model tools to read, search, edit and run commands in the thread\'s copy, and fits every prompt to the context the model reports. Models without native tool calling work too. Connect works with LM Studio\'s authentication on or off, and Local reconnects by itself when LM Studio restarts.',
   },
 ];
 
@@ -97,3 +97,6 @@ export const RUN_TESTS_FACTS = ['Asks before the first run', 'Shows the exact co
 // them, and it runs as a local process with your permissions, so the site never calls it a sandbox.
 export const RUN_TESTS = 'Run tests runs your project\'s test command in the thread\'s copy and shows the exit status and output, with no model involved and no credits spent.';
 export const RUN_TESTS_LONG = 'Every thread works in its own copy of your repository. Run tests runs the test command CrewKite found in your project, such as the <code>test</code> script in package.json, pytest or <code>cargo test</code>, in that copy whenever you like. It asks before the first run unless you have allowed the command for the thread, shows exactly which command runs, and keeps the exit status and the output beside the thread. It never starts a model, so it costs nothing against any plan. Crews still run the checks you switch on after each fix and after the last slice of a plan.';
+
+// Credits, from the polish pass of 7 November, checked against docs/providers.md "Credit spending".
+export const CREDITS = 'Allow credit spending is a switch for OpenAI and for Anthropic, and it starts off. With it off, once a plan\'s included usage runs out, CrewKite starts no new turn on that provider: a crew step runs on the next provider, and a thread moves to the next one with allowance left. The rail shows "Credits paused" so you can see why. OpenAI spends purchased credits on its own once a plan\'s included usage runs out, and as of November 2026 I found no setting in its own apps or CLI that turns that off. A turn that is already running finishes, and the switch can never turn credits on. The provider\'s own setting still decides that.';

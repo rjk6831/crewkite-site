@@ -9,7 +9,7 @@ import Email from '../components/Email.astro';
 import Download from '../components/Download.astro';
 import Terminal from '../components/Terminal.astro';
 import { REPO, BLOB, HERO_SUB, VERSION_FALLBACK, CREW, ASK } from '../data/site.js';
-import { FEATURES, FAMILIES, PROVIDERS_LEDE, GOOGLE_TERMS, GOOGLE_TERMS_LINK, LINUX_LINE, GOAL_NOD, ROADMAP_NEXT, ROADMAP_LATER, ROADMAP_LINK, RUN_TESTS, RUN_TESTS_LONG, RUN_TESTS_FACTS } from '../data/copy.js';
+import { FEATURES, FAMILIES, PROVIDERS_LEDE, GOOGLE_TERMS, GOOGLE_TERMS_LINK, LINUX_LINE, GOAL_NOD, ROADMAP_NEXT, ROADMAP_LATER, ROADMAP_LINK, RUN_TESTS, RUN_TESTS_LONG, RUN_TESTS_FACTS, CREDITS } from '../data/copy.js';
 
 const faqs = [
   {
@@ -153,12 +153,16 @@ const faqs = [
       <p class="goal-nod reveal">{GOAL_NOD}</p>
       <p class="fams-note reveal">{LINUX_LINE}</p>
 
-      <div class="blk blk-split reveal">
+      <div class="blk blk-split blk-connect reveal">
         <div class="blk-copy">
-          <h3>Connect once</h3>
-          <p>Each provider connects once on this computer with an explicit Connect, then reconnects on its own at every later launch. Local also reconnects by itself when LM Studio restarts. The welcome screen walks through each one, and Settings keeps the same setup.</p>
-          <h3 class="blk-h-2" id="google-route">The Google route</h3>
-          <p>{GOOGLE_TERMS} <a href={GOOGLE_TERMS_LINK}>The dated links</a> are in the docs.</p>
+          <div>
+            <h3>Connect once</h3>
+            <p>Each provider connects once on this computer with an explicit Connect, then reconnects on its own at every later launch. Local also reconnects by itself when LM Studio restarts. The welcome screen walks through each one, and Settings keeps the same setup.</p>
+          </div>
+          <div>
+            <h3 class="blk-h-2" id="google-route">The Google route</h3>
+            <p>{GOOGLE_TERMS} <a href={GOOGLE_TERMS_LINK}>The dated links</a> are in the docs.</p>
+          </div>
         </div>
         <Shot id="welcome" />
       </div>
@@ -180,7 +184,7 @@ const faqs = [
           <h3>The crew in these screens</h3>
           <ul class="crew-list">
             {CREW.map((c) => (
-              <li><span class={`fam fam-${c.fam}`} aria-hidden="true">{c.fam.toUpperCase()}</span><b>{c.role}</b><span>{c.family} <span class="mono">{c.model}</span>{c.effort && `, ${c.effort}`}</span></li>
+              <li><span class={`fam fam-${c.fam}`} aria-hidden="true">{c.fam.toUpperCase()}</span><b>{c.role}</b><span class="cl-m">{c.family} <span class="mono">{c.model}</span><span class="cl-e"><span class="cl-sep">, </span>{c.effort}</span></span></li>
             ))}
           </ul>
           <p class="crew-side">Side questions: {ASK.family} <span class="mono">{ASK.model}</span>.</p>
@@ -244,8 +248,8 @@ const faqs = [
 
       <div class="blk blk-split reveal" id="credits">
         <div class="blk-copy">
-          <h3>Credits stay off</h3>
-          <p>Allow credit spending is a switch for OpenAI and for Anthropic, and it starts off. With it off, a step that would spend credits moves to another provider before it starts. The provider's own setting still decides, and CrewKite cannot turn credits on there.</p>
+          <h3>Credits you control</h3>
+          <p>{CREDITS}</p>
         </div>
         <Clip id="credit-continuation" />
       </div>
@@ -372,7 +376,7 @@ const faqs = [
         <p class="cmd-l">Linux</p>
         <div class="cmd term-cmd"><code>crewkite thread list --json</code><button class="copy" type="button" data-copy="crewkite thread list --json" hidden><Icon name="copy" size={13} />Copy</button></div>
         <p class="cmd-l">macOS</p>
-        <div class="cmd term-cmd"><code>/Applications/CrewKite.app/Contents/Resources/bin/crewkite</code><button class="copy" type="button" data-copy="/Applications/CrewKite.app/Contents/Resources/bin/crewkite" hidden><Icon name="copy" size={13} />Copy</button></div>
+        <div class="cmd term-cmd cmd-line"><code>/Applications/CrewKite.app/Contents/Resources/bin/crewkite thread list --json</code><button class="copy" type="button" data-copy="/Applications/CrewKite.app/Contents/Resources/bin/crewkite thread list --json" hidden><Icon name="copy" size={13} />Copy</button></div>
         <p class="small"><a href={`${BLOB}/docs/preview.md#try-the-cli`}>Try the CLI</a> walks through it, and <a href={`${BLOB}/apps/cli/README.md`}>the CLI guide</a> lists every key and command.</p>
       </div>
       <div class="reveal">
@@ -758,6 +762,17 @@ const faqs = [
   .blk-copy p { margin-top: var(--space-3); color: var(--text-muted); }
   .blk-copy :global(a) { color: var(--text); text-underline-offset: 3px; }
   .blk-h-2 { margin-top: var(--space-8); }
+  /* Connect once and The Google route span the Welcome still: the figure's frame and caption join
+     this grid, so the text column stretches to the frame alone and its last line sits on the
+     frame's bottom edge, above the caption. Stacked as before below 1024 px. */
+  @media (min-width: 1024px) {
+    .blk-connect { grid-template-rows: auto auto; row-gap: 0; align-items: stretch; }
+    .blk-connect > .blk-copy { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .blk-connect > .blk-copy .blk-h-2 { margin-top: var(--space-8); }
+    .blk-connect :global(.shot) { display: contents; }
+    .blk-connect :global(.shot-frame) { grid-column: 2; grid-row: 1; }
+    .blk-connect :global(.shot figcaption) { grid-column: 2; grid-row: 2; }
+  }
   .blk-note { font-size: var(--text-sm); color: var(--text-dim); }
   .tests-p { margin-top: 0; font-size: var(--text-base); }
   .blk-tests { align-items: center; }
@@ -779,6 +794,10 @@ const faqs = [
   /* Roadmap: planned work beside the longer list. Stacks at 768 px and below, planned work first. */
   .road { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--space-8); align-items: start; }
   .road-col { display: grid; gap: var(--space-4); }
+  /* Above 1024 px the later list stays beside the 0.2.0 cards while they scroll. */
+  @media (min-width: 1024px) {
+    .road-col + .road-col { position: sticky; top: calc(var(--header-height) + var(--space-6)); }
+  }
   .road-h { font-size: var(--text-lg); line-height: var(--text-lg-lh); color: var(--text-muted); font-weight: var(--weight-medium); }
   .rcard { padding: var(--space-6); border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); }
   .rcard h4 { margin-top: var(--space-4); font-size: var(--text-xl); line-height: var(--text-xl-lh); }
@@ -868,7 +887,14 @@ const faqs = [
   .cs-copy { max-width: var(--measure); }
   .cs-copy h3 { font-size: var(--text-h3); }
   .crew-list { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--text-md); }
-  .crew-list li { display: grid; grid-template-columns: 20px 11ch 1fr; align-items: center; gap: var(--space-3); }
+  .crew-list li { display: grid; grid-template-columns: 20px 11ch minmax(0, 1fr); align-items: center; gap: var(--space-3); }
+  .cl-m { min-width: 0; }
+  /* On phones every row puts its effort on a second line, so all five rows stay even. */
+  @media (max-width: 479px) {
+    .crew-list li { align-items: start; }
+    .cl-e { display: block; color: var(--text-muted); }
+    .cl-sep { display: none; }
+  }
   .crew-list .fam { width: 20px; height: 20px; font-size: var(--text-2xs); border-radius: var(--radius-sm); }
   .crew-list b { font-weight: var(--weight-semibold); }
   .crew-list .mono { font-size: var(--text-sm); }
@@ -992,6 +1018,8 @@ const faqs = [
   }
   .term-grid > *, .feat > *, .faq-grid > *, .os > * { min-width: 0; }
   .term-cmd { max-width: 560px; }
+  /* A path keeps to one line and scrolls inside its block. */
+  .cmd-line :global(code) { white-space: pre; overflow-wrap: normal; overflow-x: auto; scrollbar-width: thin; }
   .small { margin-top: var(--space-3); font-size: var(--text-md); color: var(--text-dim); }
   .small a { color: var(--text-muted); }
   .lede code { color: var(--text); }
@@ -1090,6 +1118,31 @@ const faqs = [
     .r-role { min-width: 10ch; text-align: left; }
   }
   @media (max-width: 479px) {
+    /* Phones: the role chips become one row that scrolls sideways with snap points and a fade at
+       the right edge, so the download button stays in the first screen. */
+    .rchips {
+      display: flex;
+      grid-template-columns: none;
+      justify-content: flex-start;
+      align-self: stretch;
+      width: auto;
+      margin: var(--space-6) calc(-1 * var(--space-gutter)) 0;
+      padding: 0 var(--space-gutter) var(--space-1);
+      gap: var(--space-2);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--space-gutter);
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(90deg, var(--mask-ink) 85%, transparent);
+      mask-image: linear-gradient(90deg, var(--mask-ink) 85%, transparent);
+    }
+    .rchips::-webkit-scrollbar { display: none; }
+    .rchip { flex: none; scroll-snap-align: start; }
+    .hero-sub { font-size: var(--text-base); margin-top: var(--space-4); }
+    .hero { padding-top: var(--space-8); }
+    h1 { margin-top: var(--space-6); }
+    .rchips-note { margin-top: var(--space-2); }
+    .hero-cta { margin-top: var(--space-6); }
     /* The family mark already names the family; the word stays for screen readers. */
     .r-fam { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .feat-vis { padding: var(--space-4); min-height: 0; }
