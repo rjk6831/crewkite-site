@@ -51,7 +51,7 @@ const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://crewkite.dev/og.png" />
   <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
-  <script is:inline>(function(){var d=document.documentElement;d.classList.add('js');var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='light'&&t!=='dark'){try{t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}catch(e){t='dark';}}d.dataset.theme=t;try{if(!sessionStorage.getItem('kite')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('kite-intro');sessionStorage.setItem('kite','1');}}catch(e){}})();</script>
+  <script is:inline>(function(){var d=document.documentElement;d.classList.add('js');var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='light'&&t!=='dark'){try{t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}catch(e){t='dark';}}d.dataset.theme=t;var q=/[?&]intro=1(&|$)/.test(location.search),s=null;try{s=sessionStorage.getItem('kite');}catch(e){}if((q||!s)&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('kite-intro');try{sessionStorage.setItem('kite','1');}catch(e){}}})();</script>
   <slot name="head" />
 </head>
 <body>
@@ -70,7 +70,7 @@ const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
           <Icon name="code" size={16} />
           <span>GitHub</span>
         </a>
-        <button class="theme" type="button" aria-label="Light theme" aria-pressed="false" title="Switch to light theme">
+        <button class="theme" type="button" aria-label="Switch to light theme" title="Switch to light theme">
           <span class="t-sun"><Icon name="sun" size={17} /></span>
           <span class="t-moon"><Icon name="moon" size={17} /></span>
         </button>
@@ -247,6 +247,21 @@ const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
   .nav-link[aria-current='page'] {
     color: var(--text);
     background: var(--surface);
+  }
+  /* The toggle's cue, once, when the kite lands: one turn of the icon and a soft accent ring that
+     fades. Transform, opacity and shadow only, and nothing under reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .theme.cue { animation: theme-ring 700ms var(--ease-out) 1; }
+    .theme.cue svg { animation: theme-turn 360ms var(--ease-out) 1; }
+  }
+  @keyframes theme-turn {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes theme-ring {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+    35% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 28%, transparent); }
+    100% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--accent) 0%, transparent); }
   }
   .t-sun { display: none; }
   :root[data-theme='light'] .t-sun { display: block; }

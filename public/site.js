@@ -85,8 +85,18 @@
         { opacity: 0, transform: 'scale(1.25)' },
       ], { duration: 520, delay: land, easing: 'ease-out' });
 
+      let cued = false;
       const stop = () => {
         anims.forEach((a) => { try { a.finish(); } catch (e) {} });
+        // Once the kite has landed, point at the theme toggle once.
+        if (!cued) {
+          cued = true;
+          const t = d.querySelector('.theme');
+          if (t) {
+            t.addEventListener('animationend', (e) => { if (e.target === t) t.classList.remove('cue'); });
+            t.classList.add('cue');
+          }
+        }
         removeEventListener('scroll', stop);
         removeEventListener('pointerdown', stop, true);
         removeEventListener('keydown', stop, true);
@@ -108,14 +118,15 @@
 
   // Theme. A first visit follows the system setting; the head script applies it, or a saved choice,
   // before first paint. The toggle overrides it and remembers the choice in this browser. Until a
-  // choice is saved, a change to the system setting carries through live. The button is a toggle
-  // for the light theme, so a screen reader hears "Light theme, toggle button, pressed" or not.
+  // choice is saved, a change to the system setting carries through live.
   const toggle = d.querySelector('.theme');
   const saved = () => { try { const v = localStorage.getItem('theme'); return v === 'light' || v === 'dark' ? v : null; } catch (e) { return null; } };
   const sync = () => {
     const light = root.dataset.theme === 'light';
-    toggle?.setAttribute('aria-pressed', String(light));
-    toggle?.setAttribute('title', light ? 'Switch to dark theme' : 'Switch to light theme');
+    // The label and tooltip name the action the button takes.
+    const action = light ? 'Switch to dark theme' : 'Switch to light theme';
+    toggle?.setAttribute('aria-label', action);
+    toggle?.setAttribute('title', action);
     d.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f8f5' : '#151718');
   };
   sync();
