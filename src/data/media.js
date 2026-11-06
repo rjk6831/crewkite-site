@@ -4,7 +4,8 @@
 //
 // Sources: the release stills listed in the a89cf34 site handoff, each SHA-256 checked, cropped at
 // component boundaries by internal/v5/crop.py and exported as WebP at x1 and x2:
-//   public/img/shots/<id>-<dark|light>@1x.webp and @2x.webp
+//   public/img/shots/<id>-<dark|light>-1x.webp and -2x.webp
+// No "@" in any asset path: the static asset server redirects it to %40 and the browser loops.
 // Gauge readings in these stills are samples, never plan facts.
 
 export const MEDIA = {
@@ -33,20 +34,20 @@ export const MEDIA = {
     caption: "The orchestrator's plan sends the hard slice to the Google fixer and the rest to the OpenAI builder.",
   },
   'changes': {
-    width: 1440,
-    height: 868,
-    alt: 'A finished crew thread reporting 4 slices, 5 reviews and 1 fix, with the Changes panel listing eight edited files, their line counts and Accept to branch.',
+    width: 379,
+    height: 676,
+    alt: 'The Changes panel with the new local branch name, the commit message, Accept to branch, and eight edited files with their added and removed line counts.',
     caption: 'Changes lists every edited file, and Accept to branch puts them on a new local branch.',
   },
   'accepted': {
-    width: 800,
-    height: 160,
-    alt: 'The thread after Accept, reading Accepted 8 files to branch crewkite/harden-demo-shop-s-checkout-helpers-while-preserving-their-e.',
+    width: 620,
+    height: 80,
+    alt: 'The thread after Accept: Crew finished, 4 slices, 5 reviews, 1 fix, then Accepted 8 files to branch crewkite/harden-demo-shop-s-checkout-helpers-while-preserving-their-e.',
     caption: 'After Accept, the thread records the branch the eight files went to.',
   },
   'anthropic-rail': {
     width: 1440,
-    height: 868,
+    height: 763,
     alt: 'Anthropic settings with its allowance gauges, and the rail listing Google, OpenAI, Anthropic and Local usage with reset times.',
     caption: "Anthropic's card shows the windows its plan reports, and the rail keeps every provider in view.",
   },
@@ -78,27 +79,27 @@ export const MEDIA = {
 
 // The released file names for a slot, in the order the frame renders them.
 export const sources = (id) => ({
-  dark: [`/img/shots/${id}-dark@1x.webp`, `/img/shots/${id}-dark@2x.webp`],
-  light: [`/img/shots/${id}-light@1x.webp`, `/img/shots/${id}-light@2x.webp`],
+  dark: [`/img/shots/${id}-dark-1x.webp`, `/img/shots/${id}-dark-2x.webp`],
+  light: [`/img/shots/${id}-light-1x.webp`, `/img/shots/${id}-light-2x.webp`],
 });
 
-// Release clips, full window without the title bar, 1440 by 868. A clip that exists in one theme only
+// Release clips, cropped below the title bar to the part that makes their point. A clip that exists in one theme only
 // sets `only` and shows only in that theme, labelled.
 export const CLIPS = {
   'permission-gate': {
-    width: 1440,
-    height: 868,
+    width: 800,
+    height: 416,
     dark: '/media/permission-gate-dark.mp4',
     light: '/media/permission-gate-light.mp4',
     label: 'The builder on gpt-6.1-sol stops at a command and waits for Allow once, Allow for this thread or Deny.',
     caption: 'A command outside the allowed set waits for your answer.',
   },
   'credit-continuation': {
-    width: 1440,
-    height: 868,
+    width: 1222,
+    height: 520,
     only: 'dark',
     dark: '/media/credit-continuation-dark.mp4',
-    label: 'With OpenAI credits paused, slices 2 and 3 continue on Google gemini-4-argon, and the thread notes each move with its reason.',
+    label: 'Slices 2 and 3 continue on Google gemini-4-argon from OpenAI with the reason usage limit reached, while the rail shows OpenAI credits paused.',
     caption: 'With credits off, slices continue on Google when OpenAI reaches its limit. Dark theme only.',
   },
 };

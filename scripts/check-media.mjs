@@ -35,9 +35,10 @@ for (const [id, c] of Object.entries(CLIPS)) {
 
 const names = await readdir(join(pub, 'img', 'shots')).catch(() => []);
 for (const n of names) {
-  const m = n.match(/^(.+)-(dark|light)@([12])x\.webp$/);
+  if (n.includes('@')) { problems.push(`img/shots/${n}: no "@" in asset paths`); continue; }
+  const m = n.match(/^(.+)-(dark|light)-([12])x\.webp$/);
   if (!m) { problems.push(`img/shots/${n} is not a themed shot`); continue; }
-  const other = `${m[1]}-${m[2] === 'dark' ? 'light' : 'dark'}@${m[3]}x.webp`;
+  const other = `${m[1]}-${m[2] === 'dark' ? 'light' : 'dark'}-${m[3]}x.webp`;
   if (!names.includes(other)) problems.push(`${n} has no ${other}`);
 }
 

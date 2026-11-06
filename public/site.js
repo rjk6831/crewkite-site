@@ -106,10 +106,12 @@
   };
   kiteIntro();
 
-  // Theme toggle. Dark on a first visit whatever the system setting; the inline head script applies a
-  // saved choice before first paint. The button is a toggle for the light theme, so a screen reader
-  // hears "Light theme, toggle button, pressed" or "not pressed".
+  // Theme. A first visit follows the system setting; the head script applies it, or a saved choice,
+  // before first paint. The toggle overrides it and remembers the choice in this browser. Until a
+  // choice is saved, a change to the system setting carries through live. The button is a toggle
+  // for the light theme, so a screen reader hears "Light theme, toggle button, pressed" or not.
   const toggle = d.querySelector('.theme');
+  const saved = () => { try { const v = localStorage.getItem('theme'); return v === 'light' || v === 'dark' ? v : null; } catch (e) { return null; } };
   const sync = () => {
     const light = root.dataset.theme === 'light';
     toggle?.setAttribute('aria-pressed', String(light));
@@ -117,6 +119,13 @@
     d.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f8f5' : '#151718');
   };
   sync();
+  try {
+    matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+      if (saved()) return;
+      root.dataset.theme = e.matches ? 'light' : 'dark';
+      sync();
+    });
+  } catch (e) {}
   toggle?.addEventListener('click', () => {
     const next = root.dataset.theme === 'light' ? 'dark' : 'light';
     root.dataset.theme = next;

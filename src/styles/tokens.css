@@ -133,6 +133,8 @@
   --header-height: 72px;
   --wordmark-height: 32px;
   --wordmark-height-small: 26px;
+  /* The header kite against its slot in the wordmark raster: about 27 px tall beside a 32 px word. */
+  --kite-mark-scale: 1.6;
 
   /* Radius and borders. */
   --radius-sm: 6px;
