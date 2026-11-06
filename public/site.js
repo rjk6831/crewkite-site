@@ -179,6 +179,21 @@
     arm();
   }
 
+  // Release clips. Each plays muted and looped while it is on screen and pauses when it leaves;
+  // only the video for the current theme plays. With reduced motion nothing starts on its own.
+  const clips = [...d.querySelectorAll('[data-clip] video')];
+  if (clips.length && 'IntersectionObserver' in window && !still) {
+    const shown = (v) => v.getClientRects().length > 0;
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      const v = e.target;
+      if (e.isIntersecting && shown(v)) { v.preload = 'auto'; v.play().catch(() => {}); } else v.pause();
+    }), { threshold: 0.5 });
+    // The markup carries controls for no-script and reduced motion; a clip that plays itself drops them.
+    clips.forEach((v) => { v.controls = false; io.observe(v); });
+    new MutationObserver(() => clips.forEach((v) => { if (!shown(v)) v.pause(); }))
+      .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+
   const top = d.getElementById('top');
   const onScroll = () => top?.classList.toggle('scrolled', scrollY > 8);
   addEventListener('scroll', onScroll, { passive: true });
@@ -364,14 +379,14 @@
       if (subCount) subCount.textContent = '0';
       if (inner) inner.style.transform = 'translateY(0)';
       rp.querySelectorAll('[data-type]').forEach((el) => prep(el).forEach((w) => w.classList.add('off')));
-      setG('ow', 81); setG('a5', 12); setG('aw', 66); setG('g5', 88); setG('gw', 66);
+      setG('g5', 88); setG('gw', 66); setG('ow', 81); setG('a5', 12);
       live(null);
       if (cur) { cur.textContent = 'A'; cur.className = 'fam fam-a'; }
       const steps = [
         async () => { await setCap('You ask once.'); show(0); return 1300; },
         async () => { await setCap('The Anthropic orchestrator plans the change.'); rp.classList.add('running'); live('a'); show(1); await typeIn(1, id); return 400; },
         async () => { await setCap('Anthropic starts subagents. Each one shows under its step.'); show(2); count('a5', 12, 6, 1400, id); await spawn(id); return 500; },
-        async () => { await setCap('Anthropic reaches its five-hour limit.'); await Promise.all([count('a5', 6, 0, 1100, id), count('aw', 66, 64, 1100, id)]); return 400; },
+        async () => { await setCap('Anthropic reaches its limit.'); await count('a5', 6, 0, 1100, id); return 400; },
         async () => { await setCap('The thread moves to the OpenAI builder with its messages and files.'); live('o'); show(3); return 1500; },
         async () => { await setCap('OpenAI edits a scratch copy of the repository.'); show(4); await typeIn(4, id); return 300; },
         async () => { show(6); count('ow', 81, 80, 900, id); return 1500; },

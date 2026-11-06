@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Shot from '../components/Shot.astro';
+import Clip from '../components/Clip.astro';
 import Replay from '../components/Replay.astro';
 import Kite from '../components/Kite.astro';
 import Icon from '../components/Icon.astro';
@@ -8,65 +9,45 @@ import Email from '../components/Email.astro';
 import Download from '../components/Download.astro';
 import Terminal from '../components/Terminal.astro';
 import { REPO, BLOB, ONE_LINER, VERSION_FALLBACK, CREW } from '../data/site.js';
-
-const families = [
-  {
-    key: 'o', name: 'OpenAI', client: 'Codex, through its app-server client',
-    plan: 'As of 31 October 2026, OpenAI says its coding client is included in its Free, Go, Plus, Pro, Business, Edu and Enterprise plans. Usage limits depend on the plan, the model and the task.',
-    aside: 'CrewKite runs this client in its own home with its own sign-in, so nothing it does shows in your own OpenAI app.',
-  },
-  {
-    key: 'a', name: 'Anthropic', client: 'Claude Code, through its stream-json mode',
-    plan: 'As of 31 October 2026, Anthropic includes its coding client in its Pro, Max, Team and Enterprise plans and leaves it out of Free. Pro and Max have a five-hour limit and a weekly limit that the Anthropic chat app shares.',
-  },
-  {
-    key: 'g', name: 'Google', client: 'Antigravity, through the Agent Client Protocol',
-    plan: 'As of 31 October 2026, Google gives accounts without a paid plan a quota that refreshes weekly. Google AI Pro refreshes every five hours until a weekly limit, and Google AI Ultra has the highest quota. Limits follow available capacity.',
-    note: true,
-  },
-  {
-    key: 'l', name: 'Local', client: 'LM Studio, on this computer',
-    plan: 'As of 31 October 2026, LM Studio is free to use at home and at work. Speed and context follow your hardware.',
-  },
-];
+import { FEATURES, FAMILIES, GOOGLE_TERMS, LINUX_LINE, WHATS_NEXT, RUN_TESTS } from '../data/copy.js';
 
 const faqs = [
   {
     q: 'What is CrewKite?',
-    a: `<p>A desktop workspace for coding with the agents you already pay for. It runs the OpenAI, Anthropic and Google clients you have signed in, plus a local model through LM Studio, as threads on your own computer. A thread can move to another provider mid task and keep its messages and edited files.</p>`,
+    a: `<p>A desktop workspace for coding with the agents you already pay for. It runs the Google, OpenAI and Anthropic clients you have signed in, plus a local model through LM Studio, as one crew on your own computer. A thread can move to another provider mid task and keep its messages and edited files.</p>`,
   },
   {
     q: 'Which plans work?',
     a: `<p>CrewKite adds no plan gate. Each family works on whatever plan its provider allows, and the provider's limits apply. CrewKite sets no API key and never falls back to paid API billing. The provider section above has the dated line for each family, and <a href="${BLOB}/docs/providers.md#plans-per-family">Provider routes</a> has the longer notes.</p>`,
   },
   {
-    q: 'Is my code sent anywhere?',
-    a: `<p>Only where your provider's own client sends it when you run a turn on that provider. CrewKite has no telemetry, no account and no server of its own, and nothing is hosted. A Local thread stays on your computer. Models work in a scratch copy, and your checkout changes only when you accept a branch.</p>`,
+    q: 'Do I sign in every time?',
+    a: `<p>No. Connect each provider once on this computer with its Connect button in Settings. After that CrewKite reconnects on its own at every launch, and Local also reconnects by itself when LM Studio restarts. The OpenAI client runs in CrewKite's own home with its own sign-in, so nothing it does shows in your own OpenAI app.</p>`,
   },
   {
-    q: 'Is this a wrapper?',
-    a: `<p>CrewKite runs each vendor's own client on purpose, so your sign-in, your plan and the vendor's terms stay yours. What it adds is one thread that passes work between providers, plan slices that run side by side, one controller that holds every permission, a scratch copy for each thread and a branch you review before anything touches your code.</p>`,
+    q: 'Can I ask something while a model is working?',
+    a: `<p>Yes. A side question runs beside the builder on the model you pick, such as gpt-oss-20b in LM Studio, and never stops it.</p>`,
+  },
+  {
+    q: 'How does a handoff work?',
+    a: `<p>Pick a model from another provider and send, or let the crew move the work when a provider runs out of included allowance. The next connected provider starts from your messages, the earlier answers, the list of changed files and the patches that still fit, in the same copy of your repository. <a href="${BLOB}/docs/continuity.md">Continuity and recovery</a> has the details.</p>`,
+  },
+  {
+    q: 'Is my code sent anywhere?',
+    a: `<p>Only where your provider's own client sends it when you run a turn on that provider. CrewKite has no telemetry, no account and no server of its own, and nothing is hosted. A Local thread stays on your computer. Every thread works in its own copy, and your checkout changes only when you accept a branch.</p>`,
   },
   {
     id: 'google-terms',
     q: 'Will my provider ban my account?',
-    a: `<p>OpenAI, Anthropic and Local run through their own clients on their supported paths. Google is different. Google's third-party access FAQ says that third-party access through its coding client login violates its terms. Google does not name CrewKite, and CrewKite has no exception from Google. Using the Google route is your own choice and your own risk, and the app keeps it off until you tick a box that says so. <a href="${BLOB}/docs/providers.md#google-and-your-account">Read the full text</a>.</p>`,
+    a: `<p>OpenAI, Anthropic and Local run through their own clients on their supported paths. Google is different. ${GOOGLE_TERMS}</p>`,
   },
   {
     q: 'Does it run on Linux or Windows?',
-    a: `<p>The Linux preview runs on x64 and arm64 with OpenAI, Anthropic and Local. Google is not on Linux yet. Windows is not supported yet. WSL2 is untested, so I cannot say whether the Linux preview runs there.</p>`,
+    a: `<p>The Linux preview runs on x64 and arm64 as DEB and RPM, with OpenAI, Anthropic and Local. Google is not on Linux. Windows is not supported yet. WSL2 is untested, so I cannot say whether the Linux preview runs there.</p>`,
   },
   {
-    q: 'Can I ask something while a model is working?',
-    a: `<p>Yes. A side question runs beside the builder on the model you pick, such as a local one, and never stops it. The answer shows in the thread under an Ask mark.</p>`,
-  },
-  {
-    q: 'Do I sign in every time?',
-    a: `<p>No. Connect each provider once on this computer in Settings. After that CrewKite reconnects on its own at every launch. The OpenAI client runs in CrewKite's own home with its own sign-in, so nothing it does shows in your own OpenAI app.</p>`,
-  },
-  {
-    q: 'How does a handoff work?',
-    a: `<p>Pick a model from another provider and send, or let the thread move by itself when a provider reaches its limit. The new provider starts from your messages, the earlier answers, the list of changed files and the patches that still fit, in the same scratch copy. When you return to a provider, it resumes its own session and gets the turns it missed. <a href="${BLOB}/docs/continuity.md">Continuity and recovery</a> has the details.</p>`,
+    q: 'How do I update?',
+    a: `<p>Choose Check for Updates in the app menu, or under Help on Linux. CrewKite also checks once a day. In 0.1.x an update is a download from <a href="/download">the download page</a>.</p>`,
   },
   {
     q: 'How do I uninstall it?',
@@ -78,19 +59,19 @@ const faqs = [
   },
 ];
 ---
-<Base title="CrewKite: one desktop workspace for OpenAI, Anthropic, Google and a local model" path="/">
+<Base title="CrewKite: one desktop workspace for Google, OpenAI, Anthropic and a local model" path="/">
   <!-- Hero -->
   <section class="hero" aria-labelledby="hero-h">
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="wrap hero-inner">
-      <a class="pill reveal" href="/changelog">
-        <span class="pill-tag">Prerelease</span>
+      <a class="pill reveal" href="/download#new">
+        <span class="pill-tag">New</span>
         <span>Version <span data-release="version">{VERSION_FALLBACK}</span></span>
         <Icon name="arrow" size={14} />
       </a>
-      <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span>, <span class="n-g">Google</span> and <span class="n-l">a local model</span>.</h1>
-      <p class="hero-sub reveal">Run the coding agents you already pay for as threads on your own computer. When one hits its limit, the thread moves to the next with every message and edited file.</p>
-      <ul class="rchips reveal" aria-label="A crew as the app shows it, with subagents on for every role">
+      <h1 id="hero-h" class="reveal">One desktop workspace for <span class="n-g">Google</span>, <span class="n-o">OpenAI</span>, <span class="n-a">Anthropic</span> and <span class="n-l">a local model</span>.</h1>
+      <p class="hero-sub reveal">{ONE_LINER}</p>
+      <ul class="rchips reveal" aria-label="The crew in the release screens, with subagents on for every role">
         {CREW.map((c) => (
           <li class={`rchip rchip-${c.fam}`}>
             <span class={`fam fam-${c.fam}`}>{c.fam.toUpperCase()}</span>
@@ -100,7 +81,7 @@ const faqs = [
           </li>
         ))}
       </ul>
-      <p class="rchips-note reveal">Subagents on for every role.</p>
+      <p class="rchips-note reveal">Subagents on for every role. Flight mode Balanced.</p>
       <div class="hero-cta reveal">
         <Download variant="hero" />
         <a class="btn btn-ghost" href={REPO}>
@@ -122,20 +103,41 @@ const faqs = [
     </div>
   </section>
 
+  <!-- Features -->
+  <section id="features" aria-labelledby="feat-h">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Features</span>
+        <h2 id="feat-h" class="h2">What CrewKite does</h2>
+        <p class="lede">Each provider's own client does the work, on your sign-in and your plan. CrewKite runs them as one crew, keeps the work moving at a limit, and keeps your checkout as it is until you accept a change.</p>
+      </div>
+      <ul class="fgrid">
+        {FEATURES.map((f, i) => (
+          <li class="fx reveal" style={`--d:${(i % 3) * 60}ms`}>
+            <span class="fx-i"><Icon name={f.icon} size={20} /></span>
+            <h3><a href={f.href}>{f.title}</a></h3>
+            <p>{f.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
   <!-- Providers -->
   <section id="providers" aria-labelledby="fam-h">
     <div class="wrap">
       <div class="section-head reveal">
         <span class="eyebrow">Providers</span>
         <h2 id="fam-h" class="h2">Run the clients you already sign in to</h2>
-        <p class="lede">CrewKite starts each provider's own client with your sign-in and your plan. Connect each provider once on this computer, and CrewKite reconnects on its own at every later launch. Model and effort lists come live from each client, so a new model shows up the day the provider serves it.</p>
+        <p class="lede">CrewKite starts each provider's own client with your sign-in and your plan. Each one connects once on this computer with an explicit Connect, then reconnects on its own at every later launch.</p>
       </div>
       <div class="fams">
-        {families.map((f, i) => (
+        {FAMILIES.map((f, i) => (
           <article class={`fcard fcard-${f.key} reveal`} style={`--d:${i * 70}ms`}>
             <div class="fcard-top">
               <span class={`fam fam-${f.key}`}>{f.key.toUpperCase()}</span>
               <h3>{f.name}</h3>
+              {f.linux && <span class="fcard-tag">{f.linux}</span>}
             </div>
             <p class="fcard-client">{f.client}</p>
             <p class="fcard-plan">{f.plan}</p>
@@ -148,190 +150,180 @@ const faqs = [
           </article>
         ))}
       </div>
-      <p class="fams-note reveal">CrewKite has no plan gate. Each provider decides what its free plan includes.</p>
+      <p class="fams-note reveal">{LINUX_LINE}</p>
+
+      <div class="blk blk-split reveal">
+        <div class="blk-copy">
+          <h3>Connect once</h3>
+          <p>The welcome screen walks through each provider, and Settings keeps the same setup. CrewKite adds no plan requirement, so each family works on the plan its provider allows.</p>
+          <h3 class="blk-h-2" id="google-route">The Google route</h3>
+          <p set:html={GOOGLE_TERMS} />
+        </div>
+        <Shot id="welcome" />
+      </div>
+
+      <div class="blk reveal">
+        <div class="blk-copy">
+          <h3>What's next</h3>
+          <ul class="next">
+            {WHATS_NEXT.map((n) => <li>{n}</li>)}
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- What it adds -->
-  <section id="adds" aria-labelledby="adds-h">
+  <!-- The crew and its plan -->
+  <section id="crew" aria-labelledby="crew-h">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">Why CrewKite</span>
-        <h2 id="adds-h" class="h2">What CrewKite does for you</h2>
-        <p class="lede">Each provider's own app does the work, on your sign-in and your plan. CrewKite runs them in one thread, tracks what each plan has left, and checks every change before it reaches your repository.</p>
+        <span class="eyebrow">Crews</span>
+        <h2 id="crew-h" class="h2">One crew, four providers</h2>
+        <p class="lede">A crew is an orchestrator, a builder, a fixer, a reviewer and a challenger, plus the model that answers side questions. Each role runs on any family you have connected, with its own model and effort, and each can start subagents.</p>
       </div>
 
-      <div class="feat reveal">
-        <div class="feat-copy">
-          <span class="feat-n mono">01</span>
-          <h3>Keep working when a limit hits</h3>
-          <p>When Anthropic stops at its five-hour limit, the thread moves to OpenAI with every message and edited file, and the next reply picks up where the last one stopped. Pick a rule once, such as most allowance left or Local first, and CrewKite does the switch for you.</p>
-        </div>
-        <div class="feat-vis vis-hand" aria-hidden="true">
-          <div class="ht ht-from"><div class="ht-h"><span class="fam fam-a">A</span>Anthropic · Opus 5.5<span class="ht-lim">5 h limit reached</span></div><b></b><b></b></div>
-          <div class="hand-line"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: five-hour limit reached.</span></div>
-          <div class="ht ht-to"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI · gpt-6.1-sol<span class="ht-carry"><span class="mono">12 messages</span><span class="mono">3 files</span></span></div><b></b><b></b><b></b></div>
-          <div class="hand-mode"><span>Handoff mode</span><b>Most allowance left</b></div>
-        </div>
-      </div>
-
-      <div class="feat feat-rev reveal">
-        <div class="feat-copy">
-          <span class="feat-n mono">02</span>
-          <h3>See what every plan has left</h3>
-          <p>Every provider's allowance sits in one rail, each window with the time to its reset. OpenAI shows its weekly window, Anthropic and Google their five-hour and weekly windows, and Local has no limits. Spend the allowance that resets soonest and stop checking four apps to find one with room.</p>
-        </div>
-        <div class="feat-vis vis-allow" aria-hidden="true">
-          <div class="al" style="--c:var(--family-openai-fill)"><div class="al-h"><span class="fam fam-o">O</span>OpenAI<span>resets in 2 d</span></div><div class="al-r"><i style="--v:80"><em></em></i><span>80% left</span></div></div>
-          <div class="al" style="--c:var(--family-anthropic-fill)"><div class="al-h"><span class="fam fam-a">A</span>Anthropic<span>resets in 1 h 40 min</span></div><div class="al-r"><i style="--v:30"><em></em></i><span>5 h 30%</span></div><div class="al-r"><i style="--v:64"><em></em></i><span>week 64%</span></div></div>
-          <div class="al" style="--c:var(--family-google-fill)"><div class="al-h"><span class="fam fam-g">G</span>Google<span>resets in 3 d</span></div><div class="al-r"><i style="--v:85"><em></em></i><span>5 h 85%</span></div><div class="al-r"><i style="--v:65"><em></em></i><span>week 65%</span></div></div>
-          <div class="al" style="--c:var(--family-local-fill)"><div class="al-h"><span class="fam fam-l">L</span>Local<span>on this computer</span></div><div class="al-r al-inf"><i style="--v:100"><em></em></i><b>∞</b><i style="--v:100"><em></em></i><span>No limits</span></div></div>
-        </div>
-      </div>
-
-      <div class="feat reveal">
-        <div class="feat-copy">
-          <span class="feat-n mono">03</span>
-          <h3>Nothing lands until you accept it</h3>
-          <p>Every thread works in its own copy of your repository. Read the diff, keep or drop each hunk, then accept to a new local branch. Your checkout stays exactly as you left it.</p>
-        </div>
-        <div class="feat-vis vis-changes" aria-hidden="true">
-          <div class="ch-h"><span>Changes</span><span class="mono">3 files</span></div>
-          <div class="ch-f"><span class="mono">src/net.mjs</span><span class="mono"><b class="plus">+5</b> <b class="minus">-2</b></span><span class="ch-k ch-k1">Accepted</span></div>
-          <div class="ch-f"><span class="mono">src/tax.mjs</span><span class="mono"><b class="plus">+3</b> <b class="minus">-1</b></span><span class="ch-k ch-k2">Accepted</span></div>
-          <div class="ch-f"><span class="mono">test/net.test.mjs</span><span class="mono"><b class="plus">+18</b></span><span class="ch-k ch-k3">Accepted</span></div>
-          <div class="ch-b"><span class="mono"><Icon name="branch" size={14} />fix-rounding</span><span class="ch-btn">Accept to branch</span></div>
-        </div>
-      </div>
-
-      <div class="feat feat-rev reveal">
-        <div class="feat-copy">
-          <span class="feat-n mono">04</span>
-          <h3>You approve what runs</h3>
-          <p>Commands, edits and tool calls ask first unless you allow them. When a provider starts subagents, each one shows live under the step that started it, so nothing runs out of sight.</p>
-        </div>
-        <div class="feat-vis vis-perm" aria-hidden="true">
-          <div class="pc">
-            <div class="pc-q"><Icon name="shield" size={16} />Run the tests in the scratch copy?</div>
-            <div class="pc-cmd mono">node --test</div>
-            <div class="pc-a"><span class="pb pb-1">Allow once</span><span class="pb">Allow for this thread</span><span class="pb pb-deny">Deny</span></div>
-          </div>
-          <div class="sp">
-            <div class="sp-h"><Icon name="branch" size={14} /><span>Task: find every caller</span><span class="sp-b mono">3 subagents</span></div>
-            <div class="sp-r" style="--i:0"><Icon name="check" size={13} />Subagent 1 <code>src/cart.mjs</code></div>
-            <div class="sp-r" style="--i:1"><Icon name="check" size={13} />Subagent 2 <code>src/checkout.mjs</code></div>
-            <div class="sp-r" style="--i:2"><Icon name="check" size={13} />Subagent 3 <code>test/</code></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="feat reveal">
-        <div class="feat-copy">
-          <span class="feat-n mono">05</span>
-          <h3>Split big jobs across providers</h3>
-          <p>An orchestrator breaks a large request into up to 8 slices, and each slice goes to the provider with room for it. A second model reviews the work before you see it.</p>
-        </div>
-        <div class="feat-vis vis-plan" aria-hidden="true">
-          <div class="plan-h"><Kite size={14} /><span>Plan</span><span class="mono plan-c">4 slices</span></div>
-          <div class="slice" style="--i:0"><span class="s-t">Map the rounding paths</span><span class="s-d">Easy</span><span class="fam fam-l">L</span><span class="s-s"><em>Done</em></span></div>
-          <div class="slice" style="--i:1"><span class="s-t">Clamp netMinor at zero</span><span class="s-d">Medium</span><span class="fam fam-a">A</span><span class="s-s"><em>Done</em></span></div>
-          <div class="slice" style="--i:2"><span class="s-t">Fix the tax rounding</span><span class="s-d">Hard</span><span class="fam fam-o">O</span><span class="s-s"><em>Done</em></span></div>
-          <div class="slice" style="--i:3"><span class="s-t">Add tests for the edges</span><span class="s-d">Easy</span><span class="fam fam-g">G</span><span class="s-s"><em>Done</em></span></div>
-          <div class="plan-f mono">Crew finished: 4 slices, 4 reviews, 1 fix.</div>
-        </div>
-      </div>
-
-      <div class="more-feats">
-        <article class="mf reveal">
-          <h3>Use the plans you already pay for</h3>
-          <p>CrewKite drives each provider's own signed-in app. No API keys, no extra subscription, no per-token bill. New models show up the day your provider serves them.</p>
-        </article>
-        <article class="mf reveal" style="--d:70ms">
-          <h3>Bring a local model</h3>
-          <p>Connect LM Studio and it takes the small slices that fit, free, on your own hardware.</p>
-        </article>
-        <article class="mf reveal" style="--d:140ms">
-          <h3>Built for big repositories</h3>
-          <p>No file count cap. CrewKite checks free disk space before it copies, and history search covers every thread.</p>
-        </article>
-        <article class="mf reveal" style="--d:210ms">
-          <h3>Your work stays on your computer</h3>
-          <p>No account, no telemetry, nothing hosted. Apache 2.0, so you can read every line.</p>
-        </article>
-      </div>
-      <ul class="chips reveal" aria-label="Also in this version">
-        <li>History search</li>
-        <li>Project notes</li>
-        <li>Usage analytics with CSV</li>
-        <li>Share page</li>
-        <li>Markdown export</li>
-        <li>Diagnostics export</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- Crews, settings and git -->
-  <section id="crews" aria-labelledby="crews-h">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">In the app</span>
-        <h2 id="crews-h" class="h2">Crews, settings and git</h2>
-      </div>
-
-      <div class="cs-row reveal">
-        <div class="cs-copy">
-          <h3>Crews</h3>
-          <p>A crew is an orchestrator, a builder, a fixer, a reviewer and a challenger, plus the model that answers side questions. Each role runs on any family you have connected, with its own effort level, and each can start subagents. This is the crew in these screens:</p>
+      <div class="blk blk-split reveal">
+        <div class="blk-copy">
+          <h3>The crew in these screens</h3>
           <ul class="crew-list">
             {CREW.map((c) => (
               <li><span class={`fam fam-${c.fam}`} aria-hidden="true">{c.fam.toUpperCase()}</span><b>{c.role}</b><span>{c.family} <span class="mono">{c.model}</span>{c.effort && `, ${c.effort}`}</span></li>
             ))}
           </ul>
-          <p class="crew-sub">Subagents on for every role.</p>
+          <p class="crew-sub">Subagents on for every role. Flight mode Balanced.</p>
         </div>
+        <Shot id="crew-editor" />
+      </div>
+
+      <div class="blk blk-split blk-rev reveal">
+        <div class="blk-copy">
+          <h3>A plan in slices</h3>
+          <p>In the Full crew preset the orchestrator reads the request and proposes up to 8 slices. The controller checks the plan and assigns each slice to the crew's builder, or to its fixer for a hard slice, and nothing runs until you press Run plan.</p>
+        </div>
+        <Shot id="plan" />
+      </div>
+
+      <div class="blk reveal">
+        <div class="blk-copy">
+          <h3>Presets and effort</h3>
+          <p>The built-in presets are Solo, Tandem and Full crew. Save your own crews beside them, and set each role's model and effort.</p>
+        </div>
+        <Shot id="builder-effort" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Allowances and handoff -->
+  <section id="allowances" aria-labelledby="allow-h">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Allowances</span>
+        <h2 id="allow-h" class="h2">Keeps going at the limit</h2>
+        <p class="lede">A crew moves work to the next connected provider when one runs out of included allowance, and the rail shows every window as it goes.</p>
+      </div>
+
+      <div class="blk blk-split reveal">
+        <div class="blk-copy">
+          <h3>Continue on the next provider</h3>
+          <p>When Anthropic reaches its limit, the thread continues on OpenAI with every message and edited file, and the next reply picks up where the last one stopped.</p>
+        </div>
+        <figure class="feat-vis vis-hand">
+          <div class="ht ht-from" aria-hidden="true"><div class="ht-h"><span class="fam fam-a">A</span>Anthropic · Opus 5.5<span class="ht-lim">Limit reached</span></div><b></b><b></b></div>
+          <div class="hand-line" aria-hidden="true"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: usage limit reached.</span></div>
+          <div class="ht ht-to" aria-hidden="true"><div class="ht-h"><span class="fam fam-o">O</span>OpenAI · gpt-6.1-sol<span class="ht-carry"><span class="mono">12 messages</span><span class="mono">3 files</span></span></div><b></b><b></b><b></b></div>
+          <figcaption class="vis-cap">Illustration of a handoff, drawn for this page.</figcaption>
+        </figure>
+      </div>
+
+      <div class="blk reveal">
+        <div class="blk-copy">
+          <h3>Every allowance in view</h3>
+          <p>The rail shows the five-hour and weekly windows each provider reports, or the weekly and model windows for a plan with no five-hour limit. Google reports five-hour and weekly windows, OpenAI a weekly window, Anthropic the windows its plan has, and Local has no limits. CrewKite reads usage every 90 seconds for Google and OpenAI and every five minutes for Anthropic.</p>
+        </div>
+        <Shot id="anthropic-rail" />
         <div class="shots shots-2">
-          <Shot id="crew-builder" />
-          <Shot id="crew-reviewer" />
+          <Shot id="google-allowance" />
+          <Shot id="openai-allowance" />
         </div>
+        <p class="blk-note">Gauge readings in these screens are samples from a test account.</p>
       </div>
 
-      <div class="cs-row reveal">
-        <div class="cs-copy">
-          <h3>Settings</h3>
-          <p>Settings shows every allowance as a gauge, with the five-hour and weekly windows where a plan has them, model limits such as Fable weekly or Gemini 4 Argon weekly, and the time to each reset. The kite meter beside Send shows how much of the model's context window the next message will use, which is separate from your plan's allowance.</p>
+      <div class="blk blk-split reveal" id="credits">
+        <div class="blk-copy">
+          <h3>Credits stay off</h3>
+          <p>Allow credit spending is a switch for OpenAI and for Anthropic, and it starts off. With it off, a step that would spend credits moves to another provider before it starts. The provider's own setting still decides, and CrewKite cannot turn credits on there.</p>
         </div>
-        <div class="shots shots-3">
-          <Shot id="gauges-anthropic" />
-          <Shot id="gauges-google" />
-          <Shot id="kite-meter" />
-        </div>
+        <Clip id="credit-continuation" />
       </div>
 
-      <div class="cs-row cs-git reveal">
-        <div class="cs-copy">
-          <h3>Git</h3>
-          <p>Every thread works in a scratch copy of your repository. Your checkout stays as it is until you accept a change, and Accept commits it on a new local branch.</p>
+      <div class="blk blk-split blk-rev reveal" id="meter">
+        <div class="blk-copy">
+          <h3>Next message meter</h3>
+          <p>The kite meter beside Send shows what the next message will use against the model's context window, separate from your plan's allowance. Here a side question runs on gpt-oss-20b in LM Studio beside the thread, and the builder keeps working.</p>
         </div>
+        <Shot id="kite-meter" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Review and accept -->
+  <section id="review" aria-labelledby="review-h">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Review</span>
+        <h2 id="review-h" class="h2">Nothing lands until you accept it</h2>
+        <p class="lede">Every thread works in its own copy of your repository. Read the changes, keep or drop each file, then accept them to a new local branch. Your checkout stays as it is.</p>
+      </div>
+      <div class="blk reveal">
+        <Shot id="changes" />
+      </div>
+      <div class="blk cs-git reveal">
+        <Shot id="accepted" />
         <div class="git-vis">
-          <svg viewBox="0 0 600 200" role="img" aria-label="The thread's scratch copy starts from your base commit. Your checkout stays unchanged. Accept commits the result on a new local branch.">
+          <svg viewBox="0 0 600 200" role="img" aria-label="Illustration: the thread's copy starts from your base commit. Your checkout stays unchanged. Accept commits the result on a new local branch.">
             <path class="g-line g-main" d="M40 44 H570" />
             <path class="g-line g-scratch" pathLength="1" d="M60 44 C 92 44, 96 156, 132 156 H 352" />
             <path class="g-line g-branch" pathLength="1" d="M438 156 C 470 156, 470 100, 500 100 H 528" />
             <circle class="g-base" cx="60" cy="44" r="7" />
             <circle class="g-o" cx="186" cy="156" r="6" />
-            <circle class="g-o" cx="236" cy="156" r="6" />
-            <circle class="g-l" cx="290" cy="156" r="6" />
+            <circle class="g-g" cx="236" cy="156" r="6" />
+            <circle class="g-o" cx="290" cy="156" r="6" />
             <rect class="g-accept" x="352" y="140" width="86" height="32" rx="8" />
             <text class="g-accept-t" x="395" y="161" text-anchor="middle">Accept</text>
             <circle class="g-new" cx="538" cy="100" r="7" />
             <text class="g-t" x="60" y="24" text-anchor="middle">base commit</text>
             <text class="g-t g-t-r" x="570" y="30" text-anchor="end">your checkout, unchanged</text>
-            <text class="g-t" x="236" y="190" text-anchor="middle">scratch copy: edits, tests, review</text>
+            <text class="g-t" x="236" y="190" text-anchor="middle">the thread's copy: edits, tests, review</text>
             <text class="g-t g-t-acc" x="538" y="80" text-anchor="middle">new local branch</text>
           </svg>
         </div>
       </div>
-      <p class="cs-note reveal">Screens from a test build.</p>
+    </div>
+  </section>
+
+  <!-- Control -->
+  <section id="control" aria-labelledby="control-h">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Control</span>
+        <h2 id="control-h" class="h2">You set the pace</h2>
+        <p class="lede">Flight mode decides how much the crew does on its own, and Permissions decides which commands it may run without asking.</p>
+      </div>
+      <div class="blk blk-split blk-ctl reveal">
+        <Shot id="control" />
+        <Clip id="permission-gate" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Run tests -->
+  <section id="run-tests" aria-labelledby="tests-h">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Run tests</span>
+        <h2 id="tests-h" class="h2">Run tests on demand</h2>
+        <p class="lede">{RUN_TESTS}</p>
+      </div>
     </div>
   </section>
 
@@ -359,10 +351,10 @@ const faqs = [
         <h2 id="safe-h" class="h2">Safe with your repository and your accounts</h2>
       </div>
       <div class="safe">
-        <article class="scard reveal"><Icon name="branch" size={22} /><h3>Your checkout is never written</h3><p>Models work in a scratch copy. Results land as new local branches, and only when you accept them.</p></article>
+        <article class="scard reveal"><Icon name="branch" size={22} /><h3>Your checkout stays as it is</h3><p>Every thread works in its own copy. Results land as new local branches, and only when you accept them.</p></article>
         <article class="scard reveal" style="--d:70ms"><Icon name="eye" size={22} /><h3>Nothing leaves your machine except what your provider client sends</h3><p>No telemetry, no account, no server of its own.</p></article>
         <article class="scard reveal" style="--d:140ms"><Icon name="key" size={22} /><h3>Secrets are redacted</h3><p>Tool output, exports and diagnostics go through redaction before they are shown or saved.</p></article>
-        <article class="scard reveal" style="--d:210ms"><Icon name="lock" size={22} /><h3>Each vendor's own client runs with your own sign-in</h3><p>CrewKite never reads or stores a provider credential and never falls back to paid API billing.</p></article>
+        <article class="scard reveal" style="--d:210ms"><Icon name="lock" size={22} /><h3>Each provider's own client runs with your own sign-in</h3><p>CrewKite never reads or stores a provider credential and never falls back to paid API billing.</p></article>
       </div>
       <p class="reveal more"><a class="arrow-link" href="/safety">How CrewKite handles authority <Icon name="arrow" size={16} /></a></p>
     </div>
@@ -373,10 +365,11 @@ const faqs = [
     <div class="wrap term-grid">
       <div class="reveal">
         <span class="eyebrow">Terminal too</span>
-        <h2 id="term-h" class="h2">The same threads in your terminal</h2>
-        <p class="lede">The CLI talks to the same controller as the desktop. Start a thread in one and pick it up in the other. Slash commands, file mentions and <code>crewkite -p</code> for scripts.</p>
+        <h2 id="term-h" class="h2">The same crews and threads from a CLI</h2>
+        <p class="lede">The CLI talks to the same controller as the desktop, so keep the desktop open. Slash commands such as <code>/model</code>, <code>/crew</code> and <code>/ask</code>, file mentions with <code>@</code>, and <code>-p</code> for scripts.</p>
         <div class="cmd term-cmd"><code>pnpm crewkite</code><button class="copy" type="button" data-copy="pnpm crewkite" hidden><Icon name="copy" size={13} />Copy</button></div>
-        <p class="small">From a source checkout. <a href={`${BLOB}/apps/cli/README.md`}>The CLI guide</a> lists every key and command.</p>
+        <div class="cmd term-cmd"><code>pnpm crewkite thread list --json</code><button class="copy" type="button" data-copy="pnpm crewkite thread list --json" hidden><Icon name="copy" size={13} />Copy</button></div>
+        <p class="small">From a source checkout, inside a project you added. <a href={`${BLOB}/docs/preview.md#try-the-cli`}>Try the CLI</a> walks through it, and <a href={`${BLOB}/apps/cli/README.md`}>the CLI guide</a> lists every key and command.</p>
       </div>
       <div class="reveal">
         <Terminal />
@@ -391,7 +384,7 @@ const faqs = [
         <div class="os-copy">
           <span class="eyebrow">Open source</span>
           <h2 id="open-h" class="h2">Apache 2.0, built in the open</h2>
-          <p class="lede">Prerelease. I build CrewKite in the open and ship it as it gets better. Every decision has an architecture decision record, and an extension seam lets separately licensed modules plug in.</p>
+          <p class="lede">Version 0.1.0 is the first public release. I build CrewKite in the open, every decision has an architecture decision record, and an extension seam lets separately licensed modules plug in.</p>
           <div class="os-links">
             <a class="arrow-link" href={REPO}>Source <Icon name="arrow" size={16} /></a>
             <a class="arrow-link" href={`${BLOB}/CONTRIBUTING.md`}>Contributing <Icon name="arrow" size={16} /></a>
@@ -440,10 +433,10 @@ const faqs = [
       <div class="final-box reveal">
         <Kite size={56} class="final-kite" />
         <h2 id="final-h" class="h2">Download CrewKite <span data-release="version">{VERSION_FALLBACK}</span></h2>
-        <p class="lede">macOS on Apple silicon. Linux x64 and arm64 preview. Windows is not supported yet.</p>
+        <p class="lede">macOS on Apple silicon, signed and notarized. Linux x64 and arm64 preview. Windows is not supported yet.</p>
         <div class="hero-cta">
           <Download variant="final" />
-          <a class="btn btn-ghost" href={REPO}><Icon name="code" />View on GitHub</a>
+          <a class="btn btn-ghost" href="/download">All builds and checksums</a>
         </div>
       </div>
     </div>
@@ -653,44 +646,64 @@ const faqs = [
     text-align: center;
   }
 
-  /* Features */
-  /* Each benefit is one text-and-demo pair. Named areas keep it at two cells at every width. */
-  .feat {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    grid-template-areas: 'copy vis';
-    gap: var(--space-16);
-    align-items: center;
-    padding: var(--space-block) 0;
-  }
-  .feat-rev {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    grid-template-areas: 'vis copy';
-  }
-  .feat-copy { grid-area: copy; }
-  .feat-vis { grid-area: vis; }
-  .feat + .feat { border-top: 1px solid var(--border); }
-  .feat-n { color: var(--accent); font-size: var(--text-sm); }
-  .feat h3 { margin-top: var(--space-3); font-size: var(--text-h3); }
-  .feat p { margin-top: var(--space-4); color: var(--text-muted); max-width: var(--measure); }
-  .chips {
+  /* Feature cards: twelve, three across on wide screens. */
+  .fgrid {
     list-style: none;
+    margin: 0;
     padding: 0;
-    margin: var(--space-6) 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
   }
-  .chips li {
-    font-size: var(--text-xs);
-    padding: var(--space-1) var(--space-3);
+  .fx {
+    position: relative;
+    padding: var(--space-6);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border-strong);
-    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition-delay: var(--d, 0ms);
+    transition-property: opacity, transform, border-color;
   }
+  .fx:hover { border-color: var(--border-strong); }
+  .fx-i {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .fx h3 { margin-top: var(--space-4); font-size: var(--text-lg); line-height: var(--text-lg-lh); }
+  .fx h3 a { color: inherit; text-decoration: none; }
+  .fx h3 a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+  .fx h3 a:focus-visible { outline: none; }
+  .fx:has(a:focus-visible) { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+  .fx p { margin-top: var(--space-2); font-size: var(--text-md); line-height: var(--text-md-lh); color: var(--text-muted); }
+  @media (max-width: 1023px) { .fgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 767px) { .fgrid { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Longer sections: copy with its media, stacked or side by side. Sub-blocks sit --space-block apart. */
+  .blk { display: grid; gap: var(--space-6); padding: var(--space-block) 0; }
+  .blk + .blk { border-top: 1px solid var(--border); }
+  .section-head + .blk { padding-top: 0; }
+  .blk-split { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--space-12); align-items: start; }
+  .blk-rev { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); }
+  .blk-rev > .blk-copy { order: 2; }
+  .blk-ctl { grid-template-columns: minmax(0, 0.6fr) minmax(0, 1.4fr); }
+  .blk-copy { max-width: var(--measure); }
+  .blk-copy h3 { font-size: var(--text-h3); line-height: var(--text-h3-lh); }
+  .blk-copy p { margin-top: var(--space-3); color: var(--text-muted); }
+  .blk-copy :global(a) { color: var(--text); text-underline-offset: 3px; }
+  .blk-h-2 { margin-top: var(--space-8); }
+  .blk-note { font-size: var(--text-sm); color: var(--text-dim); }
+  .next { margin: var(--space-4) 0 0; padding: 0; list-style: none; display: grid; gap: var(--space-3); color: var(--text-muted); }
+  .next li { position: relative; padding-left: var(--space-6); }
+  .next li::before { content: ''; position: absolute; left: var(--space-1); top: 0.7em; width: 6px; height: 6px; border-radius: var(--radius-sm); background: var(--accent); }
+  .fcard-tag { margin-left: auto; padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-sm); border: 1px solid var(--border-strong); font-size: var(--text-xs); color: var(--text-muted); }
   .feat-vis {
     position: relative;
-    min-height: 300px;
+    margin: 0;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background:
@@ -703,6 +716,11 @@ const faqs = [
     gap: var(--space-4);
     font-size: var(--text-sm);
     overflow: hidden;
+  }
+  .vis-cap { font-size: var(--text-xs); color: var(--text-dim); }
+  @media (max-width: 1023px) {
+    .blk-split, .blk-ctl { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .blk-rev > .blk-copy { order: 0; }
   }
 
   /* 01 handoff */
@@ -741,8 +759,6 @@ const faqs = [
     min-width: 12px;
     background: linear-gradient(90deg, var(--family-anthropic), var(--family-openai));
   }
-  .hand-mode { display: flex; justify-content: space-between; gap: var(--space-3); font-size: var(--text-xs); color: var(--text-dim); }
-  .hand-mode b { font-weight: var(--weight-medium); color: var(--text); }
   @media (prefers-reduced-motion: no-preference) {
     .js .vis-hand .hand-line, .js .vis-hand .ht-to, .js .vis-hand .ht-carry span { opacity: 0; transform: translateY(6px); transition: all var(--duration-slow) var(--ease-out); }
     .js .in .vis-hand .hand-line { opacity: 1; transform: none; transition-delay: var(--duration-slow); }
@@ -750,187 +766,6 @@ const faqs = [
     .js .in .vis-hand .ht-carry span { opacity: 1; transform: none; transition-delay: 1300ms; }
     .js .in .vis-hand .ht-carry span + span { transition-delay: 1500ms; }
   }
-
-  /* 02 allowances */
-  .vis-allow { gap: var(--space-4); }
-  .al { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); }
-  .al-h { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
-  .al-h .fam { width: 16px; height: 16px; font-size: var(--text-2xs); }
-  .al-h span:last-child { margin-left: auto; font-size: var(--text-xs); color: var(--text-dim); }
-  .al-r { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-xs); }
-  .al-r > span { min-width: 76px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }
-  .al-r i { flex: 1; height: 5px; border-radius: var(--radius-sm); background: var(--border); overflow: hidden; }
-  .al-r em { display: block; height: 100%; width: calc(var(--v) * 1%); background: var(--c); border-radius: var(--radius-sm); }
-  .al-inf b { color: var(--family-local); font-weight: var(--weight-regular); font-size: var(--text-ui); line-height: 1; }
-  @media (prefers-reduced-motion: no-preference) {
-    .js .vis-allow .al-r em { transform: scaleX(0); transform-origin: left; transition: transform 1100ms var(--ease-out); }
-    .js .in .vis-allow .al-r em { transform: none; }
-    .js .in .vis-allow .al:nth-child(2) em { transition-delay: var(--duration-instant); }
-    .js .in .vis-allow .al:nth-child(3) em { transition-delay: 240ms; }
-    .js .in .vis-allow .al:nth-child(4) em { transition-delay: 360ms; }
-  }
-
-  /* 02 plan */
-  .plan-h { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-semibold); }
-  .plan-c { margin-left: auto; color: var(--text-dim); font-weight: var(--weight-regular); font-size: var(--text-xs); }
-  .slice {
-    display: grid;
-    grid-template-columns: 1fr auto 20px 70px;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-3);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .s-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .s-d { font-size: var(--text-xs); color: var(--text-dim); }
-  .s-s { text-align: right; font-size: var(--text-xs); }
-  .s-s em { font-style: normal; color: var(--green); }
-  .plan-f { font-size: var(--text-xs); color: var(--text-muted); padding-top: var(--space-1); }
-  @media (prefers-reduced-motion: no-preference) {
-    .js .vis-plan .s-s em { font-size: 0; color: var(--text-dim); }
-    .js .vis-plan .s-s em::before { content: 'Queued'; font-size: var(--text-xs); }
-    .js .in .vis-plan .s-s em,
-    .js .in .vis-plan .s-s em::before { animation: slice 2.4s steps(1) forwards; animation-delay: calc(var(--duration-moderate) + var(--i) * 450ms); }
-    .js .in .vis-plan .s-s em::before { animation-name: slice-t; }
-  }
-  @keyframes slice {
-    0% { color: var(--blue); }
-    60%, 100% { color: var(--green); }
-  }
-  @keyframes slice-t {
-    0% { content: 'Running'; }
-    60%, 100% { content: 'Done'; }
-  }
-  .js .vis-plan .plan-f { opacity: 0; transition: opacity 400ms 4000ms; }
-  .js .in .vis-plan .plan-f { opacity: 1; }
-
-  /* 03 permission */
-  .vis-perm { align-items: center; }
-  .pc {
-    width: 100%;
-    max-width: 440px;
-    padding: var(--space-4);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--amber);
-    background: var(--surface);
-    display: grid;
-    gap: var(--space-3);
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--amber) 8%, transparent);
-  }
-  .pc-q { display: flex; gap: var(--space-2); align-items: center; font-weight: var(--weight-medium); }
-  .pc-q :global(svg) { color: var(--amber); flex: none; }
-  .pc-cmd {
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-sm);
-    background: var(--diff-add-bg);
-    color: var(--green);
-    font-size: var(--text-xs);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .pc-a { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  .pb {
-    height: 30px;
-    padding: 0 var(--space-3);
-    display: inline-flex;
-    align-items: center;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-strong);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
-  }
-  .pb-1 { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .pb-deny { color: var(--red); }
-  .js .in .vis-perm .pb-1 { animation: press 2.8s var(--ease-out) 1.2s infinite; }
-  @keyframes press {
-    0%, 70%, 100% { box-shadow: 0 0 0 0 var(--accent-soft); transform: none; }
-    80% { box-shadow: 0 0 0 7px var(--accent-soft); transform: scale(0.96); }
-  }
-  .pc-lock { display: flex; align-items: center; gap: var(--space-2); color: var(--text-dim); font-size: var(--text-xs); }
-
-  /* 04 changes */
-  .ch-h { display: flex; justify-content: space-between; font-weight: var(--weight-semibold); }
-  .ch-h .mono { color: var(--text-dim); font-weight: var(--weight-regular); font-size: var(--text-xs); }
-  .ch-f {
-    display: grid;
-    grid-template-columns: 1fr auto 82px;
-    gap: var(--space-3);
-    align-items: center;
-    padding: var(--space-3) var(--space-3);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    font-size: var(--text-xs);
-  }
-  .ch-f > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ch-k {
-    justify-self: end;
-    font-size: var(--text-xs);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-sm);
-    color: var(--green);
-    background: color-mix(in srgb, var(--green) 12%, transparent);
-  }
-  .js .vis-changes .ch-k { opacity: 0; transform: scale(0.8); transition: all var(--duration-moderate) var(--ease-out); }
-  .js .in .vis-changes .ch-k1 { opacity: 1; transform: none; transition-delay: var(--duration-slow); }
-  .js .in .vis-changes .ch-k2 { opacity: 1; transform: none; transition-delay: var(--duration-slower); }
-  .js .in .vis-changes .ch-k3 { opacity: 1; transform: none; transition-delay: 1300ms; }
-  .ch-b {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-    margin-top: var(--space-1);
-  }
-  .ch-b .mono { display: inline-flex; gap: var(--space-2); align-items: center; color: var(--text-muted); font-size: var(--text-xs); }
-  .ch-btn {
-    height: 32px;
-    padding: 0 var(--space-4);
-    display: inline-flex;
-    align-items: center;
-    border-radius: var(--radius-sm);
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-weight: var(--weight-semibold);
-    font-size: var(--text-sm);
-  }
-  .js .in .vis-changes .ch-btn { animation: press 2.8s var(--ease-out) 1.8s infinite; }
-
-  /* 05 approvals and subagents */
-  .vis-perm { align-items: stretch; }
-  .sp { border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
-  .sp-h { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); font-size: var(--text-sm); }
-  .sp-h :global(svg) { color: var(--text-dim); }
-  .sp-b { margin-left: auto; font-size: var(--text-xs); padding: var(--space-1) var(--space-2); border-radius: var(--radius-lg); background: color-mix(in srgb, var(--family-anthropic) 10%, transparent); color: var(--family-anthropic); }
-  .sp-r { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
-  .sp-r + .sp-r { border-top: 1px solid var(--border); }
-  .sp-r :global(svg) { color: var(--green); }
-  .sp-r code { color: var(--text-muted); font-size: var(--text-xs); }
-  @media (prefers-reduced-motion: no-preference) {
-    .js .vis-perm .sp-r { opacity: 0; transition: opacity 400ms var(--ease-out); transition-delay: calc(600ms + var(--i) * 350ms); }
-    .js .in .vis-perm .sp-r { opacity: 1; }
-  }
-
-  .more-feats {
-    margin-top: var(--space-10);
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
-  }
-  .mf {
-    padding: var(--space-6);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    transition-delay: var(--d, 0ms);
-  }
-  .mf-n { color: var(--accent); font-size: var(--text-sm); }
-  .mf h3 { margin-top: var(--space-3); font-size: var(--text-lg); line-height: 1.25; }
-  .mf p { margin-top: var(--space-3); color: var(--text-muted); font-size: var(--text-md); }
-  #adds .chips { justify-content: center; margin-top: var(--space-8); }
 
   /* Crews, settings and git */
   .cs-row {
@@ -970,6 +805,7 @@ const faqs = [
   .g-base { fill: var(--text-muted); }
   .g-o { fill: var(--family-openai-fill); }
   .g-l { fill: var(--family-local-fill); }
+  .g-g { fill: var(--family-google-fill); }
   .g-new { fill: var(--accent); }
   .g-accept { fill: var(--accent); }
   .g-accept-t { fill: var(--accent-ink); font: 600 var(--text-md) var(--font-sans); }
@@ -985,7 +821,6 @@ const faqs = [
     .js .cs-git.in .g-new,
     .js .cs-git.in .g-t-acc { opacity: 1; }
   }
-  .cs-note { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--text-dim); }
   @media (max-width: 1023px) {
     .shots-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .cs-git { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
@@ -1151,14 +986,14 @@ const faqs = [
     .rchips { grid-template-columns: repeat(2, auto); }
   }
   @media (max-width: 1023px) {
-    .fams, .more-feats { grid-template-columns: repeat(2, 1fr); }
+    .fams { grid-template-columns: repeat(2, 1fr); }
     .term-grid, .os, .faq-grid { grid-template-columns: 1fr; gap: var(--space-8); }
     .feat,
     .feat-rev { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'copy' 'vis'; gap: var(--space-6); }
   }
   @media (max-width: 767px) {
     .hero { padding: var(--space-12) 0 var(--space-section); }
-    .fams, .safe, .more-feats { grid-template-columns: 1fr; }
+    .fams, .safe { grid-template-columns: 1fr; }
     .rchips { grid-template-columns: minmax(0, 1fr); width: 100%; }
     .rchip { font-size: var(--text-sm); }
     .r-role { min-width: 10ch; text-align: left; }

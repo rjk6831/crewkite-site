@@ -4,15 +4,16 @@ import Icon from './Icon.astro';
 // An illustrative replay of one thread, drawn with the app's tokens and the preview project's data.
 // Without JavaScript or with reduced motion it shows the finished thread as a still frame.
 
-// Windows as the app shows them: OpenAI reports one weekly window, Anthropic and Google report a
-// five-hour and a weekly one. Final values are the still frame; the script starts a little higher.
+// The rail in GOAL order (Google, OpenAI, Anthropic, Local), as the app shows it. Google reports a
+// five-hour and a weekly window, OpenAI a weekly one; Anthropic's windows depend on the plan, so the
+// replay shows its remaining allowance with no window named. Readings are illustrative.
 const gauges = [
-  { fam: 'o', name: 'OpenAI', rows: [{ key: 'ow', label: '', v: 80, suffix: ' left' }], sub: 'resets in 2 d' },
-  { fam: 'a', name: 'Anthropic', rows: [{ key: 'a5', label: '5 h', v: 0 }, { key: 'aw', label: 'week', v: 64 }], sub: 'resets in 1 h 40 min' },
   { fam: 'g', name: 'Google', rows: [{ key: 'g5', label: '5 h', v: 85 }, { key: 'gw', label: 'week', v: 65 }], sub: 'resets in 3 d' },
+  { fam: 'o', name: 'OpenAI', rows: [{ key: 'ow', label: '', v: 80, suffix: ' left' }], sub: 'resets in 2 d' },
+  { fam: 'a', name: 'Anthropic', rows: [{ key: 'a5', label: '', v: 0, suffix: ' left' }], sub: 'resets in 1 h 40 min' },
 ];
 ---
-<figure class="replay" data-replay aria-label="Illustrative replay of one CrewKite thread: the Anthropic orchestrator plans and starts subagents, the thread moves to the OpenAI builder at Anthropic's five-hour limit, a local model answers a side question beside the builder, the OpenAI reviewer finds a gap, the Google fixer closes it, and Accept makes a branch">
+<figure class="replay" data-replay aria-label="Illustrative replay of one CrewKite thread: the Anthropic orchestrator plans and starts subagents, the thread moves to the OpenAI builder when Anthropic reaches its limit, a local model answers a side question beside the builder, the OpenAI reviewer finds a gap, the Google fixer closes it, and Accept makes a branch">
   <div class="win">
     <div class="win-bar">
       <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -26,9 +27,9 @@ const gauges = [
     </div>
 
     <div class="strip" aria-hidden="true">
+      <span class="sg" data-row="g"><span class="fam fam-g">G</span><span class="sg-bar" style="--c:var(--family-google-fill)"><i data-g="g5" style="--v:85"></i></span><b><span data-gt="g5">85</span>%</b></span>
       <span class="sg" data-row="o"><span class="fam fam-o">O</span><span class="sg-bar" style="--c:var(--family-openai-fill)"><i data-g="ow" style="--v:80"></i></span><b><span data-gt="ow">80</span>%</b></span>
       <span class="sg" data-row="a"><span class="fam fam-a">A</span><span class="sg-bar" style="--c:var(--family-anthropic-fill)"><i data-g="a5" style="--v:0"></i></span><b><span data-gt="a5">0</span>%</b></span>
-      <span class="sg" data-row="g"><span class="fam fam-g">G</span><span class="sg-bar" style="--c:var(--family-google-fill)"><i data-g="g5" style="--v:85"></i></span><b><span data-gt="g5">85</span>%</b></span>
       <span class="sg" data-row="l"><span class="fam fam-l">L</span><span class="sg-bar sg-inf" style="--c:var(--family-local-fill)"><i style="--v:100"></i></span>∞</span>
     </div>
 
@@ -78,7 +79,7 @@ const gauges = [
             <div class="sub" data-sub="3"><span class="sub-s ok-s"><Icon name="check" size={13} /></span>Subagent 3 <code>test/</code><span class="sub-m">Sonnet 5.5</span></div>
           </div>
 
-          <div class="it divider" data-at="3"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: five-hour limit reached, resets in 1 h 40 min.</span></div>
+          <div class="it divider" data-at="3"><span>Continued on OpenAI (gpt-6.1-sol) from Anthropic (Opus 5.5). Reason: usage limit reached.</span></div>
 
           <div class="it turn" data-at="4">
             <div class="turn-h"><span class="fam fam-o">O</span>Builder · OpenAI gpt-6.1-sol</div>
@@ -107,7 +108,7 @@ const gauges = [
           </div>
 
           <div class="it turn" data-at="10">
-            <div class="turn-h"><span class="fam fam-o">O</span>Reviewer · OpenAI gpt-astra-6</div>
+            <div class="turn-h"><span class="fam fam-o">O</span>Reviewer · OpenAI gpt-6-astra</div>
             <p data-type>Tests pass in the scratch copy. One gap: no test where the discount exceeds the subtotal.</p>
           </div>
 

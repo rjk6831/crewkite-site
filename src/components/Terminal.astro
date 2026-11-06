@@ -1,35 +1,36 @@
 ---
-// An illustrative CLI session drawn from the recorded one in docs/images/cli-session.txt, with the
-// model names the app shows. Boxes are drawn with CSS so they line up in any font. Without
+// An illustrative CLI session drawn from the recorded one in docs/images/cli-session.txt and the
+// commands in docs/preview.md, with the 0.1.0 crew and providers in GOAL order. It is coded, never a
+// capture, and says so. Boxes are drawn with CSS so they line up in any font. Without
 // JavaScript or with reduced motion every line shows at once.
 import Kite from './Kite.astro';
 ---
-<figure class="term" data-term aria-label="Illustrative CrewKite CLI session: the model menu with each crew role marked, a message to the Opus 5.5 orchestrator and an edit permission prompt">
+<figure class="term" data-term aria-label="Illustrative CrewKite CLI session: usage for Google, OpenAI, Anthropic and Local, the model menu with each crew role marked, a message to the Opus 5.5 orchestrator and an edit permission prompt">
   <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>crewkite</span><span class="term-tag">Illustrative</span></div>
   <div class="term-body" aria-hidden="true">
-    <div class="tl" data-t="0"><span class="dim">$</span> crewkite</div>
+    <div class="tl" data-t="0"><span class="dim">$</span> pnpm crewkite</div>
     <div class="tl brand" data-t="1"><Kite size={34} tail /><span class="word">CrewKite</span></div>
     <div class="tl status" data-t="2">
-      <span><b class="o">O</b> <i class="bar bo"><i></i></i> 98%</span>
-      <span><b class="a">A</b> <i class="bar ba"><i></i></i> 5 h 87%</span>
       <span><b class="g">G</b> <i class="bar bg"><i></i></i> 5 h 100%</span>
+      <span><b class="o">O</b> <i class="bar bo"><i></i></i> 98%</span>
+      <span><b class="a">A</b> <i class="bar ba"><i></i></i> 87%</span>
       <span><b class="l">L</b> ∞</span>
     </div>
     <div class="tl box" data-t="2"><span class="typed" data-type>/model</span></div>
     <div class="tl menu" data-t="3">
       <div class="m-h dim">Model for the next message</div>
-      <div class="m-r m-on"><b class="a">A</b><span>Opus 5.5 <em>Orchestrator</em></span><span>Fable 5.1 <em>Challenger</em></span><span>Sonnet 5.5</span></div>
-      <div class="m-r"><b class="o">O</b><span>gpt-6.1-sol <em>Builder</em></span><span>gpt-astra-6 <em>Reviewer</em></span></div>
       <div class="m-r"><b class="g">G</b><span>gemini-4-argon <em>Fixer</em></span></div>
+      <div class="m-r"><b class="o">O</b><span>gpt-6.1-sol <em>Builder</em></span><span>gpt-6-astra <em>Reviewer</em></span></div>
+      <div class="m-r m-on"><b class="a">A</b><span>Opus 5.5 <em>Orchestrator, Challenger</em></span></div>
       <div class="m-r"><b class="l">L</b><span>gpt-oss-20b <em>Ask</em></span></div>
     </div>
-    <div class="tl gap" data-t="4"><span class="dim">›</span> Clamp the discount at the subtotal</div>
+    <div class="tl gap" data-t="4"><span class="dim">›</span> Harden slugify for whitespace and punctuation</div>
     <div class="tl" data-t="4"><b class="a">A</b> Opus 5.5 <span class="dim">Orchestrator</span> <span class="acc">◆</span>&nbsp;&nbsp;<span class="dim">Waiting for you</span></div>
     <div class="tl in1" data-t="4"><span class="ok">✓</span> Read 2 files, searched once</div>
-    <div class="tl in1" data-t="5">The discount can push the total below zero. I will clamp it.</div>
-    <div class="tl code in1" data-t="5">return subtotal - Math.min(discount, subtotal);</div>
+    <div class="tl in1" data-t="5">Runs of spaces become one hyphen, and punctuation drops out.</div>
+    <div class="tl code in1" data-t="5">return name.trim().toLowerCase().replace(/\s+/g, '-');</div>
     <div class="tl perm in1" data-t="6">
-      <div>Edit net.mjs?</div>
+      <div>Edit src/slug.js?</div>
       <div><span class="acc">[1] Allow once</span>&nbsp;&nbsp;&nbsp;[2] Deny</div>
       <div class="dim">Thread policy: Ask each time.</div>
     </div>
