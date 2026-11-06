@@ -20,7 +20,7 @@ const gauges = [
       <span class="win-fam" aria-hidden="true"><span class="fam fam-o" data-cur>O</span></span>
       <span class="win-title">Add netMinor(subtotalMinor, discountMinor) <em>demo-shop</em></span>
       <span class="win-tag">Illustrative replay</span>
-      <button class="rp-toggle" type="button" data-replay-toggle aria-label="Pause replay" hidden>
+      <button class="rp-toggle" type="button" data-replay-toggle aria-label="Pause replay" data-off tabindex="-1">
         <span class="i-pause"><Icon name="pause" size={14} /></span>
         <span class="i-play"><Icon name="play" size={14} /></span>
       </button>
@@ -169,8 +169,13 @@ const gauges = [
     text-overflow: ellipsis;
   }
   .win-title em { font-style: normal; color: var(--text-dim); margin-left: var(--space-2); }
+  /* Fixed width, so the mono font arriving late never moves the bar. */
   .win-tag {
     flex: none;
+    width: 150px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
     font: 500 var(--text-xs)/1 var(--font-mono);
     color: var(--text-dim);
     padding: var(--space-1) var(--space-2);
@@ -188,6 +193,8 @@ const gauges = [
     color: var(--text-muted);
     cursor: pointer;
   }
+  /* Space is kept for the toggle before the script shows it, so nothing shifts. */
+  .rp-toggle[data-off] { visibility: hidden; }
   .rp-toggle .i-play { display: none; }
   .paused .rp-toggle .i-play { display: block; }
   .paused .rp-toggle .i-pause { display: none; }

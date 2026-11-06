@@ -427,14 +427,15 @@
       }
       if (id === run && again) {
         again.hidden = false;
-        if (toggle) toggle.hidden = true;
+        if (toggle) { toggle.setAttribute('data-off', ''); toggle.tabIndex = -1; }
       }
     };
     const start = () => {
       if (again) again.hidden = true;
       rp.classList.add('stepped');
       if (toggle) {
-        toggle.hidden = false;
+        toggle.removeAttribute('data-off');
+        toggle.removeAttribute('tabindex');
         paused = false;
         rp.classList.remove('paused');
         toggle.setAttribute('aria-label', 'Pause replay');
