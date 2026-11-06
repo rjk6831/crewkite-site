@@ -225,7 +225,7 @@ async function downloads(request, ctx, env) {
   return getDownloads({ store, load: async () => sumDownloads(await fetchAllReleases(fetch, REPO, gh(env))) });
 }
 
-const fmtSize = (b) => (b >= 1e9 ? `${(b / 1e9).toFixed(1)} GB` : `${Math.round(b / 1e6)} MB`);
+const fmtSize = (b) => `${(b / 1e6).toFixed(1)} MB`;
 const fmtDate = (iso) =>
   new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
@@ -264,10 +264,11 @@ async function rewrite(res, request, ctx, env) {
         if (a?.sha256) e.removeAttribute('hidden');
       },
     })
+    // The page renders the signing line from the release data; a published release.json that does
+    // not say notarized takes it off.
     .on('[data-signing]', {
       element: (e) => {
-        if (rel.notarized) e.removeAttribute('hidden');
-        else e.remove();
+        if (!rel.fallback && !rel.notarized) e.remove();
       },
     })
     .on('[data-min-macos]', {
@@ -289,6 +290,7 @@ async function rewrite(res, request, ctx, env) {
         if (!dl.visible) return;
         e.removeAttribute('hidden');
         e.setAttribute('data-as-of', dl.asOf);
+        e.setAttribute('title', `As of ${new Date(dl.asOf).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' })} UTC`);
         if (dl.stale) e.setAttribute('data-stale', '');
         e.setInnerContent(downloadsMarkup(dl, locale), { html: true });
       },

@@ -1,52 +1,78 @@
 // Every app picture on the site, one entry per slot. scripts/check-media.mjs reads this file during
-// the build and fails it when a slot that is not a placeholder is missing its dark or light file at
-// 1x or 2x, when a file is over 200 KB, or when a caption is missing.
+// the build and fails it when a slot is missing its dark or light file at 1x or 2x, when a file is
+// over 200 KB, or when a caption or alt text is missing.
 //
-// Release captures come from the signed 0.1.0 build at 2880 by 1800 (see the media capture spec),
-// cropped at component boundaries with a 16 to 24 px margin, and exported as WebP at x1 and x2:
+// Sources: the release stills listed in the a89cf34 site handoff, each SHA-256 checked, cropped at
+// component boundaries by internal/v5/crop.py and exported as WebP at x1 and x2:
 //   public/img/shots/<id>-<dark|light>@1x.webp and @2x.webp
-// Until those land, `placeholder: true` slots show the test-build crop in both themes.
+// Gauge readings in these stills are samples, never plan facts.
 
 export const MEDIA = {
-  'crew-builder': {
-    placeholder: true,
-    file: '/img/shots/crew-builder.webp',
-    width: 635,
-    height: 550,
-    alt: "A plan card with one slice assigned to the crew's builder on OpenAI gpt-6.1-sol, followed by the builder's commands, each waiting for approval.",
-    caption: "The plan gives the slice to the crew's builder on OpenAI gpt-6.1-sol. Its commands wait for approval.",
+  'welcome': {
+    width: 800,
+    height: 620,
+    alt: 'The welcome screen lists Google, OpenAI, Anthropic and Local, each marked Ready.',
+    caption: 'Welcome lists all four providers in one place, each Ready after its one Connect.',
   },
-  'crew-reviewer': {
-    placeholder: true,
-    file: '/img/shots/crew-reviewer.webp',
-    width: 635,
-    height: 442,
-    alt: 'A local model as the reviewer reads the changed files and reports no findings, with a context line of 6,522 of 8,192.',
-    caption: 'The reviewer reads the change and reports no findings, using 6,522 of its 8,192 context tokens.',
+  'crew-editor': {
+    width: 800,
+    height: 770,
+    alt: 'The Edit crew dialog for Demo crew: Builder gpt-6.1-sol High, Reviewer gpt-6-astra Extra high, Challenger Opus 5.5 Medium, Fixer gemini-4-argon Medium and Orchestrator Opus 5.5 Medium, each with Allow subagents on, and Flight mode Balanced.',
+    caption: 'The Demo crew gives every role its own model and effort, with subagents on for each.',
   },
-  'gauges-anthropic': {
-    placeholder: true,
-    file: '/img/shots/gauges-anthropic.webp',
-    width: 422,
-    height: 440,
-    alt: 'Anthropic settings with the models Opus 5.5, Fable 5.1, Sonnet 5.5 and Haiku 5.5, and gauges for weekly, Fable weekly and five-hour allowance.',
-    caption: "Anthropic's weekly, Fable weekly and five-hour gauges, with every model the client lists.",
+  'builder-effort': {
+    width: 1078,
+    height: 496,
+    alt: "Crew settings with the Solo, Tandem and Full crew presets, and the Full crew builder's effort menu open on High.",
+    caption: 'The built-in presets are Solo, Tandem and Full crew, and each role takes its own effort.',
   },
-  'gauges-google': {
-    placeholder: true,
-    file: '/img/shots/gauges-google.webp',
-    width: 422,
-    height: 432,
-    alt: 'Google allowance gauges for weekly, Gemini 4 Argon weekly and five-hour, with Non-Gemini models listed under More allowances.',
-    caption: "Google's weekly, Gemini 4 Argon weekly and five-hour gauges, with Non-Gemini models under More allowances.",
+  'plan': {
+    width: 758,
+    height: 580,
+    alt: 'A plan of four slices: three assigned to OpenAI gpt-6.1-sol as the builder and the hard CSV slice to Google gemini-4-argon as the fixer, with Run plan below.',
+    caption: "The orchestrator's plan sends the hard slice to the Google fixer and the rest to the OpenAI builder.",
+  },
+  'changes': {
+    width: 1440,
+    height: 868,
+    alt: 'A finished crew thread reporting 4 slices, 5 reviews and 1 fix, with the Changes panel listing eight edited files, their line counts and Accept to branch.',
+    caption: 'Changes lists every edited file, and Accept to branch puts them on a new local branch.',
+  },
+  'accepted': {
+    width: 800,
+    height: 160,
+    alt: 'The thread after Accept, reading Accepted 8 files to branch crewkite/harden-demo-shop-s-checkout-helpers-while-preserving-their-e.',
+    caption: 'After Accept, the thread records the branch the eight files went to.',
+  },
+  'anthropic-rail': {
+    width: 1440,
+    height: 868,
+    alt: 'Anthropic settings with its allowance gauges, and the rail listing Google, OpenAI, Anthropic and Local usage with reset times.',
+    caption: "Anthropic's card shows the windows its plan reports, and the rail keeps every provider in view.",
+  },
+  'openai-allowance': {
+    width: 546,
+    height: 500,
+    alt: 'The OpenAI allowance card with its weekly gauge, Credits paused, and the Allow credit spending switch off.',
+    caption: 'OpenAI reports a weekly window, and Allow credit spending stays off until you turn it on.',
+  },
+  'google-allowance': {
+    width: 546,
+    height: 554,
+    alt: 'The Google allowance card with weekly, Gemini 4 Argon weekly and five-hour gauges, and more allowances for non-Gemini models.',
+    caption: 'Google reports a five-hour and a weekly window, plus a weekly window per model.',
   },
   'kite-meter': {
-    placeholder: true,
-    file: '/img/shots/kite-meter.webp',
-    width: 468,
-    height: 382,
-    alt: 'The kite meter panel for gpt-6.1-sol showing how many tokens the next message takes and how much thread history is stored.',
-    caption: "The kite meter's next-message panel for gpt-6.1-sol.",
+    width: 869,
+    height: 446,
+    alt: "A side question answered on GPT-OSS 20B beside the thread, and the kite meter's next message panel for gemini-4-argon.",
+    caption: 'The kite meter shows what the next message will use before you send it.',
+  },
+  'control': {
+    width: 378,
+    height: 360,
+    alt: 'The Crew panel with the information marks for Flight mode and Permissions open.',
+    caption: 'Flight mode sets how much the crew does on its own, and Permissions which commands run without asking.',
   },
 };
 
@@ -55,3 +81,24 @@ export const sources = (id) => ({
   dark: [`/img/shots/${id}-dark@1x.webp`, `/img/shots/${id}-dark@2x.webp`],
   light: [`/img/shots/${id}-light@1x.webp`, `/img/shots/${id}-light@2x.webp`],
 });
+
+// Release clips, full window without the title bar, 1440 by 868. A clip that exists in one theme only
+// sets `only` and shows only in that theme, labelled.
+export const CLIPS = {
+  'permission-gate': {
+    width: 1440,
+    height: 868,
+    dark: '/media/permission-gate-dark.mp4',
+    light: '/media/permission-gate-light.mp4',
+    label: 'The builder on gpt-6.1-sol stops at a command and waits for Allow once, Allow for this thread or Deny.',
+    caption: 'A command outside the allowed set waits for your answer.',
+  },
+  'credit-continuation': {
+    width: 1440,
+    height: 868,
+    only: 'dark',
+    dark: '/media/credit-continuation-dark.mp4',
+    label: 'With OpenAI credits paused, slices 2 and 3 continue on Google gemini-4-argon, and the thread notes each move with its reason.',
+    caption: 'With credits off, slices continue on Google when OpenAI reaches its limit. Dark theme only.',
+  },
+};
