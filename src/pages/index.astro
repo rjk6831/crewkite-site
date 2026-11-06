@@ -681,7 +681,12 @@ const faqs = [
   .fx:has(a:focus-visible) { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
   .fx p { margin-top: var(--space-2); font-size: var(--text-md); line-height: var(--text-md-lh); color: var(--text-muted); }
   @media (max-width: 1023px) { .fgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 767px) { .fgrid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 767px) {
+    .fgrid { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+    .fx { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: var(--space-4); padding: var(--space-4); }
+    .fx-i { grid-row: span 2; }
+    .fx h3 { margin-top: 0; }
+  }
 
   /* Longer sections: copy with its media, stacked or side by side. Sub-blocks sit --space-block apart. */
   .blk { display: grid; gap: var(--space-6); padding: var(--space-block) 0; }
