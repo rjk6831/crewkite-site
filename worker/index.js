@@ -168,7 +168,7 @@ async function releaseWithoutApi() {
 }
 
 async function getRelease(ctx, env) {
-  const rel = await cached('release-v3', ctx, async () => {
+  const rel = await cached('release-v4', ctx, async () => {
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: gh(env) });
     if (r.status === 404) return null;
     if (!r.ok) return releaseWithoutApi();
@@ -195,6 +195,7 @@ async function getRelease(ctx, env) {
       notesUrl: data.html_url,
       notarized,
       minMacos,
+      fallback: false,
       assets: (data.assets || [])
         .filter((a) => a.name !== 'SHA256SUMS' && a.name !== 'release.json')
         .map((a) => ({ name: a.name, size: a.size, sha256: sums[a.name] || null, url: `${DL}/${a.name}` })),

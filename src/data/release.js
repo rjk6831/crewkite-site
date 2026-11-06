@@ -7,7 +7,7 @@
 export const RELEASE = {
   version: '0.1.0',
   commit: 'a89cf34b1f9505446006b652203a3cc37d1e283c',
-  published: false,
+  published: true,
   notarized: true,
   notesUrl: 'https://github.com/rjk6831/crewkite/releases/tag/v0.1.0',
   assets: {
