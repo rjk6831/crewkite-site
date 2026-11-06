@@ -9,7 +9,7 @@ import Email from '../components/Email.astro';
 import Download from '../components/Download.astro';
 import Terminal from '../components/Terminal.astro';
 import { REPO, BLOB, ONE_LINER, VERSION_FALLBACK, CREW } from '../data/site.js';
-import { FEATURES, FAMILIES, GOOGLE_TERMS, LINUX_LINE, WHATS_NEXT, RUN_TESTS } from '../data/copy.js';
+import { FEATURES, FAMILIES, PROVIDERS_LEDE, GOOGLE_TERMS, GOOGLE_TERMS_LINK, LINUX_LINE, WHATS_NEXT, XAI_NEXT, RUN_TESTS, RUN_TESTS_LONG } from '../data/copy.js';
 
 const faqs = [
   {
@@ -39,7 +39,7 @@ const faqs = [
   {
     id: 'google-terms',
     q: 'Will my provider ban my account?',
-    a: `<p>OpenAI, Anthropic and Local run through their own clients on their supported paths. Google is different. ${GOOGLE_TERMS}</p>`,
+    a: `<p>OpenAI, Anthropic and Local run through their own clients on their supported paths. Google is different. ${GOOGLE_TERMS} <a href="${GOOGLE_TERMS_LINK}">The dated links</a> are in the docs.</p>`,
   },
   {
     q: 'Does it run on Linux or Windows?',
@@ -129,7 +129,7 @@ const faqs = [
       <div class="section-head reveal">
         <span class="eyebrow">Providers</span>
         <h2 id="fam-h" class="h2">Run the clients you already sign in to</h2>
-        <p class="lede">CrewKite starts each provider's own client with your sign-in and your plan. Each one connects once on this computer with an explicit Connect, then reconnects on its own at every later launch.</p>
+        <p class="lede">{PROVIDERS_LEDE}</p>
       </div>
       <div class="fams">
         {FAMILIES.map((f, i) => (
@@ -155,9 +155,9 @@ const faqs = [
       <div class="blk blk-split reveal">
         <div class="blk-copy">
           <h3>Connect once</h3>
-          <p>The welcome screen walks through each provider, and Settings keeps the same setup. CrewKite adds no plan requirement, so each family works on the plan its provider allows.</p>
+          <p>Each provider connects once on this computer with an explicit Connect, then reconnects on its own at every later launch. Local also reconnects by itself when LM Studio restarts. The welcome screen walks through each one, and Settings keeps the same setup.</p>
           <h3 class="blk-h-2" id="google-route">The Google route</h3>
-          <p set:html={GOOGLE_TERMS} />
+          <p>{GOOGLE_TERMS} <a href={GOOGLE_TERMS_LINK}>The dated links</a> are in the docs.</p>
         </div>
         <Shot id="welcome" />
       </div>
@@ -168,6 +168,7 @@ const faqs = [
           <ul class="next">
             {WHATS_NEXT.map((n) => <li>{n}</li>)}
           </ul>
+          <p>{XAI_NEXT}</p>
         </div>
       </div>
     </div>
@@ -323,6 +324,11 @@ const faqs = [
         <span class="eyebrow">Run tests</span>
         <h2 id="tests-h" class="h2">Run tests on demand</h2>
         <p class="lede">{RUN_TESTS}</p>
+      </div>
+      <div class="blk reveal">
+        <div class="blk-copy">
+          <p class="tests-p" set:html={RUN_TESTS_LONG} />
+        </div>
       </div>
     </div>
   </section>
@@ -702,6 +708,7 @@ const faqs = [
   .blk-copy :global(a) { color: var(--text); text-underline-offset: 3px; }
   .blk-h-2 { margin-top: var(--space-8); }
   .blk-note { font-size: var(--text-sm); color: var(--text-dim); }
+  .tests-p { margin-top: 0; font-size: var(--text-base); }
   .next { margin: var(--space-4) 0 0; padding: 0; list-style: none; display: grid; gap: var(--space-3); color: var(--text-muted); }
   .next li { position: relative; padding-left: var(--space-6); }
   .next li::before { content: ''; position: absolute; left: var(--space-1); top: 0.7em; width: 6px; height: 6px; border-radius: var(--radius-sm); background: var(--accent); }
